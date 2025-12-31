@@ -1,0 +1,122 @@
+/**
+ * Delete Confirmation Modal - Red accent styles
+ * Reuses modal structure from ModalsShared.css
+ */
+
+/* ====================
+   Delete-specific Content
+   ==================== */
+
+/* Confirmation Message */
+.delete-confirm-message {
+  font-size: 1rem;
+  color: rgba(255, 255, 255, 0.9);
+  line-height: 1.6;
+  padding: 1.1rem;
+  background: rgba(239, 68, 68, 0.12);
+  border-left: 3px solid #ef4444;
+  border-radius: 0 12px 12px 0;
+  animation: fadeSlideIn 0.3s ease;
+}
+
+/* Todo Details Card */
+.delete-todo-details {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 14px;
+  padding: 1.35rem;
+  animation: fadeSlideIn 0.35s ease;
+}
+
+.delete-todo-field {
+  margin-bottom: 0.85rem;
+}
+
+.delete-todo-field:last-child {
+  margin-bottom: 0;
+}
+
+.delete-field-label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.5);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 0.35rem;
+}
+
+.delete-field-value {
+  font-size: 0.95rem;
+  color: #f1f5f9;
+  line-height: 1.5;
+}
+
+.delete-todo-title {
+  font-weight: 600;
+  font-size: 1.1rem;
+  color: #ffffff;
+  font-style: italic;
+}
+
+.delete-todo-description {
+  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.8);
+  line-height: 1.6;
+  max-height: 120px;
+  overflow-y: auto;
+}
+
+/* Warning Text */
+.delete-confirm-warning {
+  font-size: 0.9rem;
+  color: #ef4444;
+  text-align: center;
+  padding: 0.85rem 1.1rem;
+  background: rgba(239, 68, 68, 0.12);
+  border: 1px solid rgba(239, 68, 68, 0.25);
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  animation: fadeSlideIn 0.4s ease;
+}
+
+.delete-confirm-warning::before {
+  content: '!';
+  font-size: 0.9rem;
+  font-weight: 700;
+}
+
+@keyframes fadeSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ====================
+   Priority Badges (override shared styles with red accent)
+   ==================== */
+.modal-priority-high {
+  background: rgba(239, 68, 68, 0.2);
+  color: #fca5a5;
+  border: 1px solid rgba(239, 68, 68, 0.4);
+}
+
+/* ====================
+   Responsive Design
+   ==================== */
+@media (max-width: 480px) {
+  .delete-confirm-message {
+    padding: 0.9rem;
+  }
+
+  .delete-todo-details {
+    padding: 1.1rem;
+  }
+}

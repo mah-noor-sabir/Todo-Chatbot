@@ -1,0 +1,19 @@
+/* SignoutButton.css */
+
+.signout-button {
+  padding: 0.5rem 1rem;
+  background-color: #000; /* black background */
+  color: #ffffff;
+  border: 2px solid #764ba2; /* purple border */
+  border-radius: var(--radius-btn, 14px);
+  cursor: pointer;
+  font-weight: bold;
+  transition: all 0.3s ease;
+  box-shadow: 0 0 4px rgba(118, 75, 162, 0.4);
+}
+
+.signout-button:hover {
+  background-color: #0b1020; /* slightly lighter black */
+  box-shadow: 0 0 12px #9f7aea, 0 0 24px #9f7aea; /* purple neon glow */
+  transform: translateY(-2px);
+}

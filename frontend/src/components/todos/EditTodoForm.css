@@ -1,0 +1,102 @@
+/* ==============================
+   Edit Todo Form
+   ============================== */
+.edit-todo-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* ------------------------------
+   Textarea Group
+   ------------------------------ */
+.edit-textarea-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.edit-label {
+  font-size: 13px;
+  font-weight: 500;
+  font-style: italic;
+  color: rgba(255, 255, 255, 0.75);
+}
+
+/* ------------------------------
+   Textarea Glass Look
+   ------------------------------ */
+.edit-textarea {
+  width: 100%;
+  padding: 12px 14px;
+  border-radius: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(15, 23, 42, 0.85);
+  color: #f1f5f9;
+  resize: vertical;
+  font-size: 14px;
+  line-height: 1.5;
+  transition: all 0.25s ease;
+}
+
+.edit-textarea::placeholder {
+  color: rgba(255, 255, 255, 0.4);
+}
+
+.edit-textarea:focus {
+  outline: none;
+  border-color: #7c9cff;
+  box-shadow: 0 0 8px #7c9cff, 0 0 12px rgba(124, 156, 255, 0.3);
+  background: rgba(15, 23, 42, 0.95);
+}
+
+/* ------------------------------
+   Error State
+   ------------------------------ */
+.edit-textarea.error {
+  border-color: #ff6b6b;
+  box-shadow: 0 0 6px #ff6b6b, 0 0 10px rgba(255, 107, 107, 0.3);
+}
+
+.edit-error-text {
+  font-size: 12px;
+  color: #ff6b6b;
+}
+
+/* ------------------------------
+   Action Buttons
+   ------------------------------ */
+.edit-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;       /* space between Cancel and Save */
+  margin-top: 16px; /* space above buttons */
+}
+
+.edit-actions button {
+  min-width: 90px;   /* prevent buttons from shrinking */
+  padding: 8px 16px; /* comfortable size */
+  font-size: 14px;
+  border-radius: var(--radius-btn);
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+/* Cancel Button */
+.edit-actions .cancel-btn {
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--color-text-primary);
+}
+
+.edit-actions .cancel-btn:hover {
+  box-shadow: 0 0 12px #9f7aea;
+  transform: translateY(-1px);
+}
+
+/* Save Button */
+.edit-actions .save-btn {
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  color: #fff;
+}

@@ -1,0 +1,87 @@
+/* ===============================
+   Glass Header - Compact & Purple Glow
+   =============================== */
+
+.header {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  background: rgba(255, 255, 255, 0.08);
+  border-bottom: 0.5px solid rgba(255, 255, 255, 0.3); /* thinner border */
+  transition: background 0.3s ease, box-shadow 0.3s ease;
+}
+
+.header-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 12px 20px; /* reduced height */
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+/* Purple Glow Heading */
+.header-title {
+  font-size: 28px;
+  font-weight: 800;
+  letter-spacing: -0.4px;
+  font-style: italic;
+
+  background: linear-gradient(135deg, #a78bfa, #c084fc, #d8b4fe);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+
+  text-shadow: 0 0 6px #c084fc, 0 0 12px #a78bfa; /* purple glow */
+  animation: purpleGlow 2s infinite alternate;
+}
+
+@keyframes purpleGlow {
+  0% { text-shadow: 0 0 6px #c084fc, 0 0 12px #a78bfa; }
+  100% { text-shadow: 0 0 12px #d8b4fe, 0 0 24px #c084fc; }
+}
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+/* Header Buttons */
+.header-btn {
+  padding: 6px 14px; /* slightly smaller */
+  border-radius: var(--radius-btn, 8px);
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+  background: rgba(15, 23, 42, 0.6);
+  color: var(--color-text-primary, #f9fafb);
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.header-btn:hover {
+  box-shadow: 0 0 12px #9f7aea, 0 0 24px #c084fc, 0 0 36px #d8b4fe;
+  transform: translateY(-2px);
+  background: rgba(31, 41, 55, 0.7);
+}
+
+/* User Email Badge */
+.header-user-email {
+  font-size: 14px;
+  color: var(--color-text-secondary, #e5e7eb);
+  background: rgba(15, 23, 42, 0.25);
+  padding: 4px 10px; /* slightly smaller */
+  border-radius: 10px;
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  transition: all 0.25s ease;
+}
+
+.header-user-email:hover {
+  background: rgba(15, 23, 42, 0.35);
+  box-shadow: 0 0 8px #c084fc, 0 0 16px #a78bfa;
+}

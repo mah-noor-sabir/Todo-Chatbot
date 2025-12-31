@@ -2,27 +2,37 @@
 ================================================================================
 SYNC IMPACT REPORT
 ================================================================================
-Version Change: 1.0.0 → 1.1.0 (MINOR - Phase I scope expansion with enhanced features)
+Version Change: 1.1.0 → 1.2.0 (MINOR - Phase II technology matrix expansion)
 
 Modified Principles:
-- Phase I scope expanded to include priorities, categories, tags, search/filter,
-  sorting, recurring tasks, and due date notifications
+- Section IV: Technology Constraints - Phase II expanded from "TBD" to full
+  stack specification (Python REST API, Neon PostgreSQL, SQLModel, Next.js,
+  Better Auth)
+- Phase Scope Definitions - Phase II expanded from placeholder to concrete
+  technical requirements
+- Technology Addition Rules clarified with phase-specific authorization matrix
 
 Added Sections:
-- Phase I Enhanced Features subsection under Phase Scope Definitions
-- Task Organization Features (priorities, categories, tags)
-- Task Automation Features (recurring tasks, reminders)
-- Task Discovery Features (search, filter, sort)
+- Phase II Technology Stack subsection under Technology Constraints
+- Explicit technology authorization matrix by phase
+- Authentication/frontend/database phase-gating rules
 
 Removed Sections: None
 
 Templates Requiring Updates:
-- .specify/templates/plan-template.md - ✅ Compatible (Constitution Check section exists)
-- .specify/templates/spec-template.md - ✅ Compatible (Follows SDD workflow)
-- .specify/templates/tasks-template.md - ✅ Compatible (Phase-based structure aligns)
+- .specify/templates/plan-template.md - ✅ Compatible (Constitution Check
+  section will validate phase-appropriate technologies)
+- .specify/templates/spec-template.md - ✅ Compatible (Functional requirements
+  can reference Phase II capabilities)
+- .specify/templates/tasks-template.md - ✅ Compatible (Phase-based structure
+  supports Phase II multi-tier architecture)
 - .specify/templates/phr-template.prompt.md - ✅ Compatible (No changes needed)
 
-Follow-up TODOs: None
+Follow-up TODOs:
+- When Phase II spec is created, validate technology choices against this
+  constitution
+- Ensure Phase II tasks reference authorized technologies only
+- Document deployment strategy for Neon PostgreSQL in Phase II plan
 ================================================================================
 -->
 
@@ -85,9 +95,9 @@ The Evolution of Todo project is divided into five phases. Each phase is strictl
 - Phase completion requires all tasks marked complete and validated
 
 **Phase Scope Reference**:
-- **Phase I**: Enhanced Todo operations with organization, automation, and discovery
-- **Phase II**: Multi-user support, authentication, authorization
-- **Phase III**: Real-time sync, collaboration features
+- **Phase I**: Enhanced Todo operations with organization, automation, and discovery (console-only, in-memory)
+- **Phase II**: Full-stack web application with multi-user support, authentication, database persistence
+- **Phase III**: Real-time sync, collaboration features, containerization
 - **Phase IV**: AI-powered features, intelligent suggestions
 - **Phase V**: Enterprise features, analytics, integrations
 
@@ -101,29 +111,74 @@ The Evolution of Todo project is divided into five phases. Each phase is strictl
 
 The following technology stack is mandated for all phases.
 
-**Backend (All Phases)**:
-- Language: Python 3.11+
-- Framework: FastAPI (Phase II onwards); Console CLI for Phase I
-- ORM: SQLModel (Phase II onwards)
-- Database: Neon DB (PostgreSQL) - Phase II onwards; In-memory for Phase I
-- CLI Library: Rich (for professional console output)
+**Phase I Technology Stack**:
+- **Language**: Python 3.11+
+- **Architecture**: Console-only application
+- **Storage**: In-memory only (no persistence)
+- **CLI Library**: Rich (for professional console output)
+- **Testing**: pytest
+- **Prohibited**: Databases, web frameworks, authentication, network functionality
 
-**Frontend (Phase II onwards)**:
-- Framework: Next.js (React)
-- Styling: As specified per phase
+**Phase II Technology Stack**:
+- **Backend**:
+  - Language: Python 3.11+
+  - Framework: Python REST API (FastAPI recommended)
+  - ORM/Data Layer: SQLModel or equivalent
+  - Database: Neon Serverless PostgreSQL
+  - Testing: pytest with API testing extensions
+- **Frontend**:
+  - Framework: Next.js (React, TypeScript)
+  - Authentication: Better Auth (signup/signin)
+  - Styling: As specified per feature requirements
+- **Architecture**: Full-stack web application
+- **Deployment**: Web-accessible (localhost or cloud)
+- **Allowed**: User authentication, web frontend, database persistence
+- **Prohibited**: AI/agent frameworks, advanced orchestration, enterprise integrations
 
-**AI/Agent Infrastructure (Phase IV onwards)**:
-- OpenAI Agents SDK
-- Model Context Protocol (MCP)
+**Phase III Technology Stack** (extends Phase II):
+- **Infrastructure**:
+  - Containerization: Docker
+  - Orchestration: Kubernetes
+  - Messaging: Kafka
+  - Real-time: WebSockets or equivalent
+- **Allowed**: Real-time collaboration, event streaming, container deployment
+- **Prohibited**: AI/agent frameworks, enterprise integrations
 
-**Infrastructure (Phase III onwards)**:
-- Containerization: Docker
-- Orchestration: Kubernetes
-- Messaging: Kafka
-- Runtime: Dapr
+**Phase IV Technology Stack** (extends Phase III):
+- **AI/Agent Infrastructure**:
+  - OpenAI Agents SDK
+  - Model Context Protocol (MCP)
+  - Natural language processing
+- **Allowed**: AI-powered features, intelligent automation
+- **Prohibited**: Enterprise-specific integrations not specified
+
+**Phase V Technology Stack** (extends Phase IV):
+- **Enterprise Infrastructure**:
+  - Runtime: Dapr
+  - Analytics: As specified per requirements
+  - Integrations: Third-party APIs as needed
+- **Allowed**: Enterprise features, advanced analytics, external integrations
+
+**Technology Authorization Matrix**:
+
+| Technology Category | Phase I | Phase II | Phase III | Phase IV | Phase V |
+|---------------------|---------|----------|-----------|----------|---------|
+| Database Persistence | ❌ | ✅ Neon PostgreSQL | ✅ | ✅ | ✅ |
+| Web Frontend | ❌ | ✅ Next.js | ✅ | ✅ | ✅ |
+| Authentication | ❌ | ✅ Better Auth | ✅ | ✅ | ✅ |
+| REST API | ❌ | ✅ Python/FastAPI | ✅ | ✅ | ✅ |
+| Containerization | ❌ | ❌ | ✅ Docker | ✅ | ✅ |
+| Orchestration | ❌ | ❌ | ✅ Kubernetes | ✅ | ✅ |
+| Event Streaming | ❌ | ❌ | ✅ Kafka | ✅ | ✅ |
+| AI/Agents | ❌ | ❌ | ❌ | ✅ OpenAI SDK | ✅ |
+| MCP Servers | ❌ | ❌ | ❌ | ✅ | ✅ |
+| Dapr Runtime | ❌ | ❌ | ❌ | ❌ | ✅ |
+| Enterprise Analytics | ❌ | ❌ | ❌ | ❌ | ✅ |
 
 **Technology Addition Rules**:
 - New technologies MUST be justified in the phase specification
+- Technology choices MUST be validated against the authorization matrix above
+- Technologies not authorized for current phase MUST be rejected with reference to this constitution
 - Technology changes MUST be documented in an ADR
 - No technology may be introduced that contradicts this constitution
 - All dependencies MUST be explicitly declared in project manifests
@@ -139,7 +194,7 @@ All code produced under this constitution MUST meet these quality standards.
 - Use cases MUST be independently testable
 
 **Stateless Services**:
-- Services MUST be stateless where cloud deployment is anticipated
+- Services MUST be stateless where cloud deployment is anticipated (Phase II onwards)
 - Session state MUST be externalized to dedicated state stores
 - No in-memory caches that cannot be invalidated or shared across instances
 - Exception: Phase I in-memory storage is permitted for console-only operation
@@ -206,13 +261,31 @@ Core Todo operations with professional organization, automation, and discovery f
 - Single-user operation
 - No network functionality
 
-### Phase II: Multi-User
+### Phase II: Multi-User Web Application
 
-- User authentication and authorization
-- User-scoped todo lists
-- Next.js frontend integration
-- Session management
-- Database persistence with Neon DB
+Full-stack web application with authentication, database persistence, and multi-user support.
+
+**Core Capabilities**:
+- User registration and authentication (Better Auth)
+- User-scoped todo lists (data isolation per user)
+- Database persistence with Neon Serverless PostgreSQL
+- RESTful API backend (Python/FastAPI)
+- Modern web frontend (Next.js, React, TypeScript)
+- Session management and secure authentication flows
+
+**Technical Requirements**:
+- SQLModel or equivalent ORM for database operations
+- User authentication with signup/signin flows
+- Authorization to ensure users only access their own data
+- Database migrations for schema management
+- API endpoints for all CRUD operations
+- Frontend components for task management UI
+
+**Boundaries**:
+- Single-user sessions (no real-time collaboration yet)
+- Standard CRUD operations (no AI features yet)
+- Web deployment without containerization
+- No event streaming or advanced orchestration
 
 ### Phase III: Real-Time Collaboration
 
@@ -273,4 +346,4 @@ In case of conflict between artifacts:
 3. Plans take precedence over task lists
 4. Task lists take precedence over implementation details
 
-**Version**: 1.1.0 | **Ratified**: 2025-12-27 | **Last Amended**: 2025-12-28
+**Version**: 1.2.0 | **Ratified**: 2025-12-27 | **Last Amended**: 2025-12-28

@@ -1,0 +1,531 @@
+openapi: 3.0.3
+info:
+  title: Evolution of Todo - Todos API
+  description: Todo CRUD operations for authenticated users with user-scoped data isolation
+  version: 1.0.0
+  contact:
+    name: Phase II - Full-Stack Web Application
+
+servers:
+  - url: http://localhost:8000
+    description: Local development server
+  - url: https://api.todo-app.example.com
+    description: Production server (placeholder)
+
+tags:
+  - name: Todos
+    description: Todo CRUD operations (user-scoped)
+
+security:
+  - sessionCookie: []
+
+paths:
+  /todos:
+    get:
+      tags:
+        - Todos
+      summary: Get all todos for authenticated user
+      description: |
+        Returns all todos belonging to the authenticated user, ordered by created_at descending (newest first).
+        Returns empty array if user has no todos.
+      operationId: getTodos
+      responses:
+        '200':
+          description: Todos retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/TodoResponse'
+              examples:
+                with_todos:
+                  summary: User with todos
+                  value:
+                    - id: 2
+                      user_id: 1
+                      title: Buy groceries
+                      description: Milk, eggs, bread
+                      is_completed: false
+                      created_at: "2025-12-28T12:00:00Z"
+                      updated_at: "2025-12-28T12:00:00Z"
+                    - id: 1
+                      user_id: 1
+                      title: Finish project
+                      description: Complete Phase II implementation
+                      is_completed: true
+                      created_at: "2025-12-28T10:30:00Z"
+                      updated_at: "2025-12-28T11:45:00Z"
+                empty:
+                  summary: User with no todos
+                  value: []
+        '401':
+          description: Not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+    post:
+      tags:
+        - Todos
+      summary: Create new todo
+      description: |
+        Creates a new todo for the authenticated user.
+        Title is required (max 200 chars), description is optional (max 1000 chars).
+        New todos are incomplete by default (is_completed = false).
+      operationId: createTodo
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TodoCreateRequest'
+            examples:
+              with_description:
+                summary: Todo with description
+                value:
+                  title: Buy groceries
+                  description: Milk, eggs, bread
+              without_description:
+                summary: Todo without description
+                value:
+                  title: Call dentist
+      responses:
+        '201':
+          description: Todo created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TodoResponse'
+              examples:
+                created:
+                  summary: Created todo
+                  value:
+                    id: 3
+                    user_id: 1
+                    title: Buy groceries
+                    description: Milk, eggs, bread
+                    is_completed: false
+                    created_at: "2025-12-28T13:00:00Z"
+                    updated_at: "2025-12-28T13:00:00Z"
+        '400':
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                missing_title:
+                  summary: Title required
+                  value:
+                    error:
+                      code: VALIDATION_ERROR
+                      message: Title is required
+                      field: title
+                title_too_long:
+                  summary: Title too long
+                  value:
+                    error:
+                      code: VALIDATION_ERROR
+                      message: Title too long (max 200 characters)
+                      field: title
+                whitespace_title:
+                  summary: Whitespace-only title
+                  value:
+                    error:
+                      code: VALIDATION_ERROR
+                      message: Title cannot be empty
+                      field: title
+        '401':
+          description: Not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /todos/{id}:
+    parameters:
+      - name: id
+        in: path
+        required: true
+        description: Todo ID
+        schema:
+          type: integer
+          minimum: 1
+        example: 1
+
+    get:
+      tags:
+        - Todos
+      summary: Get single todo by ID
+      description: |
+        Returns a single todo if it exists and belongs to the authenticated user.
+        Returns 404 if todo doesn't exist or belongs to another user (security).
+      operationId: getTodoById
+      responses:
+        '200':
+          description: Todo retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TodoResponse'
+              examples:
+                found:
+                  summary: Todo found
+                  value:
+                    id: 1
+                    user_id: 1
+                    title: Buy groceries
+                    description: Milk, eggs, bread
+                    is_completed: false
+                    created_at: "2025-12-28T12:00:00Z"
+                    updated_at: "2025-12-28T12:00:00Z"
+        '401':
+          description: Not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Todo not found or belongs to another user
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                not_found:
+                  summary: Todo not found
+                  value:
+                    error:
+                      code: NOT_FOUND
+                      message: Todo not found
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+    put:
+      tags:
+        - Todos
+      summary: Update todo (full update)
+      description: |
+        Updates todo title and description. Must provide both fields (full update).
+        Validates ownership (only owner can update their todos).
+        Returns 404 if todo doesn't exist or belongs to another user.
+      operationId: updateTodo
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TodoUpdateRequest'
+            examples:
+              update_both:
+                summary: Update title and description
+                value:
+                  title: Buy groceries and cook
+                  description: Milk, eggs, bread, chicken
+      responses:
+        '200':
+          description: Todo updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TodoResponse'
+              examples:
+                updated:
+                  summary: Updated todo
+                  value:
+                    id: 1
+                    user_id: 1
+                    title: Buy groceries and cook
+                    description: Milk, eggs, bread, chicken
+                    is_completed: false
+                    created_at: "2025-12-28T12:00:00Z"
+                    updated_at: "2025-12-28T13:30:00Z"
+        '400':
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                missing_title:
+                  summary: Title required
+                  value:
+                    error:
+                      code: VALIDATION_ERROR
+                      message: Title is required
+                      field: title
+        '401':
+          description: Not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Todo not found or belongs to another user
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+    patch:
+      tags:
+        - Todos
+      summary: Toggle todo completion status
+      description: |
+        Updates only the is_completed field (partial update).
+        Validates ownership (only owner can update their todos).
+        Returns 404 if todo doesn't exist or belongs to another user.
+      operationId: toggleTodoCompletion
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TodoToggleRequest'
+            examples:
+              mark_complete:
+                summary: Mark as complete
+                value:
+                  is_completed: true
+              mark_incomplete:
+                summary: Mark as incomplete
+                value:
+                  is_completed: false
+      responses:
+        '200':
+          description: Todo completion status updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TodoResponse'
+              examples:
+                toggled:
+                  summary: Toggled todo
+                  value:
+                    id: 1
+                    user_id: 1
+                    title: Buy groceries
+                    description: Milk, eggs, bread
+                    is_completed: true
+                    created_at: "2025-12-28T12:00:00Z"
+                    updated_at: "2025-12-28T14:00:00Z"
+        '400':
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Todo not found or belongs to another user
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+    delete:
+      tags:
+        - Todos
+      summary: Delete todo
+      description: |
+        Permanently deletes a todo.
+        Validates ownership (only owner can delete their todos).
+        Returns 404 if todo doesn't exist or belongs to another user.
+      operationId: deleteTodo
+      responses:
+        '204':
+          description: Todo deleted successfully (no content)
+        '401':
+          description: Not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Todo not found or belongs to another user
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                not_found:
+                  summary: Todo not found
+                  value:
+                    error:
+                      code: NOT_FOUND
+                      message: Todo not found
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+components:
+  schemas:
+    TodoCreateRequest:
+      type: object
+      required:
+        - title
+      properties:
+        title:
+          type: string
+          minLength: 1
+          maxLength: 200
+          description: Todo title (required, 1-200 characters, no whitespace-only)
+          example: Buy groceries
+        description:
+          type: string
+          maxLength: 1000
+          nullable: true
+          description: Todo description (optional, max 1000 characters)
+          example: Milk, eggs, bread
+
+    TodoUpdateRequest:
+      type: object
+      required:
+        - title
+      properties:
+        title:
+          type: string
+          minLength: 1
+          maxLength: 200
+          description: Updated todo title (required, 1-200 characters)
+          example: Buy groceries and cook
+        description:
+          type: string
+          maxLength: 1000
+          nullable: true
+          description: Updated todo description (optional, max 1000 characters)
+          example: Milk, eggs, bread, chicken
+
+    TodoToggleRequest:
+      type: object
+      required:
+        - is_completed
+      properties:
+        is_completed:
+          type: boolean
+          description: New completion status (true = complete, false = incomplete)
+          example: true
+
+    TodoResponse:
+      type: object
+      required:
+        - id
+        - user_id
+        - title
+        - is_completed
+        - created_at
+        - updated_at
+      properties:
+        id:
+          type: integer
+          description: Todo's unique identifier
+          example: 1
+        user_id:
+          type: integer
+          description: ID of user who owns this todo
+          example: 1
+        title:
+          type: string
+          minLength: 1
+          maxLength: 200
+          description: Todo title
+          example: Buy groceries
+        description:
+          type: string
+          maxLength: 1000
+          nullable: true
+          description: Todo description (null if not provided)
+          example: Milk, eggs, bread
+        is_completed:
+          type: boolean
+          description: Completion status (true = complete, false = incomplete)
+          example: false
+        created_at:
+          type: string
+          format: date-time
+          description: Todo creation timestamp (ISO 8601)
+          example: "2025-12-28T12:00:00Z"
+        updated_at:
+          type: string
+          format: date-time
+          description: Last modification timestamp (ISO 8601)
+          example: "2025-12-28T12:00:00Z"
+
+    ErrorResponse:
+      type: object
+      required:
+        - error
+      properties:
+        error:
+          type: object
+          required:
+            - code
+            - message
+          properties:
+            code:
+              type: string
+              enum:
+                - VALIDATION_ERROR
+                - AUTHENTICATION_ERROR
+                - AUTHORIZATION_ERROR
+                - NOT_FOUND
+                - INTERNAL_ERROR
+              description: Error code for client handling
+              example: VALIDATION_ERROR
+            message:
+              type: string
+              description: Human-readable error message
+              example: Title is required
+            field:
+              type: string
+              description: Field name that caused error (for validation errors)
+              example: title
+            details:
+              type: object
+              additionalProperties: true
+              description: Additional error context (optional)
+
+  securitySchemes:
+    sessionCookie:
+      type: apiKey
+      in: cookie
+      name: session
+      description: Session cookie set by authentication endpoints

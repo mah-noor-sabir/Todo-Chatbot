@@ -1,0 +1,249 @@
+/* ==================================================
+   MODERN TODO APP – PURPLE NEON DARK THEME (PRODUCTION)
+   ================================================== */
+
+/* ---------- RESET ---------- */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  transition:
+    background 0.3s ease,
+    box-shadow 0.3s ease,
+    transform 0.3s ease,
+    color 0.3s ease,
+    border-color 0.3s ease;
+}
+
+/* ---------- THEME VARIABLES ---------- */
+:root {
+  /* Gradients */
+  --primary-gradient: linear-gradient(135deg, #7c5cff, #a888ff);
+  --secondary-gradient: linear-gradient(135deg, #5b2cff, #8f6bff);
+  --success-gradient: linear-gradient(135deg, #22c55e, #4ade80);
+
+  /* Core Colors */
+  --bg-main: #05010a;
+  --bg-secondary: #0b0614;
+  --glass-bg: rgba(10, 6, 20, 0.75);
+  --glass-border: rgba(168, 136, 255, 0.25);
+
+  /* Text */
+  --text-primary: #f2ecff;
+  --text-secondary: #bfb4ff;
+
+  /* Neon */
+  --neon-purple: rgba(168, 136, 255, 0.75);
+  --neon-purple-soft: rgba(168, 136, 255, 0.35);
+
+  /* Shadows */
+  --shadow-sm: 0 8px 24px rgba(0, 0, 0, 0.55);
+  --shadow-md: 0 16px 48px rgba(0, 0, 0, 0.75);
+
+  /* Radius */
+  --radius-card: 18px;
+  --radius-btn: 14px;
+}
+
+/* ---------- BASE ---------- */
+html,
+body {
+  width: 100%;
+  min-height: 100%;
+  font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  -webkit-font-smoothing: antialiased;
+  scroll-behavior: smooth;
+  color: var(--text-primary);
+  background:
+    radial-gradient(circle at top, rgba(168,136,255,0.12), transparent 55%),
+    radial-gradient(circle at bottom, rgba(90,60,200,0.12), transparent 55%),
+    linear-gradient(180deg, var(--bg-main), var(--bg-secondary));
+  overflow-x: hidden;
+  position: relative;
+}
+
+/* ---------- SUBTLE FLOATING GLOW ---------- */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background:
+    radial-gradient(circle at 20% 25%, rgba(168,136,255,0.12), transparent 40%),
+    radial-gradient(circle at 80% 70%, rgba(90,60,200,0.12), transparent 45%);
+  animation: floatBg 28s linear infinite;
+  z-index: -1;
+}
+
+@keyframes floatBg {
+  0% { transform: translateY(0); }
+  50% { transform: translateY(-45px); }
+  100% { transform: translateY(0); }
+}
+
+/* ---------- TYPOGRAPHY ---------- */
+h1 {
+  font-size: 2.4rem;
+  font-weight: 800;
+  margin-bottom: 1.2rem;
+  font-style: italic;
+  color: var(--text-primary);
+}
+
+h2 {
+  font-size: 1.9rem;
+  font-weight: 700;
+  margin-bottom: 0.9rem;
+  color: var(--text-primary);
+}
+
+h3 {
+  font-size: 1.35rem;
+  font-weight: 600;
+  margin-bottom: 0.6rem;
+  color: var(--text-primary);
+}
+
+p {
+  line-height: 1.65;
+  color: var(--text-secondary);
+}
+
+/* ---------- CONTAINER ---------- */
+.container {
+  width: 100%;
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+  animation: fadeIn 0.6s ease both;
+}
+
+/* ---------- INPUTS ---------- */
+input,
+textarea {
+  width: 100%;
+  min-height: 50px;
+  padding: 12px 16px;
+  border-radius: var(--radius-btn);
+  border: 1px solid var(--glass-border);
+  font-size: 0.95rem;
+  outline: none;
+  background: rgba(5, 1, 10, 0.9);
+  color: var(--text-primary);
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: var(--text-secondary);
+}
+
+input:focus,
+textarea:focus {
+  border-color: var(--neon-purple);
+  box-shadow: 0 0 12px var(--neon-purple-soft);
+}
+
+/* ---------- GLASS / CARD ---------- */
+.card,
+.glass-effect {
+  background: var(--glass-bg);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-card);
+  padding: 2rem;
+  box-shadow: var(--shadow-sm);
+}
+
+.card:hover,
+.glass-effect:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-md);
+}
+
+/* ---------- BUTTONS ---------- */
+.btn {
+  padding: 12px 22px;
+  border-radius: var(--radius-btn);
+  font-weight: 600;
+  font-size: 0.95rem;
+  cursor: pointer;
+  background: #000;
+  color: var(--text-primary);
+  border: 1px solid var(--glass-border);
+}
+
+.btn-primary {
+  background: #000;
+}
+
+.btn-primary:hover {
+  box-shadow:
+    0 0 14px rgba(168,136,255,0.85),
+    0 0 32px rgba(122,92,255,0.6);
+  transform: translateY(-2px);
+}
+
+.btn-success {
+  background: var(--success-gradient);
+  color: #04110a;
+}
+
+/* ---------- ANIMATIONS ---------- */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(16px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.fade-in {
+  animation: fadeIn 0.5s ease both;
+}
+
+/* ---------- ACCESSIBILITY ---------- */
+*:focus-visible {
+  outline: 3px solid var(--neon-purple);
+  outline-offset: 3px;
+}
+
+/* ---------- SCROLLBAR ---------- */
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(168, 136, 255, 0.35);
+  border-radius: 6px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(168, 136, 255, 0.6);
+}
+
+/* ---------- UTILITIES ---------- */
+.text-gradient {
+  background: var(--primary-gradient);
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.shadow-xl {
+  box-shadow: var(--shadow-md);
+}
+
+/* ---------- RESPONSIVE ---------- */
+@media (max-width: 640px) {
+  h1 { font-size: 2rem; }
+  h2 { font-size: 1.6rem; }
+}
+.hover\:shadow-neon:hover {
+  box-shadow: 0 0 8px #7c5cff, 0 0 16px #7c5cff, 0 0 24px #7c5cff;
+}
+
+.hover\:shadow-neon-red:hover {
+  box-shadow: 0 0 8px #ff6b6b, 0 0 16px #ff6b6b, 0 0 24px #ff6b6b;
+}
