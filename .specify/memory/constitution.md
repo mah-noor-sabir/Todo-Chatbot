@@ -2,37 +2,45 @@
 ================================================================================
 SYNC IMPACT REPORT
 ================================================================================
-Version Change: 1.1.0 → 1.2.0 (MINOR - Phase II technology matrix expansion)
+Version Change: 1.2.0 → 1.3.0 (MINOR - Phase IV AI/Agent architecture principles)
 
 Modified Principles:
-- Section IV: Technology Constraints - Phase II expanded from "TBD" to full
-  stack specification (Python REST API, Neon PostgreSQL, SQLModel, Next.js,
-  Better Auth)
-- Phase Scope Definitions - Phase II expanded from placeholder to concrete
-  technical requirements
-- Technology Addition Rules clarified with phase-specific authorization matrix
+- New Section VI: AI Agent Architecture Rules - Comprehensive governance for
+  Phase IV AI Chatbot implementation with MCP and OpenAI Agents SDK
+- Phase IV Scope Definition expanded with concrete AI/Agent implementation
+  requirements and architectural constraints
 
 Added Sections:
-- Phase II Technology Stack subsection under Technology Constraints
-- Explicit technology authorization matrix by phase
-- Authentication/frontend/database phase-gating rules
+- Section VI: AI Agent Architecture Rules (10 core principles)
+  1. Stateless Backend Architecture
+  2. AI Agent Access Restrictions
+  3. MCP Tool Mandatory Interface
+  4. Stateless MCP Tool Design
+  5. Chat API Persistence Requirements
+  6. Natural Language Intent Mapping
+  7. Specification Adherence
+  8. User Communication Standards
+  9. Error Handling Requirements
+  10. Server Restart Resilience
+- Phase IV detailed scope expansion in Phase Scope Definitions
 
 Removed Sections: None
 
 Templates Requiring Updates:
-- .specify/templates/plan-template.md - ✅ Compatible (Constitution Check
-  section will validate phase-appropriate technologies)
-- .specify/templates/spec-template.md - ✅ Compatible (Functional requirements
-  can reference Phase II capabilities)
-- .specify/templates/tasks-template.md - ✅ Compatible (Phase-based structure
-  supports Phase II multi-tier architecture)
+- .specify/templates/plan-template.md - ✅ Compatible (Phase IV plans will
+  validate against new AI/Agent architecture rules)
+- .specify/templates/spec-template.md - ✅ Compatible (Phase IV specs can
+  reference AI/Agent requirements)
+- .specify/templates/tasks-template.md - ✅ Compatible (Phase IV tasks will
+  validate stateless architecture and MCP tool usage)
 - .specify/templates/phr-template.prompt.md - ✅ Compatible (No changes needed)
 
 Follow-up TODOs:
-- When Phase II spec is created, validate technology choices against this
-  constitution
-- Ensure Phase II tasks reference authorized technologies only
-- Document deployment strategy for Neon PostgreSQL in Phase II plan
+- When Phase IV spec is created, validate AI agent architecture against
+  Section VI principles
+- Ensure Phase IV tasks explicitly test stateless backend and MCP tool usage
+- Document MCP tool contracts in Phase IV spec
+- Validate OpenAI Agents SDK integration against constitutional rules
 ================================================================================
 -->
 
@@ -219,6 +227,86 @@ All code produced under this constitution MUST meet these quality standards.
 - Contract tests for external service interactions (Phase II onwards)
 - All tests MUST pass before merge approval
 
+### VI. AI Agent Architecture Rules
+
+All AI-powered features (Phase IV onwards) MUST adhere to strict architectural constraints to ensure correctness, reliability, and maintainability.
+
+**1. Stateless Backend Architecture**:
+- The backend server MUST be completely stateless
+- No in-memory state for conversations, tasks, or agent context
+- No global variables or module-level mutable state
+- All state MUST be persisted to and retrieved from the database
+- Exception: Stateless request-scoped caching is permitted
+
+**2. AI Agent Access Restrictions**:
+- AI agents MUST NOT directly access the database
+- AI agents MUST NOT mutate application state directly
+- AI agents MUST NOT perform task operations without MCP tools
+- All data access MUST be mediated through MCP tool interfaces
+- Direct database imports in agent code are FORBIDDEN
+
+**3. MCP Tool Mandatory Interface**:
+- ALL task operations MUST go through MCP tools exclusively
+- Required MCP tools: `add_task`, `list_tasks`, `complete_task`, `delete_task`, `update_task`
+- No task operation may bypass MCP tool layer
+- MCP tools are the single source of truth for task operations
+- Additional MCP tools may be added only via specification approval
+
+**4. Stateless MCP Tool Design**:
+- Each MCP tool call MUST perform a single atomic database operation
+- MCP tools MUST NOT cache or store context between calls
+- MCP tools MUST NOT maintain conversation state
+- Each tool invocation MUST be self-contained and independent
+- Tool responses MUST include all necessary context for agent decisions
+
+**5. Chat API Persistence Requirements**:
+- The Chat API MUST fetch conversation history from database on every request
+- The Chat API MUST store both user and assistant messages in database
+- The Chat API MUST return: `conversation_id`, `response`, and `tool_calls`
+- No conversation context may be held in memory between requests
+- Session/conversation continuity MUST be achieved through database reads
+
+**6. Natural Language Intent Mapping**:
+- AI agents MUST infer user intent ONLY from natural language input
+- Agents MUST map natural language to appropriate MCP tool calls
+- No hardcoded command parsing or pattern matching
+- Agent reasoning MUST be transparent and explainable
+- Intent ambiguity MUST trigger clarification requests to user
+
+**7. Specification Adherence**:
+- Agents MUST use ONLY fields, endpoints, tools, and models defined in specifications
+- Agents MUST NOT invent new API endpoints or database fields
+- Agents MUST NOT assume tool capabilities beyond specification
+- Unknown tool names or parameters MUST trigger validation errors
+- All tool contracts MUST be documented in phase specifications
+
+**8. User Communication Standards**:
+- All successful actions MUST be confirmed with friendly natural language
+- Responses MUST be conversational and context-aware
+- Technical details MUST be abstracted unless explicitly requested
+- Agent personality MUST remain consistent and helpful
+- Multi-step operations MUST provide progress updates
+
+**9. Error Handling Requirements**:
+- Errors (task not found, invalid input, etc.) MUST be handled gracefully
+- Error messages MUST be user-friendly and actionable
+- System MUST NOT crash or expose stack traces to users
+- Partial failures in multi-step operations MUST be reported clearly
+- Recovery suggestions MUST be provided when possible
+
+**10. Server Restart Resilience**:
+- The system MUST continue working correctly after server restarts
+- No critical state may be lost on restart
+- Conversation history MUST survive restarts
+- In-progress operations MUST be resumable or properly aborted
+- Database integrity MUST be maintained across restart cycles
+
+**Violation Policy**:
+- Violating any of these rules is considered a **critical failure**
+- Non-compliant code MUST NOT be merged
+- Phase IV implementations MUST include automated tests for these constraints
+- Regular architecture reviews MUST validate ongoing compliance
+
 ## Phase Scope Definitions
 
 ### Phase I: Foundation (Enhanced Console Application)
@@ -295,13 +383,44 @@ Full-stack web application with authentication, database persistence, and multi-
 - Kafka event streaming
 - Kubernetes deployment readiness
 
-### Phase IV: AI Enhancement
+### Phase IV: AI Enhancement (Chatbot Interface)
 
-- OpenAI Agents SDK integration
-- MCP server implementation
-- Intelligent task suggestions
-- Natural language task creation
-- Smart categorization and prioritization
+Full conversational AI interface for todo management using OpenAI Agents SDK and Model Context Protocol (MCP).
+
+**Core Capabilities**:
+- Natural language todo management via chat interface
+- OpenAI Agents SDK integration for intent understanding
+- MCP server implementation with stateless tool design
+- Conversation persistence with database-backed history
+- Multi-turn conversational flows with context retention
+
+**Technical Requirements**:
+- **Backend**: Stateless Python REST API with chat endpoints
+- **AI Agent**: OpenAI Agents SDK with natural language processing
+- **MCP Tools**: `add_task`, `list_tasks`, `complete_task`, `delete_task`, `update_task`
+- **Database**: Extended schema for conversations and message history
+- **Chat API**: Fetch/store conversation history, return conversation_id + response + tool_calls
+- **Architecture**: Fully stateless backend, all state in database
+
+**AI Features**:
+- Intelligent task suggestions based on context
+- Natural language task creation ("Remind me to...")
+- Smart categorization and prioritization from conversation
+- Context-aware task queries ("What's on my list?")
+- Multi-task operations in single conversation turn
+
+**Architectural Constraints** (per Section VI):
+- All task operations through MCP tools only
+- No in-memory state or conversation caching
+- Agent cannot directly access database
+- Graceful error handling with user-friendly messages
+- System resilience across server restarts
+
+**Boundaries**:
+- Single-user conversations (no multi-user chat collaboration yet)
+- AI-powered CRUD operations only (no advanced workflow automation)
+- No enterprise integrations or third-party AI services
+- No Dapr runtime (deferred to Phase V)
 
 ### Phase V: Enterprise
 
@@ -346,4 +465,4 @@ In case of conflict between artifacts:
 3. Plans take precedence over task lists
 4. Task lists take precedence over implementation details
 
-**Version**: 1.2.0 | **Ratified**: 2025-12-27 | **Last Amended**: 2025-12-28
+**Version**: 1.3.0 | **Ratified**: 2025-12-27 | **Last Amended**: 2026-01-02

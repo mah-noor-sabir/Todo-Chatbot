@@ -7,15 +7,19 @@
 import React from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '../../hooks/useAuth';
+import { useAuthContext } from '../../hooks/AuthContext';
 import Button from '../ui/Button';
 import './Header.css';
 
 export default function Header() {
   const router = useRouter();
   const { signOut, user } = useAuth();
+  const { setUser: setAuthContextUser } = useAuthContext();
 
   const handleSignOut = async () => {
     await signOut();
+    // Clear AuthContext state so ChatWidget disappears
+    setAuthContextUser(null);
     router.push('/signin');
   };
 

@@ -4,7 +4,7 @@
 
 'use client';
 
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import AuthGuard from '../../components/auth/AuthGuard';
 import Header from '../../components/layout/Header';
 import TodoList from '../../components/todos/TodoList';
@@ -17,10 +17,23 @@ import { useTodos } from '../../hooks/useTodos';
 import type { Todo, TodoCreateRequest, TodoUpdateRequest } from '../../lib/types/todo';
 
 export default function TodosPage() {
-  const { todos, loading, error, createTodo, updateTodo, toggleCompletion, deleteTodo, pendingOperations } =
+  const { todos, loading, error, createTodo, updateTodo, toggleCompletion, deleteTodo, pendingOperations, fetchTodos } =
     useTodos();
 
   const [showAddForm, setShowAddForm] = useState(false);
+
+  // Listen for todo refresh events triggered by chatbot
+  useEffect(() => {
+    const handleRefreshTodos = () => {
+      fetchTodos();
+    };
+
+    window.addEventListener('refreshTodos', handleRefreshTodos);
+
+    return () => {
+      window.removeEventListener('refreshTodos', handleRefreshTodos);
+    };
+  }, [fetchTodos]);
   const [showEditForm, setShowEditForm] = useState(false);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [selectedTodo, setSelectedTodo] = useState<Todo | null>(null);

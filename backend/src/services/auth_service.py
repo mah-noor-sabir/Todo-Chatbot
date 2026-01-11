@@ -45,6 +45,8 @@ class AuthService:
         # Create user
         try:
             user = await self.user_repo.create_user(
+                first_name=user_data.first_name.strip(),
+                last_name=user_data.last_name.strip(),
                 email=user_data.email.strip().lower(),  # Normalize email
                 password_hash=password_hash,
             )

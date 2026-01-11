@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import './tailwind.css';
 import './globals.css';
+import ClientLayout from './ClientLayout';
 
 export const metadata: Metadata = {
   title: 'Evolution of Todo',
@@ -23,7 +24,7 @@ export default function RootLayout({
             bg-[radial-gradient(circle_at_top,rgba(168,136,255,0.12),transparent_55%),radial-gradient(circle_at_bottom,rgba(90,60,200,0.12),transparent_55%),linear-gradient(180deg,#05010a,#0b0614)]
           "
         >
-          {children}
+          <ClientLayout>{children}</ClientLayout>
         </div>
       </body>
     </html>

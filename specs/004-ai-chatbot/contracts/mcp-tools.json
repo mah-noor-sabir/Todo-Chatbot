@@ -1,0 +1,238 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "MCP Tools Contract",
+  "description": "Model Context Protocol tool definitions for todo task management. All tools are stateless and perform single atomic database operations.",
+  "version": "1.0.0",
+  "tools": [
+    {
+      "name": "add_task",
+      "description": "Create a new todo task for the user",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "user_id": {
+            "type": "integer",
+            "description": "ID of the user creating the task (from authentication context)"
+          },
+          "title": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200,
+            "description": "Task title (required, non-empty)"
+          },
+          "description": {
+            "type": ["string", "null"],
+            "maxLength": 1000,
+            "description": "Optional task description with additional details"
+          }
+        },
+        "required": ["user_id", "title"]
+      },
+      "returns": {
+        "type": "object",
+        "properties": {
+          "success": {"type": "boolean"},
+          "data": {
+            "type": "object",
+            "properties": {
+              "task_id": {"type": "integer"},
+              "title": {"type": "string"},
+              "description": {"type": ["string", "null"]},
+              "completed": {"type": "boolean"}
+            }
+          },
+          "message": {"type": "string"}
+        }
+      },
+      "errors": [
+        {"code": "INVALID_INPUT", "description": "Title is empty or exceeds 200 characters"},
+        {"code": "DATABASE_ERROR", "description": "Failed to save task to database"}
+      ]
+    },
+    {
+      "name": "list_tasks",
+      "description": "Retrieve user's tasks, optionally filtered by completion status",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "user_id": {
+            "type": "integer",
+            "description": "ID of the user whose tasks to retrieve"
+          },
+          "status": {
+            "type": "string",
+            "enum": ["all", "completed", "incomplete"],
+            "default": "all",
+            "description": "Filter tasks by completion status"
+          }
+        },
+        "required": ["user_id"]
+      },
+      "returns": {
+        "type": "object",
+        "properties": {
+          "success": {"type": "boolean"},
+          "data": {
+            "type": "object",
+            "properties": {
+              "tasks": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "id": {"type": "integer"},
+                    "title": {"type": "string"},
+                    "description": {"type": ["string", "null"]},
+                    "completed": {"type": "boolean"},
+                    "created_at": {"type": "string", "format": "date-time"}
+                  }
+                }
+              },
+              "count": {"type": "integer"}
+            }
+          },
+          "message": {"type": "string"}
+        }
+      },
+      "errors": [
+        {"code": "DATABASE_ERROR", "description": "Failed to fetch tasks from database"}
+      ]
+    },
+    {
+      "name": "complete_task",
+      "description": "Mark a task as completed",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "user_id": {
+            "type": "integer",
+            "description": "ID of the user who owns the task"
+          },
+          "task_id": {
+            "type": "integer",
+            "description": "ID of the task to mark as completed"
+          }
+        },
+        "required": ["user_id", "task_id"]
+      },
+      "returns": {
+        "type": "object",
+        "properties": {
+          "success": {"type": "boolean"},
+          "data": {
+            "type": "object",
+            "properties": {
+              "task_id": {"type": "integer"},
+              "title": {"type": "string"},
+              "completed": {"type": "boolean"}
+            }
+          },
+          "message": {"type": "string"}
+        }
+      },
+      "errors": [
+        {"code": "TASK_NOT_FOUND", "description": "Task with specified ID does not exist for this user"},
+        {"code": "UNAUTHORIZED", "description": "User does not own this task"},
+        {"code": "DATABASE_ERROR", "description": "Failed to update task in database"}
+      ]
+    },
+    {
+      "name": "delete_task",
+      "description": "Permanently remove a task",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "user_id": {
+            "type": "integer",
+            "description": "ID of the user who owns the task"
+          },
+          "task_id": {
+            "type": "integer",
+            "description": "ID of the task to delete"
+          }
+        },
+        "required": ["user_id", "task_id"]
+      },
+      "returns": {
+        "type": "object",
+        "properties": {
+          "success": {"type": "boolean"},
+          "data": {
+            "type": "object",
+            "properties": {
+              "task_id": {"type": "integer"},
+              "title": {"type": "string"}
+            }
+          },
+          "message": {"type": "string"}
+        }
+      },
+      "errors": [
+        {"code": "TASK_NOT_FOUND", "description": "Task with specified ID does not exist for this user"},
+        {"code": "UNAUTHORIZED", "description": "User does not own this task"},
+        {"code": "DATABASE_ERROR", "description": "Failed to delete task from database"}
+      ]
+    },
+    {
+      "name": "update_task",
+      "description": "Update task title and/or description",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "user_id": {
+            "type": "integer",
+            "description": "ID of the user who owns the task"
+          },
+          "task_id": {
+            "type": "integer",
+            "description": "ID of the task to update"
+          },
+          "title": {
+            "type": ["string", "null"],
+            "minLength": 1,
+            "maxLength": 200,
+            "description": "New task title (optional, at least one of title or description required)"
+          },
+          "description": {
+            "type": ["string", "null"],
+            "maxLength": 1000,
+            "description": "New task description (optional, at least one of title or description required)"
+          }
+        },
+        "required": ["user_id", "task_id"],
+        "anyOf": [
+          {"required": ["title"]},
+          {"required": ["description"]}
+        ]
+      },
+      "returns": {
+        "type": "object",
+        "properties": {
+          "success": {"type": "boolean"},
+          "data": {
+            "type": "object",
+            "properties": {
+              "task_id": {"type": "integer"},
+              "title": {"type": "string"},
+              "description": {"type": ["string", "null"]},
+              "completed": {"type": "boolean"}
+            }
+          },
+          "message": {"type": "string"}
+        }
+      },
+      "errors": [
+        {"code": "TASK_NOT_FOUND", "description": "Task with specified ID does not exist for this user"},
+        {"code": "UNAUTHORIZED", "description": "User does not own this task"},
+        {"code": "INVALID_INPUT", "description": "Neither title nor description provided, or title exceeds 200 characters"},
+        {"code": "DATABASE_ERROR", "description": "Failed to update task in database"}
+      ]
+    }
+  ],
+  "constitutionalCompliance": {
+    "rule3": "All 5 required MCP tools implemented: add_task, list_tasks, complete_task, delete_task, update_task",
+    "rule4": "Each tool performs single atomic database operation with no cached state",
+    "rule7": "Tool contracts match specification exactly (spec.md MCP Tool Contracts section)",
+    "rule9": "Structured error responses with error codes for graceful handling"
+  }
+}

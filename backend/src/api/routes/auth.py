@@ -1,6 +1,7 @@
 """
 Authentication API routes.
 Handles user signup, signin, signout, and session management.
+Updated: 2026-01-02
 """
 
 from fastapi import APIRouter, Depends, Response, Request
@@ -9,7 +10,7 @@ from datetime import datetime, timedelta
 from jose import jwt, JWTError
 
 from src.core.database import get_session as get_db_session
-from src.models.user import UserCreate, UserResponse
+from src.models.user import UserCreate, UserResponse, UserLogin
 from src.services.auth_service import AuthService
 from src.core.config import settings
 from src.core.exceptions import AuthenticationError, ValidationError
@@ -84,12 +85,18 @@ async def signup(
         domain=None,  # Let browser set domain (localhost)
     )
 
-    return UserResponse(id=user.id, email=user.email, created_at=user.created_at)
+    return UserResponse(
+        id=user.id,
+        first_name=user.first_name,
+        last_name=user.last_name,
+        email=user.email,
+        created_at=user.created_at
+    )
 
 
 @router.post("/auth/signin", response_model=UserResponse)
 async def signin(
-    credentials: UserCreate,
+    credentials: UserLogin,
     response: Response,
     session: AsyncSession = Depends(get_db_session),
 ):
@@ -127,7 +134,13 @@ async def signin(
         domain=None,
     )
 
-    return UserResponse(id=user.id, email=user.email, created_at=user.created_at)
+    return UserResponse(
+        id=user.id,
+        first_name=user.first_name,
+        last_name=user.last_name,
+        email=user.email,
+        created_at=user.created_at
+    )
 
 
 @router.post("/auth/signout", status_code=204)
@@ -174,4 +187,10 @@ async def get_session(
     auth_service = AuthService(session)
     user = await auth_service.get_user_by_id(user_id)
 
-    return UserResponse(id=user.id, email=user.email, created_at=user.created_at)
+    return UserResponse(
+        id=user.id,
+        first_name=user.first_name,
+        last_name=user.last_name,
+        email=user.email,
+        created_at=user.created_at
+    )

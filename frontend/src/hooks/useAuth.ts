@@ -13,7 +13,7 @@ interface UseAuthReturn {
   user: User | null;
   isLoading: boolean;
   isAuthenticated: boolean;
-  signUp: (email: string, password: string) => Promise<void>;
+  signUp: (firstName: string, lastName: string, email: string, password: string) => Promise<void>;
   signIn: (email: string, password: string) => Promise<void>;
   signOut: () => Promise<void>;
   error: string | null;
@@ -41,11 +41,16 @@ export function useAuth(): UseAuthReturn {
     }
   }, []);
 
-  const signUp = async (email: string, password: string) => {
+  const signUp = async (firstName: string, lastName: string, email: string, password: string) => {
     try {
       setError(null);
       setIsLoading(true);
-      const userData = await authApi.signup({ email, password });
+      const userData = await authApi.signup({
+        first_name: firstName,
+        last_name: lastName,
+        email,
+        password,
+      });
       setUser(userData);
     } catch (err) {
       if (err instanceof ApiClientError) setError(err.message);
@@ -78,6 +83,7 @@ export function useAuth(): UseAuthReturn {
     } catch (err) {
       console.error('Signout error:', err);
     } finally {
+      // Reset the hasCheckedSession ref so next login will work properly
       setUser(null);
     }
   };

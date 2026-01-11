@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '../../hooks/useAuth';
+import { useAuthContext } from '../../hooks/AuthContext';
 import { validateEmail } from '../../lib/utils/validation';
 import './authForm.css';
 import ForgotPasswordModal from './ForgotPasswordModal';
@@ -14,6 +15,7 @@ interface SigninFormProps {
 export default function SigninForm({ className = '' }: SigninFormProps) {
   const router = useRouter();
   const { signIn, error: authError } = useAuth();
+  const { refreshSession } = useAuthContext();
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -21,6 +23,7 @@ export default function SigninForm({ className = '' }: SigninFormProps) {
   const [passwordError, setPasswordError] = useState('');
   const [loading, setLoading] = useState(false);
   const [showForgotPassword, setShowForgotPassword] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -36,10 +39,16 @@ export default function SigninForm({ className = '' }: SigninFormProps) {
     try {
       setLoading(true);
       await signIn(email, password);
+      // Refresh AuthContext session so ChatWidget knows user is logged in
+      await refreshSession();
       router.push('/todos');
     } finally {
       setLoading(false);
     }
+  };
+
+  const togglePasswordVisibility = () => {
+    setShowPassword((prev) => !prev);
   };
 
   return (
@@ -88,15 +97,38 @@ export default function SigninForm({ className = '' }: SigninFormProps) {
             <label htmlFor="password" className="auth-label">
               Password
             </label>
-            <input
-              id="password"
-              type="password"
-              className={`auth-input ${passwordError ? 'error' : ''}`}
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              placeholder="Your password"
-              autoComplete="current-password"
-            />
+            <div className="auth-input-wrapper">
+              <input
+                id="password"
+                type={showPassword ? 'text' : 'password'}
+                className={`auth-input ${passwordError ? 'error' : ''}`}
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="Your password"
+                autoComplete="current-password"
+              />
+              <button
+                type="button"
+                className="auth-password-toggle"
+                onClick={togglePasswordVisibility}
+                aria-label={showPassword ? 'Hide password' : 'Show password'}
+                tabIndex={-1}
+              >
+                {showPassword ? (
+                  // Eye Off Icon
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/>
+                    <line x1="1" y1="1" x2="23" y2="23"/>
+                  </svg>
+                ) : (
+                  // Eye Icon
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                    <circle cx="12" cy="12" r="3"/>
+                  </svg>
+                )}
+              </button>
+            </div>
             {passwordError && (
               <div className="auth-message error">
                 <span className="auth-message-icon">⚠</span>

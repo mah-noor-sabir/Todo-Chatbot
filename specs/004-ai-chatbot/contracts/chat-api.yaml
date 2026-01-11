@@ -1,0 +1,252 @@
+openapi: 3.1.0
+info:
+  title: Todo AI Chatbot API
+  description: Conversational AI interface for todo task management using natural language
+  version: 1.0.0
+  contact:
+    name: Evolution of Todo - Phase IV
+servers:
+  - url: http://localhost:8000
+    description: Development server
+
+paths:
+  /api/{user_id}/chat:
+    post:
+      summary: Send message to AI chatbot
+      description: |
+        Accept user message, execute AI agent with MCP tools, return assistant response.
+
+        **Stateless Architecture**:
+        - Fetches conversation history from database on every request
+        - Stores user message before processing
+        - Executes agent with OpenAI Agents SDK
+        - Executes MCP tool calls
+        - Stores assistant response
+        - Returns conversation_id for continuity
+
+        **Constitutional Compliance**:
+        - Rule 1: Stateless backend (fetch history per request)
+        - Rule 5: Persistent conversation history
+        - Rule 8: Friendly natural language responses
+        - Rule 9: Graceful error handling
+      operationId: chat
+      tags:
+        - Chat
+      parameters:
+        - name: user_id
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: Authenticated user ID from session
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ChatRequest'
+            examples:
+              newConversation:
+                summary: Start new conversation
+                value:
+                  message: "Add a task to buy groceries"
+              continueConversation:
+                summary: Continue existing conversation
+                value:
+                  message: "What else is on my list?"
+                  conversation_id: 123
+      responses:
+        '200':
+          description: Successful chat response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ChatResponse'
+              examples:
+                taskCreated:
+                  summary: Task created via chat
+                  value:
+                    conversation_id: 123
+                    response: "I've added 'buy groceries' to your list!"
+                    tool_calls:
+                      - tool: "add_task"
+                        arguments:
+                          user_id: 5
+                          title: "buy groceries"
+                        result:
+                          success: true
+                          data:
+                            task_id: 42
+                            title: "buy groceries"
+                taskListed:
+                  summary: Tasks listed via chat
+                  value:
+                    conversation_id: 123
+                    response: "You have 3 tasks: 1. Buy groceries (incomplete), 2. Call dentist (incomplete), 3. Finish report (completed)"
+                    tool_calls:
+                      - tool: "list_tasks"
+                        arguments:
+                          user_id: 5
+                          status: "all"
+                        result:
+                          success: true
+                          data:
+                            tasks:
+                              - id: 42
+                                title: "Buy groceries"
+                                completed: false
+                              - id: 43
+                                title: "Call dentist"
+                                completed: false
+                              - id: 44
+                                title: "Finish report"
+                                completed: true
+        '400':
+          description: Invalid request (empty message, invalid conversation_id)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                detail: "Message cannot be empty"
+        '401':
+          description: Authentication required
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                detail: "Authentication required"
+        '500':
+          description: Internal server error (agent failure, database error)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                detail: "Something went wrong. Please try again."
+
+components:
+  schemas:
+    ChatRequest:
+      type: object
+      required:
+        - message
+      properties:
+        message:
+          type: string
+          minLength: 1
+          maxLength: 2000
+          description: User's natural language input
+          example: "Add a task to buy groceries"
+        conversation_id:
+          type: integer
+          nullable: true
+          description: Optional conversation ID to continue existing conversation. If null/missing, starts new conversation.
+          example: 123
+
+    ChatResponse:
+      type: object
+      required:
+        - conversation_id
+        - response
+        - tool_calls
+      properties:
+        conversation_id:
+          type: integer
+          description: Conversation ID for subsequent requests (for continuity)
+          example: 123
+        response:
+          type: string
+          description: Assistant's natural language response
+          example: "I've added 'buy groceries' to your list!"
+        tool_calls:
+          type: array
+          description: Array of MCP tool calls executed during this turn
+          items:
+            $ref: '#/components/schemas/ToolCall'
+
+    ToolCall:
+      type: object
+      required:
+        - tool
+        - arguments
+        - result
+      properties:
+        tool:
+          type: string
+          enum: [add_task, list_tasks, complete_task, delete_task, update_task]
+          description: MCP tool name
+          example: "add_task"
+        arguments:
+          type: object
+          description: Tool input parameters
+          example:
+            user_id: 5
+            title: "buy groceries"
+            description: null
+        result:
+          $ref: '#/components/schemas/ToolResult'
+
+    ToolResult:
+      type: object
+      required:
+        - success
+      properties:
+        success:
+          type: boolean
+          description: Whether tool execution succeeded
+          example: true
+        data:
+          type: object
+          nullable: true
+          description: Tool output data (if success=true)
+          example:
+            task_id: 42
+            title: "buy groceries"
+        error:
+          type: object
+          nullable: true
+          description: Error details (if success=false)
+          properties:
+            code:
+              type: string
+              enum: [TASK_NOT_FOUND, INVALID_INPUT, UNAUTHORIZED, DATABASE_ERROR, VALIDATION_ERROR, UNKNOWN_ERROR]
+              example: "TASK_NOT_FOUND"
+            message:
+              type: string
+              example: "Task with ID 999 does not exist for user 5"
+            details:
+              type: object
+              nullable: true
+              example:
+                task_id: 999
+                user_id: 5
+        message:
+          type: string
+          description: Human-readable result message
+          example: "Task 'buy groceries' created successfully"
+
+    ErrorResponse:
+      type: object
+      required:
+        - detail
+      properties:
+        detail:
+          type: string
+          description: Error message
+          example: "Message cannot be empty"
+
+  securitySchemes:
+    sessionCookie:
+      type: apiKey
+      in: cookie
+      name: session
+      description: Session JWT token (httponly cookie) set by /auth/signin
+
+security:
+  - sessionCookie: []
+
+tags:
+  - name: Chat
+    description: AI chatbot endpoints for natural language todo management

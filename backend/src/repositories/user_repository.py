@@ -16,11 +16,19 @@ class UserRepository:
     def __init__(self, session: AsyncSession):
         self.session = session
 
-    async def create_user(self, email: str, password_hash: str) -> User:
+    async def create_user(
+        self,
+        first_name: str,
+        last_name: str,
+        email: str,
+        password_hash: str
+    ) -> User:
         """
         Create a new user account.
 
         Args:
+            first_name: User's first name
+            last_name: User's last name
             email: User's email address (must be unique)
             password_hash: Bcrypt-hashed password
 
@@ -30,7 +38,12 @@ class UserRepository:
         Raises:
             IntegrityError: If email already exists
         """
-        user = User(email=email, password_hash=password_hash)
+        user = User(
+            first_name=first_name,
+            last_name=last_name,
+            email=email,
+            password_hash=password_hash
+        )
         self.session.add(user)
         await self.session.commit()
         await self.session.refresh(user)

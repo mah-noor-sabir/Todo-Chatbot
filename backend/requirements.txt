@@ -29,3 +29,7 @@ mypy==1.8.0
 
 # CORS
 python-multipart==0.0.6
+
+# Phase IV: AI Chatbot
+openai>=1.10.0
+mcp-sdk>=0.1.0

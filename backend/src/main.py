@@ -9,7 +9,7 @@ from contextlib import asynccontextmanager
 
 from src.core.config import settings
 from src.core.database import create_db_and_tables, close_db_connection
-from src.api.routes import health, auth, todos
+from src.api.routes import health, auth, todos, chat
 from src.api.middleware.error import register_exception_handlers
 
 
@@ -46,6 +46,7 @@ register_exception_handlers(app)
 app.include_router(health.router, tags=["Health"])
 app.include_router(auth.router, tags=["Authentication"])
 app.include_router(todos.router, tags=["Todos"])
+app.include_router(chat.router, prefix="/api", tags=["Chat"])
 
 
 # Root endpoint
