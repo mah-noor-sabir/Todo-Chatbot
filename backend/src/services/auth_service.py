@@ -11,6 +11,7 @@ from src.repositories.user_repository import UserRepository
 from src.core.security import hash_password, verify_password
 from src.core.exceptions import AuthenticationError, ValidationError
 from src.services.validation import validate_email_format, validate_password_strength
+from src.core.cache import cache
 
 
 class AuthService:
@@ -50,6 +51,11 @@ class AuthService:
                 email=user_data.email.strip().lower(),  # Normalize email
                 password_hash=password_hash,
             )
+
+            # Cache the new user
+            cache_key = f"user:email:{user_data.email.strip().lower()}"
+            cache.set(cache_key, user, ttl_seconds=300)
+
             return user
         except IntegrityError:
             # Email already exists (unique constraint violation)
@@ -69,12 +75,28 @@ class AuthService:
         Raises:
             AuthenticationError: If credentials are invalid
         """
-        # Find user by email
-        user = await self.user_repo.get_user_by_email(email.strip().lower())
+        normalized_email = email.strip().lower()
 
-        if not user:
-            # User not found - return generic error (don't reveal if email exists)
-            raise AuthenticationError("Invalid email or password")
+        # Try to get from cache first
+        cache_key = f"user:email:{normalized_email}"
+        user = cache.get(cache_key)
+
+        if user is None:
+            # Find user by email
+            user = await self.user_repo.get_user_by_email(normalized_email)
+
+            if not user:
+                # User not found - return generic error (don't reveal if email exists)
+                raise AuthenticationError("Invalid email or password")
+
+            # Cache user for 5 minutes
+            cache.set(cache_key, user, ttl_seconds=300)
+        else:
+            # User retrieved from cache
+            if not verify_password(password, user.password_hash):
+                raise AuthenticationError("Invalid email or password")
+
+            return user
 
         # Verify password
         if not verify_password(password, user.password_hash):
@@ -95,9 +117,19 @@ class AuthService:
         Raises:
             AuthenticationError: If user not found
         """
-        user = await self.user_repo.get_user_by_id(user_id)
+        # Try to get from cache first
+        cache_key = f"user:{user_id}"
+        user = cache.get(cache_key)
 
-        if not user:
+        if user is None:
+            user = await self.user_repo.get_user_by_id(user_id)
+
+            if not user:
+                raise AuthenticationError("User not found")
+
+            # Cache user for 5 minutes
+            cache.set(cache_key, user, ttl_seconds=300)
+        elif not user:
             raise AuthenticationError("User not found")
 
         return user

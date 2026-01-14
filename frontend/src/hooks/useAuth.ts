@@ -24,8 +24,21 @@ export function useAuth(): UseAuthReturn {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  // Check current session on mount
+  // Check current session on mount with caching
   useEffect(() => {
+    const cachedSession = localStorage.getItem('userSession');
+    if (cachedSession) {
+      try {
+        const sessionData = JSON.parse(cachedSession);
+        setUser(sessionData.user);
+        setIsLoading(false);
+        return; // Skip API call if we have valid cached session
+      } catch {
+        // If parsing fails, clear the cache and continue with API call
+        localStorage.removeItem('userSession');
+      }
+    }
+
     checkSession();
   }, []);
 
@@ -34,8 +47,14 @@ export function useAuth(): UseAuthReturn {
       setIsLoading(true);
       const userData = await authApi.getSession();
       setUser(userData);
+      // Cache session data locally
+      localStorage.setItem('userSession', JSON.stringify({
+        user: userData,
+        timestamp: Date.now()
+      }));
     } catch {
       setUser(null); // No valid session
+      localStorage.removeItem('userSession'); // Clear invalid cache
     } finally {
       setIsLoading(false);
     }
@@ -52,6 +71,11 @@ export function useAuth(): UseAuthReturn {
         password,
       });
       setUser(userData);
+      // Cache session data locally
+      localStorage.setItem('userSession', JSON.stringify({
+        user: userData,
+        timestamp: Date.now()
+      }));
     } catch (err) {
       if (err instanceof ApiClientError) setError(err.message);
       else setError('Registration failed. Please try again.');
@@ -67,6 +91,11 @@ export function useAuth(): UseAuthReturn {
       setIsLoading(true);
       const userData = await authApi.signin({ email, password });
       setUser(userData);
+      // Cache session data locally
+      localStorage.setItem('userSession', JSON.stringify({
+        user: userData,
+        timestamp: Date.now()
+      }));
     } catch (err) {
       if (err instanceof ApiClientError) setError(err.message);
       else setError('Sign in failed. Please try again.');
@@ -83,7 +112,8 @@ export function useAuth(): UseAuthReturn {
     } catch (err) {
       console.error('Signout error:', err);
     } finally {
-      // Reset the hasCheckedSession ref so next login will work properly
+      // Clear cached session
+      localStorage.removeItem('userSession');
       setUser(null);
     }
   };

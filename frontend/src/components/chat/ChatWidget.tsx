@@ -50,10 +50,9 @@ export default function ChatWidget() {
         isOpen={isChatOpen}
         onClose={handleCloseChat}
         onToolCall={(toolName) => {
-          // Refresh the todo list when tasks are modified via chat
-          if (['add_task', 'update_task', 'complete_task', 'delete_task'].includes(toolName)) {
-            window.dispatchEvent(new CustomEvent('refreshTodos'));
-          }
+          // Trigger a global event to notify the Todo UI about changes
+          // This ensures the Todo UI updates when chatbot modifies todos
+          window.dispatchEvent(new CustomEvent('chatbotTodoUpdate', { detail: { toolName } }));
         }}
       />
     </>

@@ -48,10 +48,10 @@ export default function PriorityBadge({ priority, size = 'md' }: PriorityBadgePr
 
   return (
     <span
-      className={`inline-flex items-center gap-1 rounded-full font-bold ${bgClass} ${textClass} ${sizeClasses[size]} shadow-md`}
+      className={`inline-flex items-center gap-2 rounded-full font-bold ${bgClass} ${textClass} ${sizeClasses[size]} shadow-lg border border-white/10 backdrop-blur-sm transition-all duration-300 hover:scale-105 hover:shadow-xl`}
     >
-      <span>{icon}</span>
-      <span className="capitalize">{normalizedPriority}</span>
+      <span className="text-xs">{icon}</span>
+      <span className="capitalize font-semibold tracking-wide">{normalizedPriority}</span>
     </span>
   );
 }
