@@ -1,8 +1,7 @@
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import select, desc
 from typing import Literal
 
-from src.models.todo import Todo
+from src.repositories.todo_repository import TodoRepository
 from src.mcp.schemas import ToolResult
 
 
@@ -12,15 +11,19 @@ async def list_tasks(
     status: Literal["all", "completed", "incomplete"] = "all"
 ) -> ToolResult:
     try:
-        stmt = select(Todo).where(Todo.user_id == user_id).order_by(desc(Todo.created_at))
+        # Use the same repository method as the regular API for consistency
+        repository = TodoRepository(session)
 
+        # Get all todos for the user using the same method as regular API
+        all_todos = await repository.get_todos_by_user(user_id)
+
+        # Apply status filter if specified
         if status == "completed":
-            stmt = stmt.where(Todo.is_completed == True)
+            todos = [todo for todo in all_todos if todo.is_completed]
         elif status == "incomplete":
-            stmt = stmt.where(Todo.is_completed == False)
-
-        result = await session.execute(stmt)
-        todos = list(result.scalars().all())
+            todos = [todo for todo in all_todos if not todo.is_completed]
+        else:  # "all"
+            todos = all_todos
 
         tasks = [
             {

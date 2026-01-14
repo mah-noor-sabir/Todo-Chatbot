@@ -73,7 +73,7 @@ class TodoRepository:
             .where(Todo.user_id == user_id)
             .order_by(desc(Todo.created_at))  # Newest first
         )
-        result = await self.session.execute(statement)
+        result = await self.session.execute(statement.execution_options(populate_existing=True))
         return list(result.scalars().all())
 
     async def get_todo_by_id_and_user(self, todo_id: int, user_id: int) -> Optional[Todo]:
@@ -89,7 +89,7 @@ class TodoRepository:
             Todo if found and owned by user, None otherwise
         """
         statement = select(Todo).where(and_(Todo.id == todo_id, Todo.user_id == user_id))
-        result = await self.session.execute(statement)
+        result = await self.session.execute(statement.execution_options(populate_existing=True))
         return result.scalar_one_or_none()
 
     async def update_todo(

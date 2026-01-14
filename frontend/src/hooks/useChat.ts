@@ -81,6 +81,7 @@ export function useChat(userId: number | undefined, onToolCall?: (toolName: stri
         });
 
         // Check if any tool calls were made that affect todos
+        // NOTE: We don't trigger refresh anymore since todos use optimistic updates
         if (response.tool_calls && Array.isArray(response.tool_calls)) {
           for (const toolCall of response.tool_calls) {
             if (toolCall.tool === 'add_task' || toolCall.tool === 'update_task' || toolCall.tool === 'complete_task' || toolCall.tool === 'delete_task') {
