@@ -71,10 +71,10 @@ export function useMultiChat(
         // Convert date strings back to Date objects
         const loadedChats = parsed.chats.map((chat: any) => ({
           ...chat,
-          createdAt: new Date(chat.createdAt),
+          createdAt: new Date(chat.createdAt).toISOString(),
           messages: chat.messages.map((msg: any) => ({
             ...msg,
-            created_at: msg.created_at ? new Date(msg.created_at) : new Date().toISOString()
+            created_at: msg.created_at ? new Date(msg.created_at).toISOString() : new Date().toISOString()
           }))
         }));
         setChats(loadedChats);
@@ -119,7 +119,7 @@ export function useMultiChat(
     const newChatId = `chat_${Date.now()}`;
     const newChat: ChatSession = {
       id: newChatId,
-      createdAt: new Date(),
+      createdAt: new Date().toISOString(),
       title: 'New Chat',
       messages: []
     };
