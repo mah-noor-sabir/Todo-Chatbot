@@ -87,10 +87,9 @@ export function useChat(
           created_at: new Date().toISOString(),
         };
 
-        // Replace optimistic message with confirmed flow
+        // Add assistant message to the conversation
         setMessages((prev) => [
-          ...prev.filter((m) => m.id !== tempId),
-          optimisticUserMessage,
+          ...prev,
           assistantMessage,
         ]);
 

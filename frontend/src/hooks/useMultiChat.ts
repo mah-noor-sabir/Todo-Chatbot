@@ -231,8 +231,7 @@ export function useMultiChat(
         // Update chat with assistant response
         updateChat(activeChatIdRef.current, {
           messages: [
-            ...currentMessages.filter((m) => m.id !== tempId),
-            optimisticUserMessage,
+            ...currentMessages,
             assistantMessage,
           ]
         });
