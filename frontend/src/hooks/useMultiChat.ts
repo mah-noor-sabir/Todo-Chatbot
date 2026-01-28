@@ -20,7 +20,7 @@ import { ApiClientError } from '../lib/api/client';
 
 interface ChatSession {
   id: string;
-  createdAt: Date;
+  createdAt: string; // ISO string format for localStorage compatibility
   title: string;
   messages: Message[];
   conversationId?: number; // Backend conversation ID

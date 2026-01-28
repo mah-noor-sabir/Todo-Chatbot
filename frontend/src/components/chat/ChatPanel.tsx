@@ -212,7 +212,7 @@ export default function ChatPanel({ isOpen, onClose, onToolCall }: ChatPanelProp
                         {chat.title}
                       </span>
                       <time className="chat-history-date">
-                        {chat.createdAt.toLocaleDateString('en-US', {
+                        {new Date(chat.createdAt).toLocaleDateString('en-US', {
                           month: 'numeric',
                           day: 'numeric',
                           year: 'numeric'
