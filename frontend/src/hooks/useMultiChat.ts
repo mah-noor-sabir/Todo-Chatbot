@@ -43,7 +43,8 @@ interface UseMultiChatReturn {
 export function useMultiChat(
   userId: number | undefined,
   userName: string | undefined,
-  onToolCall?: (toolName: string) => void
+  onToolCall?: (toolName: string) => void,
+  onRefreshTodos?: () => void
 ): UseMultiChatReturn {
   const [chats, setChats] = useState<ChatSession[]>([]);
   const [activeChatId, setActiveChatId] = useState<string | null>(null);
@@ -248,6 +249,8 @@ export function useMultiChat(
               ].includes(call.tool)
             ) {
               onToolCall?.(call.tool);
+              // Refresh todos to sync with backend changes
+              onRefreshTodos?.();
             }
           });
         }
