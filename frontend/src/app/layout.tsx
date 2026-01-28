@@ -1,11 +1,15 @@
 import type { Metadata } from 'next';
-import './tailwind.css';
 import './globals.css';
 import ClientLayout from './ClientLayout';
+import { ThemeProvider } from '../components/ThemeProvider';
+import Footer from '../components/layout/Footer';
 
 export const metadata: Metadata = {
-  title: 'Evolution of Todo',
+  title: 'Taskify-dashboard',
   description: 'Phase II – Full-Stack Web Application',
+  icons: {
+    icon: '/favicon.ico',
+  },
 };
 
 export default function RootLayout({
@@ -14,18 +18,15 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
-      <head />
-      <body className="min-h-screen font-sans text-gray-100">
-        {/* Global background + layout wrapper */}
-        <div
-          className="
-            min-h-screen flex flex-col
-            bg-[radial-gradient(circle_at_top,rgba(168,136,255,0.12),transparent_55%),radial-gradient(circle_at_bottom,rgba(90,60,200,0.12),transparent_55%),linear-gradient(180deg,#05010a,#0b0614)]
-          "
-        >
-          <ClientLayout>{children}</ClientLayout>
-        </div>
+    <html lang="en" suppressHydrationWarning>
+      <body className="min-h-screen bg-background font-sans text-foreground transition-colors duration-300">
+        <ThemeProvider attribute="class" defaultTheme="dark" enableSystem={false}>
+          {/* Global background + layout wrapper */}
+          <div className="min-h-screen flex flex-col">
+            <ClientLayout>{children}</ClientLayout>
+            <Footer />
+          </div>
+        </ThemeProvider>
       </body>
     </html>
   );

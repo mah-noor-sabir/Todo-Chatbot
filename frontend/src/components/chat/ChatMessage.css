@@ -48,7 +48,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(135deg, #667eea, #764ba2);
+  background: linear-gradient(135deg, var(--primary), var(--secondary)); /* Use dashboard theme */
   color: #fff;
 }
 
@@ -57,6 +57,10 @@
 }
 
 .chat-message.assistant .message-avatar {
+  animation: botPulse 4s ease-in-out infinite;
+}
+
+.chat-message.assistant .message-avatar img {
   animation: botPulse 4s ease-in-out infinite;
 }
 
@@ -76,6 +80,13 @@
 .message-avatar svg {
   width: 20px;
   height: 20px;
+}
+
+.message-avatar img {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  object-fit: cover;
 }
 
 /* ===============================
@@ -99,26 +110,47 @@
 
 /* User bubble */
 .chat-message.user .message-content {
-  background: linear-gradient(135deg, #6366f1, #7c3aed);
+  background: linear-gradient(135deg, var(--primary), var(--secondary)); /* Use dashboard theme */
   color: #fff;
   border-radius: 18px 18px 6px 18px;
-  box-shadow: 0 6px 20px rgba(99, 102, 241, 0.35);
+  box-shadow: 0 6px 20px rgba(59, 130, 246, 0.35); /* Blue shadow */
 }
 
 /* Assistant bubble */
 .chat-message.assistant .message-content {
-  background:
-    radial-gradient(
-      120% 120% at 10% 10%,
-      rgba(102, 126, 234, 0.18),
-      rgba(15, 23, 42, 0.95)
-    );
-  color: #e5e7eb;
+  background: var(--card-bg); /* Use dashboard theme */
+  color: var(--text-primary); /* Use dashboard theme */
   border-radius: 18px 18px 18px 6px;
-  border: 1px solid rgba(102, 126, 234, 0.25);
+  border: 1px solid var(--border); /* Use dashboard theme */
   box-shadow:
     0 10px 28px rgba(0, 0, 0, 0.45),
     inset 0 1px 0 rgba(255, 255, 255, 0.06);
+}
+
+/* System message bubble */
+.chat-message.system {
+  justify-content: center;
+  text-align: center;
+}
+
+.chat-message.system .message-bubble {
+  max-width: 100%;
+  align-items: center;
+}
+
+.chat-message.system .message-content {
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.15), rgba(15, 23, 42, 0.4)); /* Blue accent */
+  color: var(--accent); /* Use dashboard theme */
+  border-radius: 12px;
+  font-size: 0.85rem;
+  padding: 8px 16px;
+  text-align: center;
+  border: 1px solid rgba(168, 85, 247, 0.2); /* Purple accent */
+  box-shadow:
+    0 4px 12px rgba(0, 0, 0, 0.25),
+    inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  margin: 8px 0;
+  font-style: italic;
 }
 
 /* ===============================

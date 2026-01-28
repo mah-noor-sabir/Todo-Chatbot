@@ -7,8 +7,8 @@
   align-items: center;
   gap: 6px;
   padding: 14px 18px;
-  background: rgba(15, 23, 42, 0.8);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: var(--card-bg); /* Use dashboard theme */
+  border: 1px solid var(--border); /* Use dashboard theme */
   border-radius: 18px;
   border-bottom-left-radius: 4px;
   backdrop-filter: blur(10px);
@@ -18,7 +18,7 @@
   width: 8px;
   height: 8px;
   border-radius: 50%;
-  background: linear-gradient(135deg, #667eea, #764ba2);
+  background: linear-gradient(135deg, #3B82F6, #2563EB);
   animation: typingBounce 1.4s infinite ease-in-out;
 }
 

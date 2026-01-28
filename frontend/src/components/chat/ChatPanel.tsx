@@ -10,7 +10,7 @@
 
 import { useState, useRef, useEffect } from 'react';
 import { useAuthContext } from '../../hooks/AuthContext';
-import { useChat } from '../../hooks/useChat';
+import { useMultiChat } from '../../hooks/useMultiChat';
 import ChatMessage from './ChatMessage';
 import TypingIndicator from './TypingIndicator';
 import ErrorMessage from '../ui/ErrorMessage';
@@ -25,15 +25,21 @@ interface ChatPanelProps {
 export default function ChatPanel({ isOpen, onClose, onToolCall }: ChatPanelProps) {
   const { user } = useAuthContext();
   const {
+    chats,
+    activeChatId,
     messages,
     loading,
     error,
     sendMessage,
-    clearMessages,
+    createNewChat,
+    switchChat,
+    deleteChat,
     isTyping,
-  } = useChat(user?.id, onToolCall);
+    addSystemMessage,
+  } = useMultiChat(user?.id, user?.first_name || user?.email?.split('@')[0], onToolCall);
 
   const [inputValue, setInputValue] = useState('');
+  const [showHistory, setShowHistory] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
 
@@ -48,6 +54,13 @@ export default function ChatPanel({ isOpen, onClose, onToolCall }: ChatPanelProp
       inputRef.current?.focus();
     }
   }, [isOpen]);
+
+  /* Initialize with a new chat if none exist */
+  useEffect(() => {
+    if (chats.length === 0 && isOpen && user) {
+      createNewChat();
+    }
+  }, [chats.length, isOpen, user, createNewChat]);
 
   /* Send message */
   const handleSend = async () => {
@@ -89,75 +102,166 @@ export default function ChatPanel({ isOpen, onClose, onToolCall }: ChatPanelProp
         aria-label="Todo Assistant Chat"
       >
         {/* ===============================
-            Header
+            Header with Floating History Panel
            =============================== */}
         <div className="chat-header">
           <div className="chat-header-content">
-            <div className="chat-bot-avatar" aria-hidden="true">
-              <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M9.663 17h4.673M12 3v1
-                     m6.364 1.636-.707.707
-                     M21 12h-1M4 12H3
-                     m3.343-5.657-.707-.707
-                     m2.828 9.9a5 5 0 117.072 0
-                     l-.548.547A3.374 3.374 0 0014 18.469V19
-                     a2 2 0 11-4 0v-.531
-                     c0-.895-.356-1.754-.988-2.386l-.548-.547z"
+            {/* Main Chat Header */}
+            <div className="chat-current-info">
+              <div className="chat-bot-avatar" aria-hidden="true">
+                <img
+                  src="/download (2).jpg"
+                  alt="Tasklyn Bot"
+                  width="22"
+                  height="22"
                 />
-              </svg>
+              </div>
+
+              <div className="chat-header-text">
+                <h3 className="chat-title">Tasklyn</h3>
+                <div className="chat-status">
+                  <span className="chat-status-indicator"></span>
+                  <span className="chat-status-text">Online</span>
+                </div>
+              </div>
             </div>
 
-            <div className="chat-header-text">
-              <h3 className="chat-title">Todo Assistant</h3>
-              <p className="chat-subtitle">
-                Helping you stay organized and focused
-              </p>
-            </div>
-          </div>
-
-          <div className="chat-header-actions">
-            {messages.length > 0 && (
+            <div className="chat-header-actions">
               <button
                 type="button"
-                className="chat-clear-btn"
-                onClick={clearMessages}
-                title="Clear conversation"
-                aria-label="Clear conversation"
+                className="chat-history-toggle-btn"
+                onClick={() => setShowHistory(!showHistory)}
+                title="Show history"
+                aria-label="Show history"
               >
                 <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path
                     strokeLinecap="round"
                     strokeLinejoin="round"
                     strokeWidth={2}
-                    d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862
-                       a2 2 0 01-1.995-1.858L5 7
-                       m5 4v6m4-6v6
-                       m1-10V4a1 1 0 00-1-1h-4
-                       a1 1 0 00-1 1v3M4 7h16"
+                    d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
                   />
                 </svg>
               </button>
-            )}
 
-            <button
-              type="button"
-              className="chat-close-btn"
-              onClick={onClose}
-              aria-label="Close chat"
-            >
-              <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M6 18L18 6M6 6l12 12"
-                />
-              </svg>
-            </button>
+              <button
+                type="button"
+                className="chat-close-btn"
+                onClick={onClose}
+                aria-label="Close chat"
+              >
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M6 18L18 6M6 6l12 12"
+                  />
+                </svg>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        {/* Sidebar History Panel */}
+        <div className={`chat-sidebar-panel ${showHistory ? 'visible' : ''}`}>
+          <div className="chat-sidebar-panel-content">
+            <div className="chat-sidebar-panel-header">
+              <div className="chat-sidebar-panel-title">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" className="chat-history-icon">
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+                  />
+                </svg>
+                <h4 className="chat-history-title">History</h4>
+              </div>
+              <button
+                type="button"
+                className="chat-history-close-btn"
+                onClick={() => setShowHistory(false)}
+                aria-label="Close history"
+              >
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M6 18L18 6M6 6l12 12"
+                  />
+                </svg>
+              </button>
+            </div>
+
+            <div className="chat-history-list">
+              {chats.map((chat) => (
+                <div key={chat.id} className="chat-history-item-wrapper">
+                  <button
+                    type="button"
+                    className={`chat-history-item ${activeChatId === chat.id ? 'active' : ''}`}
+                    onClick={() => {
+                      switchChat(chat.id);
+                      setShowHistory(false); // Close panel after selecting chat
+                    }}
+                    title={chat.title}
+                  >
+                    <div className="chat-history-item-content">
+                      <span className="chat-history-title-text">
+                        {chat.title}
+                      </span>
+                      <time className="chat-history-date">
+                        {chat.createdAt.toLocaleDateString('en-US', {
+                          month: 'numeric',
+                          day: 'numeric',
+                          year: 'numeric'
+                        })}
+                      </time>
+                    </div>
+                  </button>
+                  <button
+                    type="button"
+                    className="chat-history-delete-btn"
+                    onClick={(e) => {
+                      e.stopPropagation(); // Prevent triggering the chat selection
+                      deleteChat(chat.id);
+                    }}
+                    title="Delete chat"
+                    aria-label="Delete chat"
+                  >
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+                      />
+                    </svg>
+                  </button>
+                </div>
+              ))}
+            </div>
+
+            <div className="chat-sidebar-panel-footer">
+              <button
+                type="button"
+                className="chat-new-btn"
+                onClick={createNewChat}
+                title="Start new chat"
+                aria-label="Start new chat"
+              >
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M12 4v16m8-8H4"
+                  />
+                </svg>
+                New Chat
+              </button>
+            </div>
           </div>
         </div>
 
@@ -165,22 +269,6 @@ export default function ChatPanel({ isOpen, onClose, onToolCall }: ChatPanelProp
             Messages
            =============================== */}
         <div className="chat-messages">
-          {messages.length === 0 && !isTyping && (
-            <div className="chat-empty-state">
-              <div className="empty-icon">🤖</div>
-              <h4 className="empty-title">Hi, I’m your Todo Assistant</h4>
-              <p className="empty-subtitle">
-                You can ask me things like:
-                <br />
-                “Show all my tasks”
-                <br />
-                “Add a task for tomorrow”
-                <br />
-                “Mark my first task as completed”
-              </p>
-            </div>
-          )}
-
           {messages.map((message) => (
             <ChatMessage key={message.id} message={message} />
           ))}
@@ -230,7 +318,7 @@ export default function ChatPanel({ isOpen, onClose, onToolCall }: ChatPanelProp
                   strokeLinecap="round"
                   strokeLinejoin="round"
                   strokeWidth={2}
-                  d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"
+                  d="M13 5l7 7-7 7M5 5l7 7-7 7"
                 />
               </svg>
             )}
