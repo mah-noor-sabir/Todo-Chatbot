@@ -54,8 +54,8 @@ export default function Input({
               `
               : `
                 border-white/10
-                focus:border-purple-400
-                focus:ring-1 focus:ring-purple-400
+                focus:border-blue-400
+                focus:ring-1 focus:ring-blue-400
               `
           }
           ${className}

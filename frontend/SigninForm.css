@@ -1,5 +1,5 @@
 /* ==================================================
-   MODERN SAAS LOGIN FORM — REFINED
+   MODERN SAAS LOGIN FORM — DARK BLUE (TASKIFY)
    ================================================== */
 
 /* ---------- CONTAINER ---------- */
@@ -9,25 +9,36 @@
   align-items: center;
   justify-content: center;
   padding: 24px;
-  background: linear-gradient(135deg, #667eea, #764ba2);
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, system-ui,
-    sans-serif;
+  background: radial-gradient(
+      circle at 20% 20%,
+      rgba(59, 130, 246, 0.15),
+      transparent 40%
+    ),
+    radial-gradient(
+      circle at 80% 70%,
+      rgba(37, 99, 235, 0.18),
+      transparent 45%
+    ),
+    var(--bg-main);
 }
 
-/* ---------- FORM CARD ---------- */
+/* ---------- FORM CARD (GLASS) ---------- */
 .form-box {
   width: 100%;
   max-width: 420px;
   padding: 48px 42px;
-  background: #ffffff;
-  border-radius: 18px;
-  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.28);
-  transition: transform 0.25s ease, box-shadow 0.25s ease;
+  background: var(--glass-bg);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-radius: var(--radius-card);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--shadow-md);
+  animation: fadeIn 0.6s ease both;
 }
 
 .form-box:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 32px 72px rgba(0, 0, 0, 0.35);
+  transform: translateY(-4px);
+  box-shadow: 0 18px 48px rgba(59, 130, 246, 0.25);
 }
 
 /* ---------- HEADINGS ---------- */
@@ -35,7 +46,7 @@
   text-align: center;
   font-size: 28px;
   font-weight: 800;
-  color: #1a202c;
+  color: var(--text-primary);
   margin-bottom: 6px;
   letter-spacing: -0.4px;
 }
@@ -43,7 +54,7 @@
 .form-box p {
   text-align: center;
   font-size: 14px;
-  color: #718096;
+  color: var(--text-secondary);
   margin-bottom: 32px;
   line-height: 1.6;
 }
@@ -54,135 +65,101 @@
 .form-box input[type="text"] {
   width: 100%;
   padding: 14px 16px;
-  border-radius: 12px;
-  border: 2px solid #e2e8f0;
-  background: #f8fafc;
+  border-radius: var(--radius-btn);
+  border: 1px solid var(--card-border);
+  background: var(--bg-secondary);
   font-size: 15px;
-  color: #2d3748;
+  color: var(--text-primary);
   margin-bottom: 16px;
   transition: border-color 0.25s ease, box-shadow 0.25s ease,
-    background 0.25s ease, transform 0.2s ease;
+    transform 0.2s ease;
 }
 
 .form-box input::placeholder {
-  color: #a0aec0;
+  color: var(--text-secondary);
 }
 
 .form-box input:focus {
   outline: none;
-  background: #ffffff;
-  border-color: #667eea;
-  box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.15);
+  border-color: var(--primary-blue);
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.25);
   transform: translateY(-1px);
-}
-
-.form-box input:hover:not(:focus) {
-  border-color: #cbd5e0;
-}
-
-.form-box input:last-of-type {
-  margin-bottom: 24px;
 }
 
 /* ---------- BUTTON ---------- */
 .form-box button[type="submit"] {
   width: 100%;
   padding: 14px 24px;
-  border-radius: 14px;
+  border-radius: var(--radius-btn);
   border: none;
   cursor: pointer;
-  font-size: 15px;
+  font-size: 14px;
   font-weight: 700;
-  letter-spacing: 0.5px;
+  letter-spacing: 0.6px;
   text-transform: uppercase;
   color: #ffffff;
-  background: linear-gradient(135deg, #667eea, #764ba2);
-  box-shadow: 0 8px 24px rgba(102, 126, 234, 0.45);
-  transition: transform 0.25s ease, box-shadow 0.25s ease,
-    filter 0.25s ease;
+  background: linear-gradient(
+    135deg,
+    var(--primary-blue),
+    var(--primary-blue-dark)
+  );
+  box-shadow: 0 10px 28px rgba(59, 130, 246, 0.45);
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
 }
 
 .form-box button[type="submit"]:hover {
   transform: translateY(-2px);
-  box-shadow: 0 14px 32px rgba(102, 126, 234, 0.55);
-  filter: brightness(1.05);
+  box-shadow: 0 16px 40px rgba(59, 130, 246, 0.6);
 }
 
 .form-box button[type="submit"]:active {
   transform: translateY(0);
-  box-shadow: 0 6px 16px rgba(102, 126, 234, 0.35);
-}
-
-.form-box button[type="submit"]:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
+  box-shadow: 0 6px 18px rgba(59, 130, 246, 0.35);
 }
 
 /* ---------- FEEDBACK ---------- */
 .error-message,
 .success-message {
   font-size: 13px;
-  margin: -10px 0 16px 6px;
+  margin: -10px 0 16px 4px;
   display: flex;
   align-items: center;
   gap: 6px;
-  animation: fadeSlide 0.3s ease both;
+  animation: fadeIn 0.3s ease both;
 }
 
 .error-message {
-  color: #e53e3e;
-}
-
-.error-message::before {
-  content: "⚠";
+  color: #f87171;
 }
 
 .success-message {
-  color: #38a169;
-}
-
-.success-message::before {
-  content: "✓";
-  font-weight: 700;
-}
-
-@keyframes fadeSlide {
-  from {
-    opacity: 0;
-    transform: translateY(-6px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  color: #4ade80;
 }
 
 /* ---------- LINKS ---------- */
 .form-box a {
-  color: #667eea;
+  color: var(--primary-blue);
   font-weight: 600;
   text-decoration: none;
-  transition: color 0.2s ease;
 }
 
 .form-box a:hover {
-  color: #5a67d8;
   text-decoration: underline;
 }
 
 /* ---------- FORGOT PASSWORD ---------- */
 .forgot-password {
   text-align: right;
-  margin: -8px 0 20px;
+  margin: -6px 0 18px;
 }
 
 .forgot-password a {
   font-size: 13px;
-  color: #718096;
+  color: var(--text-secondary);
 }
 
 .forgot-password a:hover {
-  color: #667eea;
+  color: var(--primary-blue);
 }
 
 /* ---------- TOGGLE ---------- */
@@ -190,9 +167,9 @@
   margin-top: 26px;
   padding-top: 22px;
   text-align: center;
-  border-top: 1px solid #e2e8f0;
+  border-top: 1px solid var(--glass-border);
   font-size: 14px;
-  color: #718096;
+  color: var(--text-secondary);
 }
 
 .form-toggle a {
@@ -207,14 +184,14 @@
   gap: 14px;
   margin: 26px 0;
   font-size: 13px;
-  color: #a0aec0;
+  color: var(--text-secondary);
 }
 
 .divider::before,
 .divider::after {
   content: "";
   flex: 1;
-  border-bottom: 1px solid #e2e8f0;
+  border-bottom: 1px solid var(--glass-border);
 }
 
 /* ---------- SOCIAL LOGIN ---------- */
@@ -226,10 +203,10 @@
 .social-button {
   flex: 1;
   padding: 12px;
-  border-radius: 12px;
-  border: 2px solid #e2e8f0;
-  background: #ffffff;
-  color: #4a5568;
+  border-radius: var(--radius-btn);
+  border: 1px solid var(--card-border);
+  background: var(--bg-secondary);
+  color: var(--text-primary);
   font-size: 14px;
   font-weight: 600;
   display: flex;
@@ -241,8 +218,8 @@
 }
 
 .social-button:hover {
-  background: #f8fafc;
-  border-color: #cbd5e0;
+  border-color: var(--primary-blue);
+  box-shadow: 0 8px 24px rgba(59, 130, 246, 0.25);
   transform: translateY(-1px);
 }
 
@@ -263,41 +240,14 @@
   top: 50%;
   transform: translateY(-50%);
   font-size: 18px;
-  color: #a0aec0;
+  color: var(--text-secondary);
   pointer-events: none;
-}
-
-/* ---------- LOADING ---------- */
-.form-box button.loading {
-  color: transparent;
-  pointer-events: none;
-  position: relative;
-}
-
-.form-box button.loading::after {
-  content: "";
-  position: absolute;
-  width: 20px;
-  height: 20px;
-  inset: 50%;
-  transform: translate(-50%, -50%);
-  border-radius: 50%;
-  border: 3px solid rgba(255, 255, 255, 0.35);
-  border-top-color: #ffffff;
-  animation: spin 0.8s linear infinite;
-}
-
-@keyframes spin {
-  to {
-    transform: rotate(360deg);
-  }
 }
 
 /* ---------- RESPONSIVE ---------- */
 @media (max-width: 480px) {
   .form-box {
     padding: 36px 28px;
-    border-radius: 14px;
   }
 
   .form-box h2 {
@@ -306,52 +256,5 @@
 
   .social-login {
     flex-direction: column;
-  }
-}
-
-/* ---------- DARK MODE ---------- */
-@media (prefers-color-scheme: dark) {
-  .form-box {
-    background: #1a202c;
-    box-shadow: 0 28px 80px rgba(0, 0, 0, 0.65);
-  }
-
-  .form-box h2 {
-    color: #f7fafc;
-  }
-
-  .form-box p,
-  .form-toggle {
-    color: #a0aec0;
-  }
-
-  .form-box input {
-    background: #2d3748;
-    border-color: #4a5568;
-    color: #f7fafc;
-  }
-
-  .form-box input::placeholder {
-    color: #718096;
-  }
-
-  .form-toggle {
-    border-top-color: #4a5568;
-  }
-
-  .divider::before,
-  .divider::after {
-    border-color: #4a5568;
-  }
-
-  .social-button {
-    background: #2d3748;
-    border-color: #4a5568;
-    color: #e2e8f0;
-  }
-
-  .social-button:hover {
-    background: #374151;
-    border-color: #718096;
   }
 }

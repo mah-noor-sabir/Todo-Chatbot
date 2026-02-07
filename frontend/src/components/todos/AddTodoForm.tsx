@@ -23,41 +23,20 @@ export default function AddTodoForm({ isOpen, onClose, onSubmit }: AddTodoFormPr
   const [descriptionError, setDescriptionError] = useState('');
   const [loading, setLoading] = useState(false);
 
-  // Reset form when modal opens
+  const SUGGESTED_TAGS = ['Personal', 'Business', 'Family', 'Event', 'Working'];
+
   useEffect(() => {
-    if (isOpen) {
-      resetForm();
-    }
+    if (isOpen) resetForm();
   }, [isOpen]);
 
-  // Prevent body scroll when modal is open
   useEffect(() => {
-    if (isOpen) {
-      document.body.style.overflow = 'hidden';
-      return () => {
-        document.body.style.overflow = 'unset';
-      };
-    }
+    if (!isOpen) return;
+    document.body.style.overflow = 'hidden';
+    return () => {
+      document.body.style.overflow = 'unset';
+    };
   }, [isOpen]);
 
-  // Handle adding a new tag
-  const handleAddTag = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === 'Enter' && tagInput.trim()) {
-      e.preventDefault();
-      const newTag = tagInput.trim().toLowerCase();
-      if (!tags.includes(newTag) && tags.length < 10) {
-        setTags([...tags, newTag]);
-      }
-      setTagInput('');
-    }
-  };
-
-  // Handle removing a tag
-  const handleRemoveTag = (tagToRemove: string) => {
-    setTags(tags.filter(tag => tag !== tagToRemove));
-  };
-
-  // Reset form fields
   const resetForm = () => {
     setTitle('');
     setDescription('');
@@ -70,33 +49,41 @@ export default function AddTodoForm({ isOpen, onClose, onSubmit }: AddTodoFormPr
     setDescriptionError('');
   };
 
-  // Handle form submission
+  const handleAddTag = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter' && tagInput.trim()) {
+      e.preventDefault();
+      const newTag = tagInput.trim().toLowerCase();
+      if (!tags.includes(newTag) && tags.length < 10) {
+        setTags([...tags, newTag]);
+      }
+      setTagInput('');
+    }
+  };
+
+  const handleRemoveTag = (tag: string) => {
+    setTags(tags.filter(t => t !== tag));
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
     const titleValidation = validateTitle(title);
     const descriptionValidation = validateDescription(description);
     setTitleError(titleValidation || '');
     setDescriptionError(descriptionValidation || '');
-
     if (titleValidation || descriptionValidation) return;
 
-    // Ensure priority is always sent explicitly
     const submitData: TodoCreateRequest = {
       title,
       description: description || undefined,
-      priority: priority, // Always include priority explicitly
-      tags: tags.length > 0 ? tags : undefined,
+      priority,
+      tags: tags.length ? tags : undefined,
       due_date: dueDate,
       recurrence,
     };
 
-    console.log('Submitting todo with priority:', priority); // Debug logging
-
     try {
       setLoading(true);
       await onSubmit(submitData);
-
       resetForm();
       onClose();
     } finally {
@@ -104,172 +91,167 @@ export default function AddTodoForm({ isOpen, onClose, onSubmit }: AddTodoFormPr
     }
   };
 
-  // Handle cancel button
-  const handleCancel = () => {
-    resetForm();
-    onClose();
-  };
-
-  // Handle overlay click
   const handleOverlayClick = (e: React.MouseEvent) => {
-    if (e.target === e.currentTarget) {
-      handleCancel();
-    }
+    if (e.target === e.currentTarget) onClose();
   };
 
   if (!isOpen) return null;
 
   return (
-    <div className="modal-overlay" onClick={handleOverlayClick} role="dialog" aria-modal="true">
+    <div className="modal-overlay" onClick={handleOverlayClick}>
       <div className="modal-container">
-        <div className="modal-box" style={{ maxWidth: '480px', padding: '2rem' }} onClick={(e) => e.stopPropagation()}>
+        <div
+          className="modal-box"
+          style={{
+            maxWidth: '460px',
+            padding: '1.5rem',
+            background: '#0B1220',
+          }}
+          onClick={(e) => e.stopPropagation()}
+        >
           {/* Header */}
-          <div className="modal-header">
-            <h2 className="modal-title">Add New Todo</h2>
-            <button
-              type="button"
-              className="modal-close-btn"
-              onClick={handleCancel}
-              aria-label="Close modal"
-            >
-              ✕
-            </button>
-          </div>
+          <h2
+            className="modal-title"
+            style={{
+              textAlign: 'center',
+              fontWeight: 700,
+              letterSpacing: '0.04em',
+              marginBottom: '1rem',
+            }}
+          >
+            ADD TASK
+          </h2>
 
           {/* Form */}
-          <form onSubmit={handleSubmit} className="modal-form">
-            {/* Title */}
-            <div>
-              <label htmlFor="title" className="modal-label required">
-                Title
-              </label>
+          <form onSubmit={handleSubmit} className="modal-form" style={{ gap: '0.6rem' }}>
+            <input
+              type="text"
+              className={`modal-input ${titleError ? 'error' : ''}`}
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+              placeholder="Task title"
+              required
+            />
+
+            <textarea
+              className={`modal-textarea ${descriptionError ? 'error' : ''}`}
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+              rows={2}
+              placeholder="Details (optional)"
+            />
+
+            {/* Meta Row */}
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.6rem' }}>
+              {/* Calendar */}
               <input
-                id="title"
-                type="text"
-                className={`modal-input ${titleError ? 'error' : ''}`}
-                value={title}
-                onChange={(e) => setTitle(e.target.value)}
-                placeholder="What needs to be done?"
-                maxLength={200}
-                required
+                type="date"
+                className="modal-input"
+                value={dueDate || ''}
+                onChange={(e) => setDueDate(e.target.value || null)}
               />
-              {titleError && <div className="modal-error">{titleError}</div>}
-            </div>
 
-            {/* Description */}
-            <div>
-              <label htmlFor="description" className="modal-label">
-                Description (optional)
-              </label>
-              <textarea
-                id="description"
-                className={`modal-textarea ${descriptionError ? 'error' : ''}`}
-                value={description}
-                onChange={(e) => setDescription(e.target.value)}
-                rows={3}
-                maxLength={1000}
-                placeholder="Add more details..."
-              />
-              {descriptionError && <div className="modal-error">{descriptionError}</div>}
-            </div>
-
-            {/* Priority */}
-            <div>
-              <label className="modal-label">Priority</label>
-              <div className="modal-priority-group">
+              {/* Priority */}
+              <div className="modal-priority-group compact">
                 {(['high', 'medium', 'low'] as Priority[]).map((p) => (
                   <button
                     key={p}
                     type="button"
                     onClick={() => setPriority(p)}
-                    className={`modal-priority-btn ${priority === p ? 'active' : ''}`}
+                    className={`modal-priority-btn glow-${p} ${priority === p ? 'active' : ''}`}
                   >
-                    <span className="icon">
-                      {p === 'high' ? '🔴' : p === 'medium' ? '🟡' : '🟢'}
-                    </span>
-                    <span>{p}</span>
+                    {p}
                   </button>
                 ))}
               </div>
             </div>
 
-            {/* Tags */}
-            <div>
-              <label htmlFor="tags" className="modal-label">
-                Tags (press Enter to add)
-              </label>
+            {/* Tags input with suggestions */}
+            <div className="modal-tags-wrapper" style={{ position: 'relative' }}>
               <input
-                id="tags"
                 type="text"
                 className="modal-input"
                 value={tagInput}
                 onChange={(e) => setTagInput(e.target.value)}
                 onKeyDown={handleAddTag}
-                placeholder="e.g., work, personal, urgent"
-                maxLength={30}
+                placeholder="Tags (Enter)"
+                autoComplete="off"
               />
-              {tags.length > 0 && (
-                <div className="modal-tags-container">
-                  {tags.map((tag) => (
-                    <span key={tag} className="modal-tag">
-                      #{tag}
-                      <button
-                        type="button"
-                        className="remove-btn"
-                        onClick={() => handleRemoveTag(tag)}
-                      >
-                        ×
-                      </button>
-                    </span>
+
+              {/* Dropdown Suggestions */}
+              {tagInput && (
+                <div
+                  className="tags-suggestions"
+                  style={{
+                    position: 'absolute',
+                    top: '110%',
+                    left: 0,
+                    right: 0,
+                    background: 'rgba(3, 8, 23, 0.95)',
+                    border: '1px solid rgba(255, 255, 255, 0.15)',
+                    borderRadius: '8px',
+                    zIndex: 10,
+                    maxHeight: '120px',
+                    overflowY: 'auto',
+                  }}
+                >
+                  {SUGGESTED_TAGS.filter(
+                    tag =>
+                      tag.toLowerCase().includes(tagInput.toLowerCase()) &&
+                      !tags.includes(tag.toLowerCase())
+                  ).map((suggestion) => (
+                    <div
+                      key={suggestion}
+                      className="tags-suggestion-item"
+                      style={{
+                        padding: '0.5rem',
+                        cursor: 'pointer',
+                        color: '#fff',
+                      }}
+                      onClick={() => {
+                        setTags([...tags, suggestion.toLowerCase()]);
+                        setTagInput('');
+                      }}
+                    >
+                      {suggestion}
+                    </div>
                   ))}
                 </div>
               )}
             </div>
 
-            {/* Due Date */}
-            <div>
-              <label htmlFor="dueDate" className="modal-label">
-                Due Date (optional)
-              </label>
-              <input
-                id="dueDate"
-                type="datetime-local"
-                className="modal-input"
-                value={dueDate || ''}
-                onChange={(e) => setDueDate(e.target.value || null)}
-              />
-            </div>
+            {/* Selected Tags */}
+            {tags.length > 0 && (
+              <div className="modal-tags-container">
+                {tags.map(tag => (
+                  <span key={tag} className="modal-tag">
+                    #{tag}
+                    <button type="button" onClick={() => handleRemoveTag(tag)}>×</button>
+                  </span>
+                ))}
+              </div>
+            )}
 
             {/* Recurrence */}
-            <div>
-              <label htmlFor="recurrence" className="modal-label">
-                Recurring Task (optional)
-              </label>
-              <select
-                id="recurrence"
-                className="modal-select"
-                value={recurrence || ''}
-                onChange={(e) => setRecurrence((e.target.value as RecurrencePattern) || null)}
-              >
-                <option value="">None</option>
-                <option value="daily">Daily</option>
-                <option value="weekly">Weekly</option>
-                <option value="monthly">Monthly</option>
-                <option value="yearly">Yearly</option>
-              </select>
-            </div>
+            <select
+              className="modal-select"
+              value={recurrence || ''}
+              onChange={(e) => setRecurrence((e.target.value as RecurrencePattern) || null)}
+            >
+              <option value="">No recurrence</option>
+              <option value="daily">Daily</option>
+              <option value="weekly">Weekly</option>
+              <option value="monthly">Monthly</option>
+              <option value="yearly">Yearly</option>
+            </select>
 
-            {/* Action Buttons */}
-            <div className="modal-actions">
-              <button type="button" className="modal-btn modal-btn-secondary" onClick={handleCancel} disabled={loading}>
+            {/* Actions */}
+            <div className="modal-actions" style={{ marginTop: '0.8rem' }}>
+              <button type="button" className="modal-btn modal-btn-secondary" onClick={onClose}>
                 Cancel
               </button>
-              <button
-                type="submit"
-                className="modal-btn modal-btn-primary"
-                disabled={loading || !title.trim()}
-              >
-                {loading ? <span className="modal-spinner"></span> : 'Save Todo'}
+              <button type="submit" className="modal-btn modal-btn-primary" disabled={loading}>
+                Save
               </button>
             </div>
           </form>

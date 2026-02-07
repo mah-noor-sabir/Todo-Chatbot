@@ -16,7 +16,7 @@ class Message(SQLModel, table=True):
     user_id: int = Field(foreign_key="users.id", nullable=False, index=True)
     role: str = Field(sa_column=Column(String, nullable=False))
     content: str = Field(sa_column=Column(Text, nullable=False))
-    created_at: datetime = Field(default_factory=datetime.utcnow, nullable=False)
+    created_at: datetime = Field(default_factory=datetime.now, nullable=False)
 
     conversation: Optional["Conversation"] = Relationship(back_populates="messages")
     user: Optional["User"] = Relationship(back_populates="messages")

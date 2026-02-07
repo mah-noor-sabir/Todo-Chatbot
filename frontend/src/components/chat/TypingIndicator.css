@@ -18,7 +18,7 @@
   width: 8px;
   height: 8px;
   border-radius: 50%;
-  background: linear-gradient(135deg, #667eea, #764ba2);
+  background: linear-gradient(135deg, #3b82f6, #1d4ed8);
   animation: typingBounce 1.4s infinite ease-in-out;
 }
 

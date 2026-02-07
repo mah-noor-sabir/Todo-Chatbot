@@ -26,18 +26,38 @@ export default function Header() {
   return (
     <header className="header">
       <div className="header-inner">
-        <h1 style={{ color: '#c4b5fd' }}>
-          Evolution of Todo
+        {/* App Name */}
+        <h1
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: '8px',
+            fontSize: '2rem',
+            fontWeight: 'bold',
+            background: 'linear-gradient(90deg, #3b82f6, #60a5fa, #93c5fd, #ffffff)',
+            WebkitBackgroundClip: 'text',
+            WebkitTextFillColor: 'transparent',
+          }}
+        >
+          <span
+            style={{
+              fontSize: '2rem', // same size as "Taskify"
+            }}
+            title="Verified"
+          >
+            ✔
+          </span>
+          Taskify
         </h1>
 
         {user && (
           <div className="header-actions">
-            {/* Optional Welcome Text */}
+            {/* Welcome text */}
             <span className="header-user-email">
               Welcome, <strong>{user.email}</strong>
             </span>
 
-            {/* Sign Out Button with hover effect */}
+            {/* Sign Out Button */}
             <Button
               variant="secondary"
               onClick={handleSignOut}

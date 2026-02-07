@@ -3,7 +3,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.mcp.schemas import ToolResult
 from src.mcp.tools.add_task import add_task
-from src.mcp.tools.list_tasks import list_tasks
+from src.mcp.tools.list_tasks import list_tasks, delete_tasks_bulk
 from src.mcp.tools.complete_task import complete_task
 from src.mcp.tools.delete_task import delete_task
 from src.mcp.tools.update_task import update_task
@@ -19,6 +19,7 @@ class MCPServer:
         self.register_tool("list_tasks", list_tasks)
         self.register_tool("complete_task", complete_task)
         self.register_tool("delete_task", delete_task)
+        self.register_tool("delete_tasks_bulk", delete_tasks_bulk)
         self.register_tool("update_task", update_task)
 
     def register_tool(self, name: str, tool_func: Callable) -> None:

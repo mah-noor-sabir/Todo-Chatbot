@@ -53,8 +53,8 @@ class Todo(SQLModel, table=True):
     tags: str = Field(default="[]", nullable=False, index=True)  # Stored as JSON string
     due_date: Optional[datetime] = Field(default=None, index=True)
     recurrence: Optional[str] = Field(default=None, index=True)
-    created_at: datetime = Field(default_factory=datetime.utcnow, nullable=False, index=True)
-    updated_at: datetime = Field(default_factory=datetime.utcnow, nullable=False, index=True)
+    created_at: datetime = Field(default_factory=datetime.now, nullable=False, index=True)
+    updated_at: datetime = Field(default_factory=datetime.now, nullable=False, index=True)
 
     model_config = {
         "json_schema_extra": {

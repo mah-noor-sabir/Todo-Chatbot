@@ -17,14 +17,14 @@ export default function TagsList({ tags, onRemove, maxDisplay }: TagsListProps) 
       {displayTags.map((tag) => (
         <span
           key={tag}
-          className="flex items-center gap-1 px-2 py-1 rounded-full bg-purple-500/20 border border-purple-500/50 text-purple-300 text-sm"
+          className="flex items-center gap-1 px-2 py-1 rounded-full bg-blue-500/20 border border-blue-500/50 text-blue-300 text-sm"
         >
           <span className="font-semibold">#</span>
           <span className="capitalize">{tag}</span>
           {onRemove && (
             <button
               onClick={() => onRemove(tag)}
-              className="ml-1 text-purple-100 hover:text-white transition-colors"
+              className="ml-1 text-blue-100 hover:text-white transition-colors"
               aria-label={`Remove ${tag} tag`}
               type="button"
             >

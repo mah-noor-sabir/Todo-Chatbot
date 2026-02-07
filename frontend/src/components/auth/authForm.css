@@ -11,7 +11,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(135deg, #0b0315 0%, #160824 100%) !important;
+  background: linear-gradient(135deg, #0a0f2c 0%, #1a237e 100%) !important;
   position: relative;
   padding: 1rem;
   overflow: hidden;
@@ -26,7 +26,7 @@
   inset: 0;
   background: radial-gradient(
     circle at center,
-    rgba(168, 85, 247, 0.12),
+    rgba(102, 126, 234, 0.12),
     transparent 70%
   );
   pointer-events: none;
@@ -52,15 +52,15 @@
   /* Prevent any pseudo-elements from adding visual borders */
   overflow: hidden;
   background:
-    linear-gradient(135deg, rgba(20, 10, 35, 0.95) 0%, rgba(15, 23, 42, 0.95) 100%),
+    linear-gradient(135deg, rgba(10, 15, 35, 0.95) 0%, rgba(15, 23, 42, 0.95) 100%),
     rgba(255, 255, 255, 0.02) !important;
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
 
   box-shadow:
     0 16px 64px rgba(0, 0, 0, 0.6),
-    0 0 0 1px rgba(168, 85, 247, 0.15),
-    inset 0 0 40px rgba(168, 85, 247, 0.05) !important;
+    0 0 0 1px rgba(102, 126, 234, 0.15),
+    inset 0 0 40px rgba(102, 126, 234, 0.05) !important;
 
   animation: slideUpFade 0.35s ease-out;
   transform: translateZ(0);
@@ -73,7 +73,7 @@
   inset: 0;
   border-radius: 24px;
   padding: 1px;
-  background: linear-gradient(135deg, rgba(168, 85, 247, 0.2), rgba(79, 70, 229, 0.2));
+  background: linear-gradient(135deg, rgba(102, 126, 234, 0.2), rgba(59, 130, 246, 0.2));
   -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
   mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
   -webkit-mask-composite: destination-out;
@@ -89,7 +89,7 @@
   left: 0;
   right: 0;
   height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(168, 85, 247, 0.4), transparent);
+  background: linear-gradient(90deg, transparent, rgba(102, 126, 234, 0.4), transparent);
   z-index: -1;
 }
 
@@ -190,7 +190,7 @@
   transform: translateX(-50%);
   width: 60px;
   height: 3px;
-  background: linear-gradient(90deg, transparent, #a855f7, transparent);
+  background: linear-gradient(90deg, transparent, #3b82f6, transparent);
   border-radius: 2px;
 }
 
@@ -275,7 +275,7 @@
   inset: 0;
   border-radius: 16px;
   padding: 1px;
-  background: linear-gradient(135deg, rgba(168, 85, 247, 0.15), rgba(79, 70, 229, 0.15));
+  background: linear-gradient(135deg, rgba(102, 126, 234, 0.15), rgba(59, 130, 246, 0.15));
   -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
   mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
   -webkit-mask-composite: destination-out;
@@ -298,12 +298,12 @@
 }
 
 .auth-input:focus {
-  border-color: #a855f7;
+  border-color: #3b82f6;
   box-shadow:
-    0 0 0 1px rgba(168, 85, 247, 0.3),
-    0 0 0 3px rgba(168, 85, 247, 0.18),
-    0 0 24px rgba(168, 85, 247, 0.4),
-    inset 0 2px 8px rgba(168, 85, 247, 0.1);
+    0 0 0 1px rgba(102, 126, 234, 0.3),
+    0 0 0 3px rgba(102, 126, 234, 0.18),
+    0 0 24px rgba(102, 126, 234, 0.4),
+    inset 0 2px 8px rgba(102, 126, 234, 0.1);
   transform: translateY(-1px);
 }
 
@@ -360,8 +360,8 @@
 }
 
 .auth-password-toggle:focus {
-  color: #a855f7;
-  outline: 2px solid rgba(168, 85, 247, 0.4);
+  color: #3b82f6;
+  outline: 2px solid rgba(102, 126, 234, 0.4);
   outline-offset: 2px;
   opacity: 1;
 }
@@ -411,10 +411,10 @@
 }
 
 .auth-button-primary {
-  background: linear-gradient(135deg, #a855f7, #6366f1);
+  background: linear-gradient(135deg, #3b82f6, #1d4ed8);
   color: #fff;
   box-shadow:
-    0 8px 24px rgba(168, 85, 247, 0.4),
+    0 8px 24px rgba(102, 126, 234, 0.4),
     0 0 0 1px rgba(255, 255, 255, 0.1);
   backdrop-filter: blur(4px);
   -webkit-backdrop-filter: blur(4px);
@@ -448,7 +448,7 @@
 .auth-button-primary:hover {
   transform: translateY(-2px) scale(1.02);
   box-shadow:
-    0 12px 32px rgba(168, 85, 247, 0.5),
+    0 12px 32px rgba(102, 126, 234, 0.5),
     0 0 0 1px rgba(255, 255, 255, 0.15),
     inset 0 0 20px rgba(255, 255, 255, 0.1);
 }
@@ -466,7 +466,7 @@
    Links & Footer
    ==================== */
 .auth-link {
-  color: #a855f7;
+  color: #3b82f6;
   text-decoration: none;
   font-weight: 500;
 }
@@ -479,7 +479,7 @@
 .auth-link-button {
   background: none;
   border: none;
-  color: #a855f7;
+  color: #3b82f6;
   font-size: 0.9rem;
   font-weight: 500;
   cursor: pointer;
@@ -489,7 +489,7 @@
 }
 
 .auth-link-button:hover {
-  color: #c084fc;
+  color: #1d4ed8;
   text-decoration: underline;
 }
 

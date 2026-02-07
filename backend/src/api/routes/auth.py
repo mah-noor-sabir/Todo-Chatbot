@@ -23,7 +23,7 @@ ACCESS_TOKEN_EXPIRE_HOURS = 24
 
 def create_access_token(user_id: int) -> str:
     """Create JWT access token for user session."""
-    expire = datetime.utcnow() + timedelta(hours=ACCESS_TOKEN_EXPIRE_HOURS)
+    expire = datetime.now() + timedelta(hours=ACCESS_TOKEN_EXPIRE_HOURS)
     to_encode = {"sub": str(user_id), "exp": expire}
     return jwt.encode(to_encode, settings.SECRET_KEY, algorithm=ALGORITHM)
 

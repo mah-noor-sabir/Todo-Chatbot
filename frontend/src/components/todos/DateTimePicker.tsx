@@ -11,19 +11,18 @@ export default function DateTimePicker({ value, onChange, label = 'Due Date' }: 
     onChange(e.target.value || null);
   };
 
-  const handleClear = () => onChange(null);
-
   // Format value for datetime-local input
   const formattedValue = value ? new Date(value).toISOString().slice(0, 16) : '';
 
   return (
     <div className="flex flex-col gap-2">
+      {/* Label */}
       <label
         htmlFor="due-date-input"
-        className="flex items-center gap-2 text-sm font-semibold italic text-purple-200"
+        className="flex items-center gap-2 text-sm font-semibold italic text-blue-200"
       >
         <svg
-          className="w-5 h-5 text-purple-500"
+          className="w-5 h-5 text-blue-500"
           fill="none"
           stroke="currentColor"
           viewBox="0 0 24 24"
@@ -38,29 +37,20 @@ export default function DateTimePicker({ value, onChange, label = 'Due Date' }: 
         {label}
       </label>
 
+      {/* Input */}
       <div className="relative">
         <input
           id="due-date-input"
           type="datetime-local"
           value={formattedValue}
           onChange={handleChange}
-          className="w-full pl-10 pr-10 py-2 rounded-lg bg-[#0f172a]/90 border border-purple-300/30 text-purple-50 text-sm outline-none transition-all focus:border-purple-500 focus:bg-[#0f172a]/95"
+          className="w-full pl-10 py-2 rounded-lg bg-blue-900/90 border border-blue-500/30 text-blue-50 text-sm outline-none transition-all focus:border-blue-400 focus:bg-blue-900/95"
         />
-
-        {value && (
-          <button
-            type="button"
-            onClick={handleClear}
-            aria-label="Clear due date"
-            className="absolute right-2 top-1/2 -translate-y-1/2 w-8 h-8 flex items-center justify-center bg-red-600/20 border border-red-400/30 rounded-md text-red-300 text-lg transition-all hover:bg-red-600/30 hover:border-red-400/50"
-          >
-            ×
-          </button>
-        )}
       </div>
 
+      {/* Display formatted value */}
       {value && (
-        <p className="flex items-center gap-2 text-sm italic text-purple-400 mt-1">
+        <p className="flex items-center gap-2 text-sm italic text-blue-400 mt-1">
           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path
               strokeLinecap="round"

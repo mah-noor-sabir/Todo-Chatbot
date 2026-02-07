@@ -1,87 +1,137 @@
 /* ===============================
-   Glass Header - Compact & Purple Glow
+   Glass Header – Compact & Blue Glow (Taskify)
    =============================== */
 
 .header {
   position: sticky;
   top: 0;
   z-index: 100;
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  background: rgba(255, 255, 255, 0.08);
-  border-bottom: 0.5px solid rgba(255, 255, 255, 0.3); /* thinner border */
+
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+
+  background: rgba(15, 23, 42, 0.55); /* deep blue glass */
+  border-bottom: 0.5px solid rgba(59, 130, 246, 0.35);
+
   transition: background 0.3s ease, box-shadow 0.3s ease;
 }
 
 .header-inner {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 12px 20px; /* reduced height */
+  padding: 12px 20px;
 
   display: flex;
   align-items: center;
   justify-content: space-between;
 }
 
-/* Purple Glow Heading */
+/* ===============================
+   Blue Glow Title (Taskify)
+   =============================== */
 .header-title {
   font-size: 28px;
   font-weight: 800;
   letter-spacing: -0.4px;
   font-style: italic;
 
-  background: linear-gradient(135deg, #a78bfa, #c084fc, #d8b4fe);
+  background: linear-gradient(
+    135deg,
+    #60a5fa,
+    #3b82f6,
+    #2563eb
+  );
   background-clip: text;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 
-  text-shadow: 0 0 6px #c084fc, 0 0 12px #a78bfa; /* purple glow */
-  animation: purpleGlow 2s infinite alternate;
+  text-shadow:
+    0 0 6px rgba(59, 130, 246, 0.6),
+    0 0 14px rgba(96, 165, 250, 0.4);
+
+  animation: blueGlow 2s infinite alternate;
 }
 
-@keyframes purpleGlow {
-  0% { text-shadow: 0 0 6px #c084fc, 0 0 12px #a78bfa; }
-  100% { text-shadow: 0 0 12px #d8b4fe, 0 0 24px #c084fc; }
+@keyframes blueGlow {
+  0% {
+    text-shadow:
+      0 0 6px rgba(59, 130, 246, 0.6),
+      0 0 14px rgba(96, 165, 250, 0.4);
+  }
+  100% {
+    text-shadow:
+      0 0 12px rgba(96, 165, 250, 0.8),
+      0 0 26px rgba(37, 99, 235, 0.6);
+  }
 }
 
+/* ===============================
+   Header Right Actions
+   =============================== */
 .header-actions {
   display: flex;
   align-items: center;
   gap: 12px;
 }
 
-/* Header Buttons */
+/* ===============================
+   User Email Badge
+   =============================== */
+.header-user-email {
+  font-size: 14px;
+  font-weight: 500;
+  color: #dbeafe;
+
+  background: rgba(30, 58, 138, 0.35);
+  padding: 5px 12px;
+  border-radius: 12px;
+
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+
+  transition: all 0.25s ease;
+}
+
+.header-user-email:hover {
+  background: rgba(30, 58, 138, 0.5);
+  box-shadow:
+    0 0 8px rgba(59, 130, 246, 0.6),
+    0 0 16px rgba(96, 165, 250, 0.4);
+}
+
+/* ===============================
+   Header Button (Sign Out)
+   =============================== */
 .header-btn {
-  padding: 6px 14px; /* slightly smaller */
-  border-radius: var(--radius-btn, 8px);
+  padding: 6px 14px;
+  border-radius: 10px;
   font-weight: 600;
-  border: none;
+
+  border: 1px solid rgba(59, 130, 246, 0.4);
   cursor: pointer;
-  background: rgba(15, 23, 42, 0.6);
-  color: var(--color-text-primary, #f9fafb);
+
+  background: linear-gradient(
+    135deg,
+    rgba(37, 99, 235, 0.35),
+    rgba(59, 130, 246, 0.25)
+  );
+  color: #eff6ff;
+
   transition: all 0.3s ease;
   position: relative;
 }
 
 .header-btn:hover {
-  box-shadow: 0 0 12px #9f7aea, 0 0 24px #c084fc, 0 0 36px #d8b4fe;
   transform: translateY(-2px);
-  background: rgba(31, 41, 55, 0.7);
-}
 
-/* User Email Badge */
-.header-user-email {
-  font-size: 14px;
-  color: var(--color-text-secondary, #e5e7eb);
-  background: rgba(15, 23, 42, 0.25);
-  padding: 4px 10px; /* slightly smaller */
-  border-radius: 10px;
-  backdrop-filter: blur(6px);
-  -webkit-backdrop-filter: blur(6px);
-  transition: all 0.25s ease;
-}
+  box-shadow:
+    0 0 12px rgba(59, 130, 246, 0.7),
+    0 0 24px rgba(96, 165, 250, 0.5),
+    0 0 36px rgba(37, 99, 235, 0.4);
 
-.header-user-email:hover {
-  background: rgba(15, 23, 42, 0.35);
-  box-shadow: 0 0 8px #c084fc, 0 0 16px #a78bfa;
+  background: linear-gradient(
+    135deg,
+    rgba(37, 99, 235, 0.55),
+    rgba(59, 130, 246, 0.45)
+  );
 }

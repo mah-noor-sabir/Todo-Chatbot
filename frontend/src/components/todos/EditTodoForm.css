@@ -1,10 +1,13 @@
 /* ==============================
-   Edit Todo Form
+   Edit Todo Form – Compact Dark Blue UI
    ============================== */
 .edit-todo-form {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 12px; /* reduced gap for smaller form height */
+  max-height: 80vh; /* prevent form from stretching too tall */
+  overflow-y: auto;
+  padding-bottom: 8px; /* slight padding at bottom */
 }
 
 /* ------------------------------
@@ -13,11 +16,11 @@
 .edit-textarea-group {
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 4px; /* smaller gap for compactness */
 }
 
 .edit-label {
-  font-size: 13px;
+  font-size: 12px; /* slightly smaller label */
   font-weight: 500;
   font-style: italic;
   color: rgba(255, 255, 255, 0.75);
@@ -28,15 +31,16 @@
    ------------------------------ */
 .edit-textarea {
   width: 100%;
-  padding: 12px 14px;
-  border-radius: 14px;
+  padding: 10px 12px; /* slightly reduced padding */
+  border-radius: 12px;
   border: 1px solid rgba(255, 255, 255, 0.12);
   background: rgba(15, 23, 42, 0.85);
   color: #f1f5f9;
   resize: vertical;
-  font-size: 14px;
-  line-height: 1.5;
+  font-size: 13px; /* slightly smaller font */
+  line-height: 1.4;
   transition: all 0.25s ease;
+  min-height: 50px; /* reduced min-height */
 }
 
 .edit-textarea::placeholder {
@@ -46,7 +50,7 @@
 .edit-textarea:focus {
   outline: none;
   border-color: #7c9cff;
-  box-shadow: 0 0 8px #7c9cff, 0 0 12px rgba(124, 156, 255, 0.3);
+  box-shadow: 0 0 6px #7c9cff, 0 0 10px rgba(124, 156, 255, 0.25);
   background: rgba(15, 23, 42, 0.95);
 }
 
@@ -55,12 +59,116 @@
    ------------------------------ */
 .edit-textarea.error {
   border-color: #ff6b6b;
-  box-shadow: 0 0 6px #ff6b6b, 0 0 10px rgba(255, 107, 107, 0.3);
+  box-shadow: 0 0 6px #ff6b6b, 0 0 8px rgba(255, 107, 107, 0.25);
 }
 
 .edit-error-text {
-  font-size: 12px;
+  font-size: 11px; /* smaller text */
   color: #ff6b6b;
+}
+
+/* ------------------------------
+   Priority Buttons
+   ------------------------------ */
+.edit-priority-group {
+  display: flex;
+  gap: 0.4rem; /* compact spacing */
+}
+
+.edit-priority-btn {
+  flex: 1;
+  padding: 0.5rem 0;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  font-size: 0.75rem;
+  text-transform: capitalize;
+  color: rgba(255, 255, 255, 0.7);
+  background: rgba(5, 10, 30, 0.9);
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+/* Neon Glows for Priority */
+.edit-priority-btn.high.active {
+  color: #ef4444;
+  border-color: #ef4444;
+  box-shadow: 0 0 6px #ef4444, 0 0 12px #f87171, 0 0 20px #ef4444;
+}
+.edit-priority-btn.medium.active {
+  color: #eab308;
+  border-color: #eab308;
+  box-shadow: 0 0 6px #eab308, 0 0 12px #facc15, 0 0 20px #eab308;
+}
+.edit-priority-btn.low.active {
+  color: #22c55e;
+  border-color: #22c55e;
+  box-shadow: 0 0 6px #22c55e, 0 0 12px #4ade80, 0 0 20px #22c55e;
+}
+
+/* ------------------------------
+   Tags Input & Suggestions
+   ------------------------------ */
+.edit-tags-wrapper {
+  position: relative;
+}
+
+.edit-tag-input {
+  width: 100%;
+  padding: 8px 12px; /* smaller padding for compactness */
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  background: rgba(15, 23, 42, 0.85);
+  color: #fff;
+  font-size: 13px;
+}
+
+.tags-suggestions {
+  position: absolute;
+  top: 105%;
+  left: 0;
+  right: 0;
+  background: rgba(3, 8, 23, 0.95);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 8px;
+  z-index: 10;
+  max-height: 100px;
+  overflow-y: auto;
+}
+
+.tags-suggestion-item {
+  padding: 6px 10px;
+  cursor: pointer;
+  color: #fff;
+}
+
+.tags-suggestion-item:hover {
+  background: rgba(59, 130, 246, 0.25);
+  color: #60a5fa;
+}
+
+.edit-tag {
+  padding: 2px 6px;
+  border-radius: 999px;
+  background: rgba(59, 130, 246, 0.2);
+  border: 1px solid rgba(59, 130, 246, 0.4);
+  font-size: 12px;
+  color: #93c5fd;
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+}
+
+/* ------------------------------
+   Select Dropdown
+   ------------------------------ */
+.edit-select {
+  width: 100%;
+  padding: 8px 12px;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  background: rgba(15, 23, 42, 0.85);
+  color: #fff;
+  font-size: 13px;
 }
 
 /* ------------------------------
@@ -69,34 +177,32 @@
 .edit-actions {
   display: flex;
   justify-content: flex-end;
-  gap: 12px;       /* space between Cancel and Save */
-  margin-top: 16px; /* space above buttons */
+  gap: 10px;
+  margin-top: 12px; /* reduced margin */
 }
 
 .edit-actions button {
-  min-width: 90px;   /* prevent buttons from shrinking */
-  padding: 8px 16px; /* comfortable size */
-  font-size: 14px;
-  border-radius: var(--radius-btn);
+  min-width: 80px; /* smaller buttons */
+  padding: 6px 14px;
+  font-size: 13px;
+  border-radius: 10px;
   font-weight: 600;
   border: none;
   cursor: pointer;
   transition: all 0.25s ease;
 }
 
-/* Cancel Button */
 .edit-actions .cancel-btn {
   background: rgba(255, 255, 255, 0.08);
-  color: var(--color-text-primary);
+  color: #f1f5f9;
 }
 
 .edit-actions .cancel-btn:hover {
-  box-shadow: 0 0 12px #9f7aea;
+  box-shadow: 0 0 10px #60a5fa;
   transform: translateY(-1px);
 }
 
-/* Save Button */
 .edit-actions .save-btn {
-  background: linear-gradient(135deg, #667eea, #764ba2);
+  background: linear-gradient(135deg, #3b82f6, #1d4ed8);
   color: #fff;
 }

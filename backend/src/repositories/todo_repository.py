@@ -7,6 +7,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, and_, desc
 from typing import List, Optional
 import json
+from datetime import datetime
 
 from src.models.todo import Todo
 
@@ -123,7 +124,7 @@ class TodoRepository:
         todo.tags = json.dumps(tags) if tags else "[]"
         todo.due_date = due_date
         todo.recurrence = recurrence
-        todo.updated_at = datetime.utcnow()  # Update timestamp
+        todo.updated_at = datetime.now()  # Update timestamp
         self.session.add(todo)
         await self.session.commit()
         await self.session.refresh(todo)
@@ -159,7 +160,7 @@ class TodoRepository:
             Updated Todo entity
         """
         todo.is_completed = is_completed
-        todo.updated_at = datetime.utcnow()  # Update timestamp
+        todo.updated_at = datetime.now()  # Update timestamp
         self.session.add(todo)
         await self.session.commit()
         await self.session.refresh(todo)

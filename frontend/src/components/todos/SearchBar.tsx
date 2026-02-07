@@ -9,7 +9,11 @@ interface SearchBarProps {
   placeholder?: string;
 }
 
-export default function SearchBar({ value, onChange, placeholder = 'Search todos...' }: SearchBarProps) {
+export default function SearchBar({
+  value,
+  onChange,
+  placeholder = 'Search todos...',
+}: SearchBarProps) {
   return (
     <div style={{ position: 'relative', flex: 1, minWidth: 0 }}>
       {/* Search Icon */}
@@ -21,13 +25,12 @@ export default function SearchBar({ value, onChange, placeholder = 'Search todos
           transform: 'translateY(-50%)',
           width: '1.25rem',
           height: '1.25rem',
-          color: '#a855f7',
+          color: '#3b82f6', // blue
           pointerEvents: 'none',
         }}
         fill="none"
         stroke="currentColor"
         viewBox="0 0 24 24"
-        xmlns="http://www.w3.org/2000/svg"
       >
         <path
           strokeLinecap="round"
@@ -45,22 +48,22 @@ export default function SearchBar({ value, onChange, placeholder = 'Search todos
         placeholder={placeholder}
         style={{
           width: '100%',
-          padding: '0.75rem 3rem 0.75rem 3rem',
+          padding: '0.75rem 3rem',
           background: 'rgba(15, 23, 42, 0.85)',
-          border: '1px solid rgba(168, 136, 255, 0.3)',
+          border: '1px solid rgba(59, 130, 246, 0.3)', // blue
           borderRadius: '12px',
-          color: '#f2ecff',
+          color: '#e5f0ff',
           fontSize: '1rem',
           transition: 'all 0.3s',
           outline: 'none',
         }}
         onFocus={(e) => {
-          e.target.style.borderColor = 'rgba(168, 136, 255, 0.8)';
+          e.target.style.borderColor = 'rgba(59, 130, 246, 0.8)';
           e.target.style.background = 'rgba(15, 23, 42, 0.95)';
-          e.target.style.boxShadow = '0 0 15px rgba(168, 136, 255, 0.2)';
+          e.target.style.boxShadow = '0 0 15px rgba(59, 130, 246, 0.25)';
         }}
         onBlur={(e) => {
-          e.target.style.borderColor = 'rgba(168, 136, 255, 0.3)';
+          e.target.style.borderColor = 'rgba(59, 130, 246, 0.3)';
           e.target.style.background = 'rgba(15, 23, 42, 0.85)';
           e.target.style.boxShadow = 'none';
         }}
@@ -83,16 +86,16 @@ export default function SearchBar({ value, onChange, placeholder = 'Search todos
             justifyContent: 'center',
             background: 'none',
             border: 'none',
-            color: '#a855f7',
+            color: 'rgba(59, 130, 246, 0.4)',
             cursor: 'pointer',
             transition: 'color 0.3s',
             padding: 0,
           }}
           onMouseEnter={(e) => {
-            e.currentTarget.style.color = '#e9ddff';
+            e.currentTarget.style.color = '#bfdbfe';
           }}
           onMouseLeave={(e) => {
-            e.currentTarget.style.color = '#a855f7';
+            e.currentTarget.style.color = 'rgba(59, 130, 246, 0.4)';
           }}
         >
           <svg
@@ -100,7 +103,6 @@ export default function SearchBar({ value, onChange, placeholder = 'Search todos
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"
-            xmlns="http://www.w3.org/2000/svg"
           >
             <path
               strokeLinecap="round"

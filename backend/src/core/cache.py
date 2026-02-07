@@ -16,14 +16,14 @@ class InMemoryCache:
     def set(self, key: str, value: Any, ttl_seconds: int = 300) -> None:
         """Set a value with TTL."""
         self._cache[key] = value
-        self._ttl[key] = datetime.utcnow() + timedelta(seconds=ttl_seconds)
+        self._ttl[key] = datetime.now() + timedelta(seconds=ttl_seconds)
 
     def get(self, key: str) -> Optional[Any]:
         """Get a value, returns None if expired or not found."""
         if key not in self._cache:
             return None
 
-        if key in self._ttl and datetime.utcnow() > self._ttl[key]:
+        if key in self._ttl and datetime.now() > self._ttl[key]:
             del self._cache[key]
             del self._ttl[key]
             return None

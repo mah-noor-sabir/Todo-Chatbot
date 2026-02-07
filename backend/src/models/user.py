@@ -30,11 +30,11 @@ class User(SQLModel, table=True):
 
     id: Optional[int] = Field(default=None, primary_key=True)
     first_name: str = Field(max_length=50, nullable=False)
-    last_name: str = Field(max_length=50, nullable=False)
+    last_name: Optional[str] = Field(default=None, max_length=50, nullable=True)
     email: str = Field(unique=True, index=True, max_length=255, nullable=False)
     password_hash: str = Field(max_length=255, nullable=False)
-    created_at: datetime = Field(default_factory=datetime.utcnow, nullable=False)
-    updated_at: datetime = Field(default_factory=datetime.utcnow, nullable=False)
+    created_at: datetime = Field(default_factory=datetime.now, nullable=False)
+    updated_at: datetime = Field(default_factory=datetime.now, nullable=False)
 
     conversations: List["Conversation"] = Relationship(back_populates="user")
     messages: List["Message"] = Relationship(back_populates="user")
@@ -55,7 +55,7 @@ class UserResponse(SQLModel):
 
     id: int
     first_name: str
-    last_name: str
+    last_name: Optional[str]
     email: str
     created_at: datetime
 
@@ -66,7 +66,7 @@ class UserCreate(SQLModel):
     """User creation request model."""
 
     first_name: str = Field(min_length=2, max_length=50)
-    last_name: str = Field(min_length=2, max_length=50)
+    last_name: Optional[str] = Field(default=None, max_length=50)
     email: str = Field(max_length=255)
     password: str = Field(min_length=8)
 

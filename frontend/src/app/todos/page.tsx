@@ -1,317 +1,537 @@
-/**
- * Todo list page (protected route)
- */
-
 'use client';
 
-import { useState, useMemo, useEffect } from 'react';
+import { useState,useEffect, useMemo } from 'react';
 import AuthGuard from '../../components/auth/AuthGuard';
 import Header from '../../components/layout/Header';
 import TodoList from '../../components/todos/TodoList';
 import AddTodoForm from '../../components/todos/AddTodoForm';
-import EditTodoModal from '../../components/todos/EditTodoModal';
+import EditTodoForm from '../../components/todos/EditTodoForm';
 import DeleteConfirm from '../../components/todos/DeleteConfirm';
 import SearchBar from '../../components/todos/SearchBar';
+import FilterPanel from '../../components/todos/FilterPanel';
+import SortControls from '../../components/todos/SortControls';
 import Button from '../../components/ui/Button';
 import { useTodos } from '../../hooks/useTodos';
-import type { Todo, TodoCreateRequest, TodoUpdateRequest } from '../../lib/types/todo';
+import { filterTodos, sortTodos, getAllTags } from '../../lib/utils/todoHelpers';
+import { useAuthContext } from '../../hooks/AuthContext';
+import type { Todo, TodoFilters, SortOption } from '../../lib/types/todo';
 
 export default function TodosPage() {
-  const { todos, loading, error, createTodo, updateTodo, toggleCompletion, deleteTodo, pendingOperations, fetchTodos } =
+  const { todos, loading, error, createTodo, updateTodo, toggleCompletion, deleteTodo, fetchTodos } =
     useTodos();
 
-  const [showAddForm, setShowAddForm] = useState(false);
+  const { user } = useAuthContext();
+  const userName = user?.first_name || user?.email?.split('@')[0] || 'there';
 
+  /* Sync with chatbot */
+  useEffect(() => {
+    const sync = () => fetchTodos();
+    window.addEventListener('chatbotTodoUpdate', sync);
+    return () => window.removeEventListener('chatbotTodoUpdate', sync);
+  }, [fetchTodos]);
+
+  const [showAddForm, setShowAddForm] = useState(false);
   const [showEditForm, setShowEditForm] = useState(false);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [selectedTodo, setSelectedTodo] = useState<Todo | null>(null);
-  const [searchQuery, setSearchQuery] = useState('');
 
-  // Listen for chatbot todo update events to keep UI in sync
-  useEffect(() => {
-    const handleChatbotTodoUpdate = () => {
-      // Refetch todos when chatbot makes changes to ensure sync
-      fetchTodos();
-    };
+  const [filters, setFilters] = useState<TodoFilters>({
+    status: 'all',
+    priority: 'all',
+    tags: [],
+    searchQuery: '',
+  });
 
-    window.addEventListener('chatbotTodoUpdate', handleChatbotTodoUpdate);
+  const [sortBy, setSortBy] = useState<SortOption>('created_at');
+  const [viewMode, setViewMode] = useState<'list' | 'grid'>('list');
 
-    return () => {
-      window.removeEventListener('chatbotTodoUpdate', handleChatbotTodoUpdate);
-    };
-  }, [fetchTodos]);
+  const availableTags = useMemo(() => getAllTags(todos), [todos]);
 
-  // Filter todos by search query
   const filteredTodos = useMemo(() => {
-    if (!searchQuery.trim()) return todos;
+    const filtered = filterTodos(todos, filters);
+    return sortTodos(filtered, sortBy);
+  }, [todos, filters, sortBy]);
 
-    const query = searchQuery.toLowerCase();
-    return todos.filter(todo => {
-      const matchesTitle = todo.title.toLowerCase().includes(query);
-      const matchesDescription = todo.description?.toLowerCase().includes(query);
-      const matchesTags = todo.tags?.some(tag => tag.toLowerCase().includes(query));
-      return matchesTitle || matchesDescription || matchesTags;
-    });
-  }, [todos, searchQuery]);
+  const completedCount = todos.filter((t) => t.is_completed).length;
+  const pendingCount = todos.filter((t) => !t.is_completed).length;
 
-  const handleCreate = async (data: TodoCreateRequest) => {
-    await createTodo(data);
-    setShowAddForm(false);
-  };
-
-  const handleEdit = async (id: number, data: TodoUpdateRequest) => {
-    await updateTodo(id, data);
-    setShowEditForm(false);
-  };
-
-  const handleDelete = async (id: number) => {
-    await deleteTodo(id);
-    setShowDeleteConfirm(false);
-  };
-
-  const handleToggle = async (id: number, is_completed: boolean) => {
-    await toggleCompletion(id, is_completed);
-  };
-
-  const openEditForm = (todo: Todo) => {
-    setSelectedTodo(todo);
-    setShowEditForm(true);
-  };
-
-  const openDeleteConfirm = (todo: Todo) => {
-    setSelectedTodo(todo);
-    setShowDeleteConfirm(true);
-  };
+  const productivity =
+    todos.length === 0 ? 0 : Math.round((completedCount / todos.length) * 100);
 
   return (
     <AuthGuard>
-      <div className="page-container">
+      <div className="page">
         <Header />
 
-        <main className="main-content">
-          <div className="toolbar">
-            <SearchBar
-              value={searchQuery}
-              onChange={setSearchQuery}
-              placeholder="Search by title, description, or tags..."
-            />
-            <Button className="add-todo-btn" onClick={() => setShowAddForm(true)}>
-              Add Todo
-            </Button>
+        <main className="dashboard-container">
+          {/* Header */}
+          <div className="dashboard-header glass">
+            <div className="space-y-1">
+              <h1 className="gradient-title">Dashboard</h1>
+
+              <p className="text-sm text-white/60">
+                Hello{' '}
+                <strong className="font-semibold text-white">
+                  {userName}
+                </strong>
+                , you have{' '}
+                <span className="font-medium text-blue-400">
+                  {pendingCount}
+                </span>{' '}
+                {pendingCount === 1 ? 'task' : 'tasks'} remaining.
+              </p>
+            </div>
+
+
+            <div className="header-actions">
+              <SearchBar
+                value={filters.searchQuery || ''}
+                onChange={(value) => setFilters({ ...filters, searchQuery: value })}
+              />
+              <Button onClick={() => setShowAddForm(true)}>＋ Create</Button>
+            </div>
           </div>
 
-          {searchQuery && (
-            <div style={{
-              textAlign: 'center',
-              color: '#cfc4ff',
-              fontSize: '0.9rem',
-              marginBottom: '1rem',
-              padding: '0.5rem',
-              background: 'rgba(168, 136, 255, 0.1)',
-              borderRadius: '8px',
-              border: '1px solid rgba(168, 136, 255, 0.2)'
-            }}>
-              Found {filteredTodos.length} of {todos.length} todo{todos.length !== 1 ? 's' : ''}
+          {/* Stats */}
+          <div className="stats-grid">
+            <div className="stat-card large glass">
+              <span>Productivity</span>
+              <h2>{productivity}%</h2>
+              <div className="progress">
+                <div style={{ width: `${productivity}%` }} />
+              </div>
             </div>
-          )}
 
-          <TodoList
-            todos={filteredTodos}
-            loading={loading}
-            error={error}
-            onToggle={handleToggle}
-            onEdit={openEditForm}
-            onDelete={openDeleteConfirm}
-            pendingOperations={pendingOperations}
-          />
+            <div className="stat-card small glass">
+              <span>Completed</span>
+              <h3>{completedCount}</h3>
+            </div>
 
-          <AddTodoForm
-            isOpen={showAddForm}
-            onClose={() => setShowAddForm(false)}
-            onSubmit={handleCreate}
-          />
+            <div className="stat-card small glass">
+              <span>Pending Tasks</span>
+              <h3>{pendingCount}</h3>
+            </div>
+          </div>
 
-          <EditTodoModal
-            isOpen={showEditForm}
-            onClose={() => setShowEditForm(false)}
-            todo={selectedTodo}
-            onSubmit={handleEdit}
-          />
+          {/* Layout */}
+          <div className="dashboard-layout">
+            <aside className="sidebar glass">
+              <div className="sidebar-section">
+                <h3 className="section-title">View</h3>
+                <div className="view-controls">
+                  <button
+                    className={`view-btn ${viewMode === 'list' ? 'active' : ''}`}
+                    onClick={() => setViewMode('list')}
+                  >
+                    List
+                  </button>
+                  <button
+                    className={`view-btn ${viewMode === 'grid' ? 'active' : ''}`}
+                    onClick={() => setViewMode('grid')}
+                  >
+                    Grid
+                  </button>
+                </div>
+              </div>
 
-          <DeleteConfirm
-            isOpen={showDeleteConfirm}
-            onClose={() => setShowDeleteConfirm(false)}
-            todo={selectedTodo}
-            onConfirm={handleDelete}
-          />
+              <div className="sidebar-section">
+                <h3 className="section-title">Sort</h3>
+                <SortControls sortBy={sortBy} onSortChange={setSortBy} />
+              </div>
+
+              <div className="sidebar-section">
+                <h3 className="section-title">Filters</h3>
+                <FilterPanel
+                  filters={filters}
+                  availableTags={availableTags}
+                  onFilterChange={setFilters}
+                />
+              </div>
+            </aside>
+
+            <div className="main-content">
+              <div className="tasks-header">
+                <h2 className="tasks-title">Tasks</h2>
+                {todos.length >= 4 && (
+                  <a href="/todos/all" className="show-more-btn">
+                    Show All ({todos.length})
+                  </a>
+                )}
+              </div>
+              <TodoList
+                todos={filteredTodos.slice(0, 3)} // Show only first 3 tasks
+                loading={loading}
+                error={error}
+                onToggle={toggleCompletion}
+                onEdit={(todo) => {
+                  setSelectedTodo(todo);
+                  setShowEditForm(true);
+                }}
+                onDelete={(todo) => {
+                  setSelectedTodo(todo);
+                  setShowDeleteConfirm(true);
+                }}
+                viewMode={viewMode}
+              />
+              {todos.length >= 4 && filteredTodos.length > 3 && (
+                <div className="show-more-footer">
+                  <a href="/todos/all" className="show-more-link">
+                    Show {filteredTodos.length - 3} more tasks...
+                  </a>
+                </div>
+              )}
+            </div>
+          </div>
         </main>
 
+        <button className="ai-fab">✨</button>
+
+        <AddTodoForm
+          isOpen={showAddForm}
+          onClose={() => setShowAddForm(false)}
+          onSubmit={createTodo}
+        />
+        <EditTodoForm
+          isOpen={showEditForm}
+          todo={selectedTodo}
+          onClose={() => setShowEditForm(false)}
+          onSubmit={(id, data) => updateTodo(id, data)}
+        />
+        <DeleteConfirm
+          isOpen={showDeleteConfirm}
+          todo={selectedTodo}
+          onClose={() => setShowDeleteConfirm(false)}
+          onConfirm={(id) => deleteTodo(id)}
+        />
+
         <style jsx>{`
-          .page-container {
+          .page {
             min-height: 100vh;
-            background:
-              radial-gradient(circle at top, rgba(79, 70, 229, 0.15) 0%, rgba(15, 23, 42, 0.15) 60%),
-              radial-gradient(circle at bottom, rgba(168, 85, 247, 0.1) 0%, rgba(0, 0, 0, 0.1) 70%),
-              linear-gradient(135deg, #0f0e20 0%, #1a1b2e 50%, #0f0e20 100%);
-            color: #f2ecff;
-            padding-bottom: 2rem;
-            position: relative;
-            overflow-x: hidden;
+            background: radial-gradient(circle at top, #0b1f3a, #050814 70%);
+            color: #e6f2ff;
           }
 
-          .page-container::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background-image:
-              radial-gradient(circle at 20% 30%, rgba(168, 85, 247, 0.05) 0%, transparent 50%),
-              radial-gradient(circle at 80% 70%, rgba(79, 70, 229, 0.05) 0%, transparent 50%);
-            pointer-events: none;
-            z-index: -1;
-          }
-
-          .page-container::after {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background:
-              linear-gradient(transparent 50%, rgba(0, 0, 0, 0.2) 100%),
-              repeating-linear-gradient(
-                0deg,
-                transparent,
-                transparent 1px,
-                rgba(255, 255, 255, 0.02) 1px,
-                rgba(255, 255, 255, 0.02) 2px
-              );
-            pointer-events: none;
-            z-index: -1;
-          }
-
-          .main-content {
-            max-width: 1100px;
-            margin: 0 auto;
+          .dashboard-container {
+            max-width: 1400px;
+            margin: auto;
             padding: 2.5rem 1.5rem;
           }
 
-          .toolbar {
+          .glass {
+            background: rgba(15, 30, 60, 0.55);
+            backdrop-filter: blur(14px);
+            border: 1px solid rgba(90, 150, 255, 0.25);
+            box-shadow: 0 0 30px rgba(90, 150, 255, 0.15);
+            border-radius: 18px;
+          }
+
+          .dashboard-header {
+            padding: 1.8rem;
             display: flex;
-            gap: 1.2rem;
+            justify-content: space-between;
             align-items: center;
-            margin-bottom: 2.5rem;
-            position: relative;
+            margin-bottom: 2rem;
           }
 
-          .toolbar::after {
-            content: '';
-            position: absolute;
-            bottom: -15px;
-            left: 0;
-            right: 0;
-            height: 1px;
-            background: linear-gradient(90deg, transparent, rgba(168, 136, 255, 0.2), transparent);
+          .gradient-title {
+            font-size: 2.6rem;
+            font-weight: 800;
+            background: linear-gradient(
+              90deg,
+              #3b82f6,
+              #60a5fa,
+              #7dd3fc,
+              #93c5fd
+            );
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
           }
 
-          @media (max-width: 640px) {
-            .toolbar {
-              flex-direction: column;
-            }
+          .header-actions {
+            display: flex;
+            gap: 1rem;
           }
 
-          .add-todo-btn {
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            color: #f5f0ff;
-            border-radius: 16px;
-            padding: 0.8rem 1.6rem;
-            font-weight: 700;
-            letter-spacing: 0.5px;
-            border: none;
-            transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-            backdrop-filter: blur(4px);
-            -webkit-backdrop-filter: blur(4px);
-            box-shadow:
-              0 8px 24px rgba(102, 126, 234, 0.4),
-              0 0 0 1px rgba(255, 255, 255, 0.1);
-            position: relative;
+          .stats-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr;
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+          }
+
+          .stat-card {
+            padding: 1.4rem;
+          }
+
+          .stat-card.large h2 {
+            font-size: 3rem;
+          }
+
+          .stat-card.small {
+            padding: 1.1rem;
+          }
+
+          .progress {
+            height: 6px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 6px;
             overflow: hidden;
-            font-size: 1rem;
+            margin-top: 1rem;
           }
 
-          .add-todo-btn::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
+          .progress div {
             height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-            transition: left 0.8s;
-            z-index: 1;
+            background: linear-gradient(90deg, #3b82f6, #7dd3fc);
           }
 
-          .add-todo-btn:hover::before {
-            left: 100%;
+          .dashboard-layout {
+            display: grid;
+            grid-template-columns: 280px 1fr;
+            gap: 1.5rem;
           }
 
-          .add-todo-btn span {
-            position: relative;
-            z-index: 2;
+          .sidebar {
+            padding: 1.5rem;
+            height: fit-content;
           }
 
-          .add-todo-btn:hover {
-            transform: translateY(-3px) scale(1.03);
-            box-shadow:
-              0 12px 32px rgba(102, 126, 234, 0.5),
-              0 0 0 1px rgba(255, 255, 255, 0.15),
-              inset 0 0 20px rgba(255, 255, 255, 0.1);
+          .sidebar-section {
+            margin-bottom: 1.5rem;
           }
 
-          :global(.todo-card) {
-            background:
-              linear-gradient(135deg, rgba(10, 6, 20, 0.7) 0%, rgba(15, 23, 42, 0.7) 100%),
-              rgba(255, 255, 255, 0.02);
-            border: 1px solid rgba(255, 255, 255, 0.12);
-            border-radius: 20px;
-            padding: 1.4rem 1.5rem;
-            margin-bottom: 1.4rem;
-            box-shadow:
-              0 12px 32px rgba(0, 0, 0, 0.4),
-              inset 0 0 20px rgba(168, 85, 247, 0.05);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-          }
-
-          :global(.todo-card):hover {
-            transform: translateY(-2px) scale(1.01);
-            box-shadow:
-              0 16px 40px rgba(0, 0, 0, 0.5),
-              0 0 0 1px rgba(168, 85, 247, 0.2),
-              inset 0 0 25px rgba(168, 85, 247, 0.1);
-          }
-
-          :global(.todo-title) {
-            color: #f8fafc;
-            font-weight: 700;
-            letter-spacing: -0.01em;
-            font-size: 1.15rem;
-            line-height: 1.4;
-          }
-
-          :global(.todo-description) {
-            color: rgba(255, 255, 255, 0.75);
+          .sidebar-section h3 {
             font-size: 0.95rem;
-            line-height: 1.5;
+            color: #93c5fd;
+            margin-bottom: 0.75rem;
           }
 
-          @media (max-width: 640px) {
-            .main-content {
-              padding: 1.5rem 1rem;
+          .view-controls {
+            display: flex;
+            gap: 0.5rem;
+          }
+
+          .view-btn {
+            flex: 1;
+            padding: 0.5rem;
+            border-radius: 8px;
+            background: rgba(20, 40, 80, 0.7);
+            border: 1px solid rgba(90, 150, 255, 0.35);
+            color: #cfe6ff;
+          }
+
+          .section-title {
+            font-size: 0.95rem;
+            color: #93c5fd;
+            margin-bottom: 0.75rem;
+            font-weight: 500;
+          }
+
+          .view-controls {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+          }
+
+          .view-btn {
+            flex: 1;
+            padding: 0.75rem;
+            border-radius: 12px;
+            background: rgba(20, 40, 80, 0.7);
+            border: 1px solid rgba(90, 150, 255, 0.35);
+            color: #cfe6ff;
+            cursor: pointer;
+            transition: all 0.2s ease;
+          }
+
+          .view-btn:hover {
+            background: rgba(59, 130, 246, 0.2);
+            border-color: rgba(90, 150, 255, 0.5);
+          }
+
+          .view-btn.active {
+            background: rgba(59, 130, 246, 0.35);
+            border-color: rgba(90, 150, 255, 0.6);
+            box-shadow: 0 0 10px rgba(59, 130, 246, 0.35);
+          }
+
+          /* Style for SortControls component */
+          .sort-controls {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+          }
+
+          .sort-controls select {
+            width: 100%;
+            padding: 0.75rem;
+            border-radius: 12px;
+            background: rgba(20, 40, 80, 0.7);
+            border: 1px solid rgba(90, 150, 255, 0.35);
+            color: #cfe6ff;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+          }
+
+          .sort-controls select:hover {
+            border-color: rgba(90, 150, 255, 0.5);
+          }
+
+          .sort-controls select:focus {
+            outline: none;
+            border-color: rgba(90, 150, 255, 0.6);
+            box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.3);
+          }
+
+          /* Style for FilterPanel component - Airy rounded buttons */
+          .filter-panel {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+          }
+
+          /* Status filter buttons */
+          .filter-panel button {
+            border-radius: 50px !important;
+            padding: 0.625rem 1.25rem !important;
+            background: transparent !important;
+            border: 1px solid rgba(90, 150, 255, 0.3) !important;
+            color: rgba(255, 255, 255, 0.7) !important;
+            font-size: 0.875rem !important;
+            font-weight: 500 !important;
+            transition: all 0.2s ease !important;
+            cursor: pointer !important;
+            text-transform: capitalize;
+          }
+
+          .filter-panel button:hover {
+            color: white !important;
+            border-color: rgba(90, 150, 255, 0.5) !important;
+          }
+
+          .filter-panel button.text-blue-400 {
+            color: #60a5fa !important;
+            border-color: rgba(96, 165, 250, 0.5) !important;
+            border-bottom: 2px solid #60a5fa !important;
+          }
+
+          /* Priority buttons with specific colors */
+          .filter-panel button.text-red-400 {
+            color: #f87171 !important;
+            border-color: rgba(248, 113, 113, 0.5) !important;
+            border-bottom: 2px solid #f87171 !important;
+          }
+
+          .filter-panel button.text-yellow-400 {
+            color: #fbbf24 !important;
+            border-color: rgba(251, 191, 36, 0.5) !important;
+            border-bottom: 2px solid #fbbf24 !important;
+          }
+
+          .filter-panel button.text-green-400 {
+            color: #4ade80 !important;
+            border-color: rgba(74, 222, 128, 0.5) !important;
+            border-bottom: 2px solid #4ade80 !important;
+          }
+
+          /* Tag buttons */
+          .filter-panel button.text-blue-400.border-blue-400 {
+            color: #60a5fa !important;
+            border-color: rgba(96, 165, 250, 0.5) !important;
+            border-bottom: 2px solid #60a5fa !important;
+          }
+
+          /* Clear filters button */
+          .filter-panel button.text-red-400.hover\:text-red-300 {
+            color: #f87171 !important;
+            background: transparent !important;
+            border: none !important;
+            padding: 0 !important;
+            font-size: 0.875rem !important;
+          }
+
+          .filter-panel button.text-red-400.hover\:text-red-300:hover {
+            color: #fca5a5 !important;
+          }
+
+          .tasks-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            padding: 0 1rem;
+          }
+
+          .tasks-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #e6f2ff;
+            margin: 0;
+          }
+
+          .show-more-btn {
+            background: linear-gradient(135deg, #3b82f6, #7dd3fc);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: all 0.2s ease;
+          }
+
+          .show-more-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+          }
+
+          .show-more-footer {
+            padding: 1rem 1rem 0;
+            text-align: center;
+          }
+
+          .show-more-link {
+            color: #93c5fd;
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: color 0.2s ease;
+          }
+
+          .show-more-link:hover {
+            color: #3b82f6;
+          }
+
+          .ai-fab {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #3b82f6, #7dd3fc);
+            box-shadow: 0 0 35px rgba(90, 150, 255, 0.8);
+            color: #fff;
+            font-size: 1.4rem;
+          }
+
+          @media (max-width: 768px) {
+            .dashboard-layout {
+              grid-template-columns: 1fr;
+            }
+
+            .tasks-header {
+              flex-direction: column;
+              align-items: flex-start;
+              gap: 0.5rem;
+            }
+
+            .show-more-btn {
+              align-self: flex-end;
+            }
+
+            .view-controls {
+              flex-direction: column;
             }
           }
         `}</style>

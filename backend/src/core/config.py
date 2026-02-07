@@ -7,7 +7,7 @@ class Settings(BaseSettings):
     SECRET_KEY: str
     APP_ENV: str = "development"
     DEBUG: bool = True
-    CORS_ORIGINS: str = "http://localhost:3000,http://localhost:3002"
+    CORS_ORIGINS: str = "http://localhost:3000,http://localhost:3001,http://localhost:3002"
     OPENROUTER_API_KEY: str
     OPENROUTER_BASE_URL: str = "https://openrouter.ai/api/v1"
     OPENROUTER_MODEL: str = "meta-llama/llama-3-8b-instruct"

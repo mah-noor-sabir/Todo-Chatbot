@@ -65,7 +65,7 @@ export default function Modal({ isOpen, onClose, title, children }: ModalProps) 
       <div className="flex min-h-full items-center justify-center p-4">
         <div
           ref={modalRef}
-          className="relative max-w-md w-full p-6 rounded-2xl border border-purple-500/30 bg-gradient-to-br from-purple-900/30 to-black/50 backdrop-blur-xl shadow-2xl transition-all transform scale-100 animate-fadeIn"
+          className="relative max-w-md w-full p-6 rounded-2xl border border-blue-500/30 bg-gradient-to-br from-blue-900/30 to-black/50 backdrop-blur-xl shadow-2xl transition-all transform scale-100 animate-fadeIn"
           style={{
             boxShadow: '0 0 40px rgba(168, 85, 247, 0.2), 0 20px 60px rgba(0, 0, 0, 0.8)',
           }}

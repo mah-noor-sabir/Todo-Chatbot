@@ -1,11 +1,15 @@
 import type { Metadata } from 'next';
-import './tailwind.css';
 import './globals.css';
 import ClientLayout from './ClientLayout';
 
 export const metadata: Metadata = {
-  title: 'Evolution of Todo',
-  description: 'Phase II – Full-Stack Web Application',
+  title: 'Taskify — Organize your life with clarity',
+  description:
+    'Boost your productivity with our intuitive task management platform',
+  icons: {
+    icon: '/favicon.ico',
+    shortcut: '/favicon-32x32.png',
+  },
 };
 
 export default function RootLayout({
@@ -15,15 +19,9 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <head />
-      <body className="min-h-screen font-sans text-gray-100">
-        {/* Global background + layout wrapper */}
-        <div
-          className="
-            min-h-screen flex flex-col
-            bg-[radial-gradient(circle_at_top,rgba(168,136,255,0.12),transparent_55%),radial-gradient(circle_at_bottom,rgba(90,60,200,0.12),transparent_55%),linear-gradient(180deg,#05010a,#0b0614)]
-          "
-        >
+      <body className="min-h-screen font-sans antialiased">
+        {/* Theme-controlled background lives in globals.css */}
+        <div className="min-h-screen flex flex-col">
           <ClientLayout>{children}</ClientLayout>
         </div>
       </body>

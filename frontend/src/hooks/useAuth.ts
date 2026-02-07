@@ -13,7 +13,7 @@ interface UseAuthReturn {
   user: User | null;
   isLoading: boolean;
   isAuthenticated: boolean;
-  signUp: (firstName: string, lastName: string, email: string, password: string) => Promise<void>;
+  signUp: (firstName: string, lastName: string | undefined, email: string, password: string) => Promise<void>;
   signIn: (email: string, password: string) => Promise<void>;
   signOut: () => Promise<void>;
   error: string | null;
@@ -60,7 +60,7 @@ export function useAuth(): UseAuthReturn {
     }
   }, []);
 
-  const signUp = async (firstName: string, lastName: string, email: string, password: string) => {
+  const signUp = async (firstName: string, lastName: string | undefined, email: string, password: string) => {
     try {
       setError(null);
       setIsLoading(true);

@@ -1,130 +1,93 @@
 /**
- * Add Todo Modal - Modern CSS Styling
- * Dark theme with glassmorphism effects and smooth animations
+ * Add Todo Modal – Compact Dark Blue UI
+ * Glassmorphism, reduced height, priority-based glow, tags dropdown
  */
 
-/* ==================== MODAL OVERLAY ==================== */
+/* ==================== OVERLAY ==================== */
 .add-todo-overlay {
   position: fixed;
   inset: 0;
   z-index: 50;
-  overflow-y: auto;
-  background-color: rgba(0, 0, 0, 0.7);
-  backdrop-filter: blur(4px);
-  -webkit-backdrop-filter: blur(4px);
-  animation: fadeInOverlay 0.25s ease-out;
+  background: rgba(0, 0, 0, 0.75);
+  backdrop-filter: blur(6px);
+  animation: fadeIn 0.2s ease-out;
 }
 
-@keyframes fadeInOverlay {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
 
-/* ==================== MODAL CONTAINER ==================== */
+/* ==================== CONTAINER ==================== */
 .add-todo-modal-container {
   display: flex;
   align-items: center;
   justify-content: center;
   min-height: 100%;
-  padding: 1.5rem;
+  padding: 1rem;
 }
 
-/* ==================== MODAL CONTENT ==================== */
+/* ==================== MODAL ==================== */
 .add-todo-modal {
-  position: relative;
   width: 100%;
-  max-width: 500px;
-  border-radius: 20px;
-  background: rgba(20, 10, 35, 0.95);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border: 1px solid rgba(168, 85, 247, 0.3);
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5), 0 0 40px rgba(168, 85, 247, 0.15);
-  padding: 2rem;
-  animation: slideUpFade 0.3s ease-out;
+  max-width: 460px;
+  border-radius: 16px;
+  background: linear-gradient(180deg, rgba(10,20,45,0.96), rgba(6,12,28,0.96));
+  border: 1px solid rgba(59,130,246,0.25);
+  box-shadow: 0 20px 40px rgba(0,0,0,0.6), 0 0 30px rgba(59,130,246,0.12);
+  padding: 1.5rem;
+  animation: modalIn 0.25s ease-out;
 }
 
-@keyframes slideUpFade {
-  from {
-    opacity: 0;
-    transform: scale(0.95) translateY(-20px);
-  }
-  to {
-    opacity: 1;
-    transform: scale(1) translateY(0);
-  }
+@keyframes modalIn {
+  from { opacity: 0; transform: scale(0.96) translateY(-10px); }
+  to { opacity: 1; transform: scale(1) translateY(0); }
 }
 
-/* ==================== MODAL HEADER ==================== */
+/* ==================== HEADER ==================== */
 .add-todo-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 1.5rem;
-  padding-bottom: 1rem;
-  border-bottom: 1px solid rgba(168, 85, 247, 0.2);
-}
-
-.add-todo-title {
-  font-size: 1.75rem;
-  font-weight: 700;
-  background: linear-gradient(135deg, #a855f7 0%, #e9d5ff 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-}
-
-/* Close Button */
-.add-todo-close-btn {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 40px;
-  height: 40px;
-  border: none;
+  position: relative;
+  margin-bottom: 1rem;
+}
+
+.add-todo-title {
+  font-size: 1.4rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  background: linear-gradient(135deg, #60a5fa, #bfdbfe);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Close */
+.add-todo-close-btn {
+  position: absolute;
+  right: 0;
+  top: 0;
+  width: 34px;
+  height: 34px;
   border-radius: 50%;
-  background: rgba(255, 255, 255, 0.05);
-  color: rgba(255, 255, 255, 0.7);
-  font-size: 1.5rem;
-  font-weight: bold;
+  background: rgba(255,255,255,0.06);
+  color: rgba(255,255,255,0.7);
+  border: none;
   cursor: pointer;
-  transition: all 0.2s ease;
-  line-height: 1;
+  transition: 0.2s ease;
 }
 
 .add-todo-close-btn:hover {
-  background: rgba(239, 68, 68, 0.2);
+  background: rgba(239,68,68,0.2);
   color: #ef4444;
-  transform: rotate(90deg);
 }
 
-.add-todo-close-btn:active {
-  transform: rotate(90deg) scale(0.95);
-}
-
-/* ==================== FORM ELEMENTS ==================== */
+/* ==================== FORM ==================== */
 .add-todo-form {
   display: flex;
   flex-direction: column;
-  gap: 1.25rem;
-}
-
-/* Labels */
-.add-todo-label {
-  display: block;
-  font-size: 0.9rem;
-  font-weight: 600;
-  color: rgba(255, 255, 255, 0.85);
-  margin-bottom: 0.5rem;
-}
-
-.add-todo-label.required::after {
-  content: ' *';
-  color: #ef4444;
+  gap: 0.65rem;
 }
 
 /* Inputs */
@@ -132,262 +95,120 @@
 .add-todo-textarea,
 .add-todo-select {
   width: 100%;
-  padding: 0.875rem 1rem;
-  border-radius: 12px;
-  background: rgba(0, 0, 0, 0.4);
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  color: #ffffff;
-  font-size: 1rem;
-  transition: all 0.2s ease;
-  outline: none;
+  padding: 0.7rem 0.85rem;
+  border-radius: 10px;
+  background: rgba(3,8,23,0.85);
+  border: 1px solid rgba(255,255,255,0.14);
+  color: #fff;
+  font-size: 0.95rem;
 }
 
 .add-todo-input::placeholder,
-.add-todo-textarea::placeholder,
-.add-todo-select::placeholder {
-  color: rgba(255, 255, 255, 0.4);
+.add-todo-textarea::placeholder {
+  color: rgba(255,255,255,0.4);
 }
 
 .add-todo-input:focus,
 .add-todo-textarea:focus,
 .add-todo-select:focus {
-  border-color: #a855f7;
-  box-shadow: 0 0 0 3px rgba(168, 85, 247, 0.2), 0 0 15px rgba(168, 85, 247, 0.3);
+  outline: none;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 2px rgba(59,130,246,0.25);
 }
 
-.add-todo-input.error,
-.add-todo-textarea.error {
-  border-color: #ef4444;
-}
+.add-todo-textarea { resize: none; min-height: 64px; }
+.add-todo-input[type="date"] { color-scheme: dark; }
 
-.add-todo-input.error:focus,
-.add-todo-textarea.error:focus {
-  border-color: #ef4444;
-  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.2);
-}
-
-.add-todo-textarea {
-  resize: vertical;
-  min-height: 80px;
-  font-family: inherit;
-}
-
-.add-todo-select {
-  cursor: pointer;
-  appearance: none;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%23a855f7'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
-  background-repeat: no-repeat;
-  background-position: right 1rem center;
-  background-size: 1.25rem;
-  padding-right: 2.5rem;
-}
-
-/* Priority Selector */
-.add-todo-priority-group {
-  display: flex;
-  gap: 0.75rem;
-}
+/* ==================== PRIORITY ==================== */
+.add-todo-priority-group { display: flex; gap: 0.5rem; }
 
 .add-todo-priority-btn {
   flex: 1;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 0.75rem 0.5rem;
-  border-radius: 12px;
-  border: 2px solid rgba(255, 255, 255, 0.15);
-  background: rgba(0, 0, 0, 0.4);
-  color: rgba(255, 255, 255, 0.7);
-  font-size: 0.9rem;
-  font-weight: 500;
-  cursor: pointer;
-  transition: all 0.2s ease;
+  padding: 0.45rem 0;
+  border-radius: 999px;
+  background: rgba(5,10,30,0.9);
+  border: 1px solid rgba(255,255,255,0.15);
+  font-size: 0.75rem;
   text-transform: capitalize;
+  color: rgba(255,255,255,0.7);
+  cursor: pointer;
+  transition: all 0.25s ease;
 }
 
-.add-todo-priority-btn:hover {
-  background: rgba(168, 85, 247, 0.1);
-  border-color: rgba(168, 85, 247, 0.3);
-  transform: translateY(-2px);
+.add-todo-priority-btn.high.active {
+  color: #ef4444;
+  border-color: #ef4444;
+  box-shadow: 0 0 8px #ef4444, 0 0 15px #f87171, 0 0 25px #ef4444;
 }
 
-.add-todo-priority-btn.active {
-  border-color: #a855f7;
-  background: rgba(168, 85, 247, 0.2);
-  color: #ffffff;
-  box-shadow: 0 0 15px rgba(168, 85, 247, 0.3);
+.add-todo-priority-btn.medium.active {
+  color: #eab308;
+  border-color: #eab308;
+  box-shadow: 0 0 8px #eab308, 0 0 15px #facc15, 0 0 25px #eab308;
 }
 
-.add-todo-priority-btn .icon {
-  font-size: 1.25rem;
+.add-todo-priority-btn.low.active {
+  color: #22c55e;
+  border-color: #22c55e;
+  box-shadow: 0 0 8px #22c55e, 0 0 15px #4ade80, 0 0 25px #22c55e;
 }
 
-/* Tags Input */
-.add-todo-tags-container {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem;
-  margin-top: 0.5rem;
-}
+/* ==================== TAGS ==================== */
+.add-todo-tags-container { display: flex; flex-wrap: wrap; gap: 0.4rem; }
 
 .add-todo-tag {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.375rem;
-  padding: 0.375rem 0.75rem;
+  padding: 0.25rem 0.6rem;
   border-radius: 999px;
-  background: rgba(168, 85, 247, 0.2);
-  border: 1px solid rgba(168, 85, 247, 0.4);
-  font-size: 0.85rem;
-  color: #d8b4fe;
+  background: rgba(59,130,246,0.2);
+  border: 1px solid rgba(59,130,246,0.4);
+  font-size: 0.75rem;
+  color: #93c5fd;
 }
 
-.add-todo-tag .remove-btn {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 16px;
-  height: 16px;
-  border: none;
-  background: none;
-  color: rgba(255, 255, 255, 0.6);
-  font-size: 1rem;
-  line-height: 1;
+/* ==================== TAGS DROPDOWN ==================== */
+.tags-suggestions {
+  position: absolute;
+  top: 110%;
+  left: 0;
+  right: 0;
+  background: rgba(3,8,23,0.95);
+  border: 1px solid rgba(59,130,246,0.4);
+  border-radius: 10px;
+  max-height: 140px;
+  overflow-y: auto;
+  z-index: 10;
+  box-shadow: 0 0 10px rgba(59,130,246,0.4);
+}
+
+.tags-suggestion-item {
+  padding: 0.5rem 0.75rem;
   cursor: pointer;
-  transition: color 0.2s ease;
+  color: #93c5fd;
+  transition: 0.2s ease;
 }
 
-.add-todo-tag .remove-btn:hover {
-  color: #ffffff;
+.tags-suggestion-item:hover {
+  background: rgba(59,130,246,0.2);
+  color: #3b82f6;
+  box-shadow: 0 0 8px rgba(59,130,246,0.5);
+  border-radius: 8px;
 }
 
-/* Buttons */
-.add-todo-actions {
-  display: flex;
-  gap: 0.75rem;
-  justify-content: flex-end;
-  margin-top: 1.5rem;
-  padding-top: 1rem;
-  border-top: 1px solid rgba(168, 85, 247, 0.2);
-}
+/* ==================== ACTIONS ==================== */
+.add-todo-actions { display: flex; gap: 0.6rem; margin-top: 0.75rem; }
 
-.add-todo-btn {
-  padding: 0.875rem 1.75rem;
-  border-radius: 999px;
-  font-size: 1rem;
-  font-weight: 600;
-  letter-spacing: 0.025em;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  outline: none;
-  border: none;
-}
+.add-todo-btn { flex: 1; padding: 0.65rem; border-radius: 999px; font-size: 0.9rem; font-weight: 600; cursor: pointer; border: none; }
 
 .add-todo-btn-secondary {
-  background: rgba(100, 100, 100, 0.3);
-  color: #ffffff;
-  border: 1px solid rgba(255, 255, 255, 0.25);
-}
-
-.add-todo-btn-secondary:hover {
-  background: rgba(120, 120, 120, 0.4);
-  transform: translateY(-1px);
-}
-
-.add-todo-btn-secondary:active {
-  transform: translateY(0);
+  background: rgba(255,255,255,0.08);
+  color: #fff;
 }
 
 .add-todo-btn-primary {
-  background: linear-gradient(135deg, #a855f7 0%, #6366f1 100%);
-  color: #ffffff;
-  border: 2px solid #a855f7;
-  box-shadow: 0 4px 15px rgba(168, 85, 247, 0.4);
+  background: linear-gradient(135deg, #3b82f6, #2563eb);
+  color: #fff;
+  box-shadow: 0 0 18px rgba(59,130,246,0.5);
 }
 
-.add-todo-btn-primary:hover {
-  transform: scale(1.02);
-  box-shadow: 0 6px 25px rgba(168, 85, 247, 0.6), 0 0 30px rgba(168, 85, 247, 0.4);
-  border-color: #c084fc;
-}
-
-.add-todo-btn-primary:active {
-  transform: scale(0.98);
-}
-
-.add-todo-btn-primary:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
-  transform: none;
-}
-
-/* Loading Spinner */
-.add-todo-spinner {
-  display: inline-block;
-  width: 20px;
-  height: 20px;
-  border: 2px solid rgba(255, 255, 255, 0.7);
-  border-top-color: transparent;
-  border-radius: 50%;
-  animation: spin 0.8s linear infinite;
-}
-
-@keyframes spin {
-  to {
-    transform: rotate(360deg);
-  }
-}
-
-/* Error Messages */
-.add-todo-error {
-  margin-top: 0.5rem;
-  font-size: 0.85rem;
-  color: #ef4444;
-  display: flex;
-  align-items: center;
-  gap: 0.375rem;
-}
-
-.add-todo-error::before {
-  content: '⚠';
-  font-weight: bold;
-}
-
-/* ==================== RESPONSIVE DESIGN ==================== */
-@media (max-width: 640px) {
-  .add-todo-modal {
-    margin: 0.5rem;
-    padding: 1.5rem;
-    border-radius: 16px;
-  }
-
-  .add-todo-title {
-    font-size: 1.5rem;
-  }
-
-  .add-todo-input,
-  .add-todo-textarea,
-  .add-todo-select {
-    padding: 0.75rem 0.875rem;
-    font-size: 0.95rem;
-  }
-
-  .add-todo-priority-btn {
-    padding: 0.625rem 0.375rem;
-    font-size: 0.85rem;
-  }
-
-  .add-todo-btn {
-    padding: 0.75rem 1.5rem;
-    font-size: 0.95rem;
-  }
-
-  .add-todo-actions {
-    flex-direction: column;
-  }
-
-  .add-todo-btn {
-    width: 100%;
-  }
-}
+/* ==================== ERRORS ==================== */
+.add-todo-error { font-size: 0.75rem; color: #ef4444; }

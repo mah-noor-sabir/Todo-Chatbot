@@ -5,6 +5,7 @@ import json
 from src.agent.client import get_openrouter_client
 from src.agent.instructions import AGENT_INSTRUCTIONS
 from src.mcp.server import MCPServer
+from src.mcp.schemas import ToolResult
 from src.core.config import settings
 
 
@@ -133,6 +134,25 @@ class AgentService:
             }
         ]
 
+        # Add bulk delete tool
+        tools.append({
+            "type": "function",
+            "function": {
+                "name": "delete_tasks_bulk",
+                "description": "Permanently remove multiple tasks at once, optionally filtered by completion status",
+                "parameters": {
+                    "type": "object",
+                    "properties": {
+                        "status": {
+                            "type": "string",
+                            "enum": ["all", "completed", "incomplete"],
+                            "description": "Filter tasks by completion status for bulk deletion"
+                        }
+                    }
+                }
+            }
+        })
+
         try:
             # Call OpenRouter LLM
             # OpenRouter requires HTTP-Referer and X-Title for full functionality
@@ -175,11 +195,39 @@ class AgentService:
                     # Inject user context into tool arguments
                     tool_args["user_id"] = user_id
 
-                    result = await self.mcp_server.execute_tool(
-                        tool_name=tool_name,
-                        session=self.session,
-                        **tool_args
-                    )
+                    # Check for bulk operations that require confirmation
+                    if tool_name == "delete_tasks_bulk":
+                        from src.mcp.tools.bulk_operation_guard import BulkOperationGuard
+                        guard = BulkOperationGuard(self.session)
+
+                        # Check if this operation requires confirmation
+                        requires_confirmation, reason_msg = await guard.requires_confirmation(
+                            user_id=user_id,
+                            operation_type="delete_tasks",
+                            operation_params=tool_args
+                        )
+
+                        if requires_confirmation:
+                            # Instead of executing, return a confirmation request
+                            result = ToolResult(
+                                success=False,
+                                error='CONFIRMATION_REQUIRED',
+                                message=reason_msg,
+                                data={}
+                            )
+                        else:
+                            # Execute the tool if no confirmation needed
+                            result = await self.mcp_server.execute_tool(
+                                tool_name=tool_name,
+                                session=self.session,
+                                **tool_args
+                            )
+                    else:
+                        result = await self.mcp_server.execute_tool(
+                            tool_name=tool_name,
+                            session=self.session,
+                            **tool_args
+                        )
 
                     tool_calls_result.append({
                         "tool": tool_name,

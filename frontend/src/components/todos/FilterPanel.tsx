@@ -8,8 +8,11 @@ interface FilterPanelProps {
   onFilterChange: (filters: TodoFilters) => void;
 }
 
-export default function FilterPanel({ filters, availableTags, onFilterChange }: FilterPanelProps) {
-  // Ensure filters.tags is always an array
+export default function FilterPanel({
+  filters,
+  availableTags,
+  onFilterChange,
+}: FilterPanelProps) {
   const tags = filters.tags || [];
 
   const handleStatusChange = (status: TodoFilters['status']) => {
@@ -21,7 +24,10 @@ export default function FilterPanel({ filters, availableTags, onFilterChange }: 
   };
 
   const handleTagToggle = (tag: string) => {
-    const newTags = tags.includes(tag) ? tags.filter(t => t !== tag) : [...tags, tag];
+    const newTags = tags.includes(tag)
+      ? tags.filter((t) => t !== tag)
+      : [...tags, tag];
+
     onFilterChange({ ...filters, tags: newTags });
   };
 
@@ -39,89 +45,104 @@ export default function FilterPanel({ filters, availableTags, onFilterChange }: 
     });
   };
 
-  const buttonBaseClasses = 'px-3 py-1 rounded-md text-sm font-medium transition-all';
-  const activeClass = 'ring-2 ring-purple-500 bg-purple-700 text-white';
-  const inactiveClass = 'bg-[rgba(15,23,42,0.85)] text-gray-300 hover:bg-[rgba(15,23,42,0.95)]';
+  /** ---------- Styling ---------- */
+  const base =
+    'px-5 py-2 rounded-full text-sm font-medium transition-all duration-200';
+
+  const inactive =
+    'bg-blue-600/20 text-white/70 hover:bg-blue-600/35 hover:text-white';
+
+  const active =
+    'bg-blue-500/50 text-white shadow-[0_0_16px_rgba(59,130,246,0.45)]';
 
   return (
-    <div className="flex flex-col gap-4">
-      {/* Status Filters */}
-      <div className="flex flex-col gap-1">
-        <span className="text-sm font-semibold italic text-gray-300">Status</span>
-        <div className="flex gap-2">
-          {(['all', 'incomplete', 'completed'] as TodoFilters['status'][]).map((status) => (
-            <button
-              key={status}
-              onClick={() => handleStatusChange(status)}
-              className={`${buttonBaseClasses} ${
-                filters.status === status ? activeClass : inactiveClass
-              }`}
-              type="button"
-            >
-              {status === 'all' ? 'All' : status === 'incomplete' ? 'Active' : 'Completed'}
-            </button>
-          ))}
+    <div className="flex flex-col gap-6">
+
+      {/* STATUS */}
+      <div className="space-y-2">
+        <span className="text-xs font-medium uppercase tracking-wide text-white/40">
+          Status
+        </span>
+        <div className="flex flex-wrap gap-3">
+          {(['all', 'incomplete', 'completed'] as TodoFilters['status'][]).map(
+            (status) => (
+              <button
+                key={status}
+                type="button"
+                onClick={() => handleStatusChange(status)}
+                className={`${base} ${
+                  filters.status === status ? active : inactive
+                }`}
+              >
+                {status === 'all'
+                  ? 'All'
+                  : status === 'incomplete'
+                  ? 'Active'
+                  : 'Completed'}
+              </button>
+            )
+          )}
         </div>
       </div>
 
-      {/* Priority Filters */}
-      <div className="flex flex-col gap-1">
-        <span className="text-sm font-semibold italic text-gray-300">Priority</span>
-        <div className="flex gap-2">
+      {/* PRIORITY */}
+      <div className="space-y-2">
+        <span className="text-xs font-medium uppercase tracking-wide text-white/40">
+          Priority
+        </span>
+        <div className="flex flex-wrap gap-3">
           {(['all', 'high', 'medium', 'low'] as (Priority | 'all')[]).map((p) => {
-            const colorClass =
-              p === 'high'
-                ? 'bg-red-600 text-white'
-                : p === 'medium'
-                ? 'bg-yellow-500 text-white'
-                : p === 'low'
-                ? 'bg-green-600 text-white'
-                : '';
+            const isActive = filters.priority === p;
+
             return (
               <button
                 key={p}
-                onClick={() => handlePriorityChange(p)}
-                className={`${buttonBaseClasses} ${
-                  filters.priority === p ? `${activeClass} ${colorClass}` : inactiveClass
-                }`}
                 type="button"
+                onClick={() => handlePriorityChange(p)}
+                className={`${base} ${
+                  isActive ? active : inactive
+                }`}
               >
-                {p.charAt(0).toUpperCase() + p.slice(1)}
+                {p === 'all'
+                  ? 'All'
+                  : p.charAt(0).toUpperCase() + p.slice(1)}
               </button>
             );
           })}
         </div>
       </div>
 
-      {/* Tags Filters */}
+      {/* TAGS */}
       {availableTags.length > 0 && (
-        <div className="flex flex-col gap-1">
-          <span className="text-sm font-semibold italic text-gray-300">Tags</span>
-          <div className="flex flex-wrap gap-2">
+        <div className="space-y-2">
+          <span className="text-xs font-medium uppercase tracking-wide text-white/40">
+            Tags
+          </span>
+          <div className="flex flex-wrap gap-3">
             {availableTags.map((tag) => (
               <button
                 key={tag}
-                onClick={() => handleTagToggle(tag)}
-                className={`${buttonBaseClasses} ${
-                  tags.includes(tag) ? `${activeClass} bg-purple-600` : inactiveClass
-                }`}
                 type="button"
+                onClick={() => handleTagToggle(tag)}
+                className={`${base} ${
+                  tags.includes(tag) ? active : inactive
+                }`}
               >
-                {tag}
+                #{tag}
               </button>
             ))}
           </div>
         </div>
       )}
 
-      {/* Clear Filters Button */}
+      {/* CLEAR */}
       {hasActiveFilters && (
         <button
-          onClick={clearFilters}
           type="button"
-          className="mt-2 px-3 py-1 text-sm font-medium rounded-md bg-red-600 text-white hover:bg-red-700 transition-all"
+          onClick={clearFilters}
+          className="self-start text-sm text-blue-300 hover:text-blue-200 transition"
         >
-          Clear Filters
+          Clear filters
         </button>
       )}
     </div>

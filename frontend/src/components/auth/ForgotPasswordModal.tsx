@@ -9,7 +9,10 @@ interface ForgotPasswordModalProps {
   onClose: () => void;
 }
 
-export default function ForgotPasswordModal({ isOpen, onClose }: ForgotPasswordModalProps) {
+export default function ForgotPasswordModal({
+  isOpen,
+  onClose,
+}: ForgotPasswordModalProps) {
   const [email, setEmail] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [loading, setLoading] = useState(false);
@@ -39,31 +42,36 @@ export default function ForgotPasswordModal({ isOpen, onClose }: ForgotPasswordM
     setMessage('');
     setEmailError('');
     setPasswordError('');
+    setLoading(false);
     onClose();
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    // Validate email and password
     const emailValidation = validateEmail(email);
     const passwordValidation = validatePassword(newPassword);
 
     setEmailError(emailValidation || '');
     setPasswordError(passwordValidation || '');
 
-    if (emailValidation || passwordValidation) {
-      return;
-    }
+    if (emailValidation || passwordValidation) return;
 
     try {
       setLoading(true);
-      // Simulate API call - in production, integrate with backend
-      await new Promise(resolve => setTimeout(resolve, 1500));
-      setMessage('Password reset successful! Please sign in with your new password.');
+
+      // Simulated API call
+      await new Promise((resolve) => setTimeout(resolve, 1500));
+
+      setMessage(
+        'Password reset successful! Please sign in with your new password.'
+      );
       setEmail('');
       setNewPassword('');
-      setTimeout(() => handleClose(), 2000);
+
+      setTimeout(() => {
+        handleClose();
+      }, 2000);
     } catch {
       setMessage('Failed to reset password. Please try again.');
       setLoading(false);
@@ -73,7 +81,10 @@ export default function ForgotPasswordModal({ isOpen, onClose }: ForgotPasswordM
   if (!isOpen) return null;
 
   return (
-    <div className="forgot-password-overlay" onClick={handleOverlayClick}>
+    <div
+      className="forgot-password-overlay"
+      onClick={handleOverlayClick}
+    >
       <div className="forgot-password-container">
         <div className="forgot-password-modal">
           {/* Header */}
@@ -89,66 +100,98 @@ export default function ForgotPasswordModal({ isOpen, onClose }: ForgotPasswordM
             </button>
           </div>
 
-          {/* Message */}
+          {/* Description */}
+          <p className="forgot-password-description">
+            Enter your registered email and a new password to regain access
+            to your account.
+          </p>
+
+          {/* Status Message */}
           {message && (
-            <div className={`forgot-password-message ${message.includes('successful') ? 'success' : 'error'}`}>
-              <span className="forgot-password-message-icon">{message.includes('successful') ? '✓' : '⚠'}</span>
-              <span className="forgot-password-message-text">{message}</span>
+            <div
+              className={`forgot-password-message ${
+                message.includes('successful') ? 'success' : 'error'
+              }`}
+            >
+              <span className="forgot-password-message-icon">
+                {message.includes('successful') ? '✓' : '⚠'}
+              </span>
+              <span className="forgot-password-message-text">
+                {message}
+              </span>
             </div>
           )}
 
           {/* Form */}
-          <form onSubmit={handleSubmit} className="forgot-password-form">
-            {/* Email Field */}
+          <form
+            onSubmit={handleSubmit}
+            className="forgot-password-form"
+          >
+            {/* Email */}
             <div>
-              <label htmlFor="email" className="forgot-password-label required">
+              <label
+                htmlFor="email"
+                className="forgot-password-label required"
+              >
                 Registered Email Address
               </label>
               <input
                 id="email"
                 type="email"
-                className={`forgot-password-input ${emailError ? 'error' : ''}`}
+                className={`forgot-password-input ${
+                  emailError ? 'error' : ''
+                }`}
                 value={email}
                 onChange={(e) => {
                   setEmail(e.target.value);
                   setEmailError('');
                 }}
                 placeholder="you@example.com"
-                disabled={loading}
                 autoComplete="email"
+                disabled={loading}
               />
               {emailError && (
                 <div className="forgot-password-error">
-                  <span className="forgot-password-error-text">{emailError}</span>
+                  <span className="forgot-password-error-text">
+                    {emailError}
+                  </span>
                 </div>
               )}
             </div>
 
-            {/* New Password Field */}
+            {/* New Password */}
             <div>
-              <label htmlFor="newPassword" className="forgot-password-label required">
+              <label
+                htmlFor="newPassword"
+                className="forgot-password-label required"
+              >
                 New Password
               </label>
               <input
                 id="newPassword"
                 type="password"
-                className={`forgot-password-input ${passwordError ? 'error' : ''}`}
+                className={`forgot-password-input ${
+                  passwordError ? 'error' : ''
+                }`}
                 value={newPassword}
                 onChange={(e) => {
                   setNewPassword(e.target.value);
                   setPasswordError('');
                 }}
-                placeholder="Enter new password (min 8 characters)"
-                disabled={loading}
+                placeholder="Minimum 8 characters"
                 autoComplete="new-password"
+                disabled={loading}
               />
               {passwordError && (
                 <div className="forgot-password-error">
-                  <span className="forgot-password-error-text">{passwordError}</span>
+                  <span className="forgot-password-error-text">
+                    {passwordError}
+                  </span>
                 </div>
               )}
             </div>
 
+            {/* Actions */}
             <div className="forgot-password-actions">
               <button
                 type="button"
@@ -158,12 +201,17 @@ export default function ForgotPasswordModal({ isOpen, onClose }: ForgotPasswordM
               >
                 Cancel
               </button>
+
               <button
                 type="submit"
                 className="forgot-password-btn forgot-password-btn-primary"
                 disabled={loading || !email || !newPassword}
               >
-                {loading ? <span className="forgot-password-spinner"></span> : 'Reset Password'}
+                {loading ? (
+                  <span className="forgot-password-spinner" />
+                ) : (
+                  'Reset Password'
+                )}
               </button>
             </div>
           </form>

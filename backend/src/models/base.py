@@ -11,8 +11,8 @@ from typing import Optional
 class TimestampModel(SQLModel):
     """Base model with created_at and updated_at timestamps."""
 
-    created_at: datetime = Field(default_factory=datetime.utcnow, nullable=False)
-    updated_at: datetime = Field(default_factory=datetime.utcnow, nullable=False)
+    created_at: datetime = Field(default_factory=datetime.now, nullable=False)
+    updated_at: datetime = Field(default_factory=datetime.now, nullable=False)
 
     class Config:
         """Pydantic configuration."""

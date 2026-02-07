@@ -1,5 +1,6 @@
 /**
  * Comprehensive CSS for enhanced Todo components
+ * Blue Theme Update
  */
 
 /* ========== SearchBar Styles ========== */
@@ -16,7 +17,7 @@
   transform: translateY(-50%);
   width: 1.25rem;
   height: 1.25rem;
-  color: #a888ff;
+  color: #60a5fa; /* bright blue */
   pointer-events: none;
 }
 
@@ -24,22 +25,22 @@
   width: 100%;
   padding: 0.75rem 3rem 0.75rem 3rem;
   background: rgba(15, 23, 42, 0.85);
-  border: 1px solid rgba(168, 136, 255, 0.3);
+  border: 1px solid rgba(96, 165, 250, 0.3);
   border-radius: 12px;
-  color: #f2ecff;
+  color: #f2f7ff;
   font-size: 1rem;
   transition: all 0.3s;
 }
 
 .search-input:focus {
   outline: none;
-  border-color: rgba(168, 136, 255, 0.8);
+  border-color: rgba(96, 165, 250, 0.8);
   background: rgba(15, 23, 42, 0.95);
-  box-shadow: 0 0 15px rgba(168, 136, 255, 0.2);
+  box-shadow: 0 0 15px rgba(96, 165, 250, 0.2);
 }
 
 .search-input::placeholder {
-  color: #8b7ea8;
+  color: #a5b4fc;
 }
 
 .search-clear {
@@ -54,14 +55,14 @@
   justify-content: center;
   background: none;
   border: none;
-  color: #a888ff;
+  color: #60a5fa;
   cursor: pointer;
   transition: color 0.3s;
   padding: 0;
 }
 
 .search-clear:hover {
-  color: #e9ddff;
+  color: #bfdbfe;
 }
 
 .search-clear svg {
@@ -72,108 +73,59 @@
 /* ========== FilterPanel Styles ========== */
 .filter-panel {
   background: rgba(15, 23, 42, 0.6);
-  border: 1px solid rgba(168, 136, 255, 0.2);
+  border: 1px solid rgba(96, 165, 250, 0.2);
   border-radius: 12px;
   padding: 1.25rem;
   margin-top: 1rem;
-}
-
-.filter-section {
-  margin-bottom: 1.25rem;
-}
-
-.filter-section:last-of-type {
-  margin-bottom: 0.75rem;
 }
 
 .filter-label {
   display: block;
   font-size: 0.875rem;
   font-weight: 600;
-  color: #cfc4ff;
+  color: #dbeafe;
   margin-bottom: 0.75rem;
   letter-spacing: 0.5px;
 }
 
-.filter-buttons {
-  display: flex;
-  gap: 0.5rem;
-  flex-wrap: wrap;
-}
-
-.filter-btn {
-  padding: 0.5rem 1rem;
-  background: rgba(15, 23, 42, 0.85);
-  border: 1px solid rgba(168, 136, 255, 0.25);
-  border-radius: 8px;
-  color: #cfc4ff;
-  font-size: 0.875rem;
-  font-weight: 500;
-  cursor: pointer;
-  transition: all 0.3s;
-}
-
-.filter-btn:hover {
-  border-color: rgba(168, 136, 255, 0.5);
-  background: rgba(15, 23, 42, 0.95);
-}
-
-.filter-btn.active {
-  background: rgba(168, 136, 255, 0.25);
-  border-color: rgba(168, 136, 255, 0.8);
-  color: #e9ddff;
-  box-shadow: 0 0 10px rgba(168, 136, 255, 0.3);
-}
-
-.filter-btn.priority-high.active {
-  background: rgba(239, 68, 68, 0.2);
-  border-color: rgba(239, 68, 68, 0.6);
-  color: #fca5a5;
-}
-
-.filter-btn.priority-medium.active {
-  background: rgba(251, 191, 36, 0.2);
-  border-color: rgba(251, 191, 36, 0.6);
-  color: #fcd34d;
-}
-
-.filter-btn.priority-low.active {
-  background: rgba(34, 197, 94, 0.2);
-  border-color: rgba(34, 197, 94, 0.6);
-  color: #86efac;
-}
-
+.filter-buttons,
 .filter-tags {
   display: flex;
   gap: 0.5rem;
   flex-wrap: wrap;
 }
 
+.filter-btn,
 .filter-tag {
   padding: 0.5rem 1rem;
   background: rgba(15, 23, 42, 0.85);
-  border: 1px solid rgba(168, 136, 255, 0.25);
-  border-radius: 20px;
-  color: #cfc4ff;
+  border: 1px solid rgba(96, 165, 250, 0.25);
+  border-radius: 8px;
+  color: #dbeafe;
   font-size: 0.875rem;
+  font-weight: 500;
   cursor: pointer;
   transition: all 0.3s;
 }
 
+.filter-btn:hover,
 .filter-tag:hover {
-  border-color: rgba(168, 136, 255, 0.5);
+  border-color: rgba(96, 165, 250, 0.5);
+  background: rgba(15, 23, 42, 0.95);
 }
 
+.filter-btn.active,
 .filter-tag.active {
-  background: rgba(168, 136, 255, 0.25);
-  border-color: rgba(168, 136, 255, 0.8);
-  color: #e9ddff;
+  background: rgba(96, 165, 250, 0.25);
+  border-color: rgba(96, 165, 250, 0.8);
+  color: #bfdbfe;
+  box-shadow: 0 0 10px rgba(96, 165, 250, 0.3);
 }
 
 .clear-filters-btn {
   width: 100%;
   padding: 0.625rem;
-  background: rgba(239, 68, 68, 0.15);
+  background: rgba(239, 68, 68, 0.15); /* keep red for clear */
   border: 1px solid rgba(239, 68, 68, 0.4);
   border-radius: 8px;
   color: #fca5a5;
@@ -190,14 +142,8 @@
 }
 
 /* ========== SortControls Styles ========== */
-.sort-controls {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-}
-
 .sort-label {
-  color: #cfc4ff;
+  color: #dbeafe;
   font-size: 0.875rem;
   font-weight: 500;
   white-space: nowrap;
@@ -206,9 +152,9 @@
 .sort-select {
   padding: 0.625rem 1rem;
   background: rgba(15, 23, 42, 0.85);
-  border: 1px solid rgba(168, 136, 255, 0.3);
+  border: 1px solid rgba(96, 165, 250, 0.3);
   border-radius: 8px;
-  color: #f2ecff;
+  color: #f2f7ff;
   font-size: 0.875rem;
   cursor: pointer;
   transition: all 0.3s;
@@ -216,280 +162,120 @@
 
 .sort-select:focus {
   outline: none;
-  border-color: rgba(168, 136, 255, 0.8);
+  border-color: rgba(96, 165, 250, 0.8);
   background: rgba(15, 23, 42, 0.95);
 }
 
 .sort-select option {
   background: #0f172a;
-  color: #f2ecff;
+  color: #f2f7ff;
 }
 
 /* ========== PriorityBadge Styles ========== */
-.priority-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.375rem;
-  padding: 0.25rem 0.75rem;
-  border-radius: 12px;
-  font-size: 0.75rem;
-  font-weight: 600;
-  letter-spacing: 0.5px;
-  border: 1px solid;
-  transition: all 0.3s;
-}
-
-.priority-badge.priority-sm {
-  padding: 0.125rem 0.5rem;
-  font-size: 0.625rem;
-}
-
-.priority-badge.priority-lg {
-  padding: 0.5rem 1rem;
-  font-size: 0.875rem;
-}
-
 .priority-badge.priority-high {
-  background: rgba(239, 68, 68, 0.15);
-  border-color: rgba(239, 68, 68, 0.4);
-  color: #fca5a5;
+  background: rgba(59, 130, 246, 0.15);
+  border-color: rgba(59, 130, 246, 0.4);
+  color: #93c5fd;
 }
 
 .priority-badge.priority-medium {
-  background: rgba(251, 191, 36, 0.15);
-  border-color: rgba(251, 191, 36, 0.4);
-  color: #fcd34d;
+  background: rgba(96, 165, 250, 0.15);
+  border-color: rgba(96, 165, 250, 0.4);
+  color: #60a5fa;
 }
 
 .priority-badge.priority-low {
-  background: rgba(34, 197, 94, 0.15);
-  border-color: rgba(34, 197, 94, 0.4);
-  color: #86efac;
-}
-
-.priority-icon {
-  font-size: 0.875em;
-}
-
-.priority-text {
-  text-transform: uppercase;
+  background: rgba(147, 197, 253, 0.15);
+  border-color: rgba(147, 197, 253, 0.4);
+  color: #bfdbfe;
 }
 
 /* ========== TagsList Styles ========== */
-.tags-list {
-  display: flex;
-  gap: 0.5rem;
-  flex-wrap: wrap;
-  align-items: center;
-}
-
 .tag {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.25rem;
-  padding: 0.25rem 0.75rem;
-  background: rgba(168, 136, 255, 0.15);
-  border: 1px solid rgba(168, 136, 255, 0.4);
-  border-radius: 12px;
-  font-size: 0.75rem;
-  color: #cfc4ff;
-  transition: all 0.3s;
-}
-
-.tag-icon {
-  color: #a888ff;
-  font-weight: 600;
-}
-
-.tag-text {
-  font-weight: 500;
+  background: rgba(96, 165, 250, 0.15);
+  border: 1px solid rgba(96, 165, 250, 0.4);
+  color: #dbeafe;
 }
 
 .tag-remove {
-  background: none;
-  border: none;
-  color: #a888ff;
-  font-size: 1.25rem;
-  line-height: 1;
-  cursor: pointer;
-  padding: 0;
-  margin-left: 0.125rem;
-  transition: color 0.3s;
+  color: #60a5fa;
 }
 
 .tag-remove:hover {
-  color: #fca5a5;
-}
-
-.tag-more {
-  background: rgba(168, 136, 255, 0.25);
-  border-color: rgba(168, 136, 255, 0.6);
-  color: #e9ddff;
-  font-weight: 600;
+  color: #f87171; /* slight red hover for removal */
 }
 
 /* ========== DateTimePicker Styles ========== */
-.datetime-picker {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-}
-
 .datetime-label {
-  font-size: 0.875rem;
-  font-weight: 600;
-  font-style: italic;
-  color: #cfc4ff;
-}
-
-.datetime-input-wrapper {
-  position: relative;
+  color: #dbeafe;
 }
 
 .datetime-input {
-  width: 100%;
-  padding: 0.625rem 3rem 0.625rem 0.75rem;
   background: rgba(15, 23, 42, 0.85);
-  border: 1px solid rgba(168, 136, 255, 0.3);
-  border-radius: 8px;
-  color: #f2ecff;
-  font-size: 0.875rem;
-  transition: all 0.3s;
+  border: 1px solid rgba(96, 165, 250, 0.3);
+  color: #f2f7ff;
 }
 
 .datetime-input:focus {
-  outline: none;
-  border-color: rgba(168, 136, 255, 0.8);
+  border-color: rgba(96, 165, 250, 0.8);
   background: rgba(15, 23, 42, 0.95);
 }
 
 .datetime-clear {
-  position: absolute;
-  right: 0.5rem;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 2rem;
-  height: 2rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: rgba(239, 68, 68, 0.15);
-  border: 1px solid rgba(239, 68, 68, 0.3);
-  border-radius: 6px;
-  color: #fca5a5;
-  font-size: 1.25rem;
-  cursor: pointer;
-  transition: all 0.3s;
+  background: rgba(59, 130, 246, 0.15);
+  border: 1px solid rgba(59, 130, 246, 0.3);
+  color: #93c5fd;
 }
 
 .datetime-clear:hover {
-  background: rgba(239, 68, 68, 0.25);
-  border-color: rgba(239, 68, 68, 0.5);
+  background: rgba(59, 130, 246, 0.25);
+  border-color: rgba(59, 130, 246, 0.5);
 }
 
 .datetime-display {
-  font-size: 0.875rem;
-  color: #a888ff;
-  font-style: italic;
-  margin-top: 0.25rem;
+  color: #60a5fa;
 }
 
 /* ========== Enhanced TodoItem Styles ========== */
-.todo-item-title-row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 0.75rem;
-  margin-bottom: 0.5rem;
-}
-
 .todo-item-metadata {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 1rem;
-  align-items: center;
-  margin-top: 0.75rem;
-  padding-top: 0.75rem;
-  border-top: 1px solid rgba(168, 136, 255, 0.15);
+  border-top: 1px solid rgba(96, 165, 250, 0.15);
 }
 
 .todo-due-date {
-  display: flex;
-  align-items: center;
-  gap: 0.375rem;
-  padding: 0.25rem 0.75rem;
-  background: rgba(168, 136, 255, 0.1);
-  border: 1px solid rgba(168, 136, 255, 0.3);
-  border-radius: 8px;
-  font-size: 0.75rem;
-  color: #cfc4ff;
+  background: rgba(96, 165, 250, 0.1);
+  border-color: rgba(96, 165, 250, 0.3);
+  color: #dbeafe;
 }
 
 .todo-due-date.overdue {
-  background: rgba(239, 68, 68, 0.15);
-  border-color: rgba(239, 68, 68, 0.4);
-  color: #fca5a5;
+  background: rgba(59, 130, 246, 0.15);
+  border-color: rgba(59, 130, 246, 0.4);
+  color: #93c5fd;
 }
 
 .todo-due-date.due-soon {
-  background: rgba(251, 191, 36, 0.15);
-  border-color: rgba(251, 191, 36, 0.4);
-  color: #fcd34d;
-}
-
-.due-date-icon {
-  width: 1rem;
-  height: 1rem;
+  background: rgba(147, 197, 253, 0.15);
+  border-color: rgba(147, 197, 253, 0.4);
+  color: #bfdbfe;
 }
 
 .todo-recurrence {
-  display: flex;
-  align-items: center;
-  gap: 0.375rem;
-  padding: 0.25rem 0.75rem;
-  background: rgba(34, 197, 94, 0.1);
-  border: 1px solid rgba(34, 197, 94, 0.3);
-  border-radius: 8px;
-  font-size: 0.75rem;
-  color: #86efac;
-  text-transform: capitalize;
-}
-
-.recurrence-icon {
-  width: 1rem;
-  height: 1rem;
+  background: rgba(96, 165, 250, 0.1);
+  border-color: rgba(96, 165, 250, 0.3);
+  color: #60a5fa;
 }
 
 .todo-item.overdue {
-  border-color: rgba(239, 68, 68, 0.4);
-  box-shadow: 0 0 15px rgba(239, 68, 68, 0.15);
+  border-color: rgba(59, 130, 246, 0.4);
+  box-shadow: 0 0 15px rgba(59, 130, 246, 0.15);
 }
 
 /* ========== Responsive Adjustments ========== */
 @media (max-width: 768px) {
-  .todo-item-title-row {
-    flex-direction: column;
-    align-items: flex-start;
-  }
-
-  .filter-buttons,
-  .filter-tags {
-    flex-direction: column;
-  }
-
   .filter-btn,
-  .filter-tag {
-    width: 100%;
-    text-align: center;
-  }
-
-  .sort-controls {
-    flex-direction: column;
-    align-items: flex-start;
-    width: 100%;
-  }
-
+  .filter-tag,
   .sort-select {
     width: 100%;
+    text-align: center;
   }
 }

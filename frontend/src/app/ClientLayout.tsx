@@ -8,6 +8,7 @@
 import { useEffect } from 'react';
 import { AuthProvider } from '../hooks/AuthContext';
 import ChatWidget from '../components/chat/ChatWidget';
+import Footer from '../components/layout/Footer';
 
 export default function ClientLayout({ children }: { children: React.ReactNode }) {
   useEffect(() => {
@@ -19,6 +20,8 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
       {children}
       {/* ChatWidget should appear on all pages when authenticated */}
       <ChatWidget />
+      {/* Footer appears on all pages except auth pages */}
+      <Footer />
     </AuthProvider>
   );
 }

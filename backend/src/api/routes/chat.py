@@ -34,25 +34,22 @@ class ChatResponse(BaseModel):
     tool_calls: List[ToolCallResult]
 
 
-@router.post("/{user_id}/chat", response_model=ChatResponse)
+@router.post("/chat", response_model=ChatResponse)
 async def chat(
-    user_id: int,
     chat_request: ChatRequest,
     current_user: User = Depends(get_current_user),
     session: AsyncSession = Depends(get_db_session)
 ):
+    # Resolve user_id from authentication context
+    user_id = current_user.id
     """
     Process a chat message from a user.
     Includes authentication, authorization, and agent execution.
     """
-    # 1. Authentication is handled by get_current_user logic (returns 401 via middleware)
+    # 1. Authentication is handled by get_current_user middleware (returns 401 if not authenticated)
 
-    # 2. Authorization: Ensure user can only chat with their own bot
-    if current_user.id != user_id:
-        raise HTTPException(
-            status_code=status.HTTP_403_FORBIDDEN,
-            detail="Cannot access another user's chat"
-        )
+    # 2. Authorization is implicit: user_id comes from authenticated user context
+    # No need to check if user_id matches current_user.id since they are the same
 
     try:
         conversation_service = ConversationService(session)

@@ -32,17 +32,17 @@ export default function Button({
     font-semibold tracking-wide
     transition-all duration-200 ease-out
     focus-visible:outline-none
-    focus-visible:ring-2 focus-visible:ring-purple-400
+    focus-visible:ring-2 focus-visible:ring-blue-400
     focus-visible:ring-offset-2 focus-visible:ring-offset-black
     disabled:opacity-50 disabled:cursor-not-allowed
   `;
 
   const variants = {
     primary: `
-      bg-gradient-to-r from-fuchsia-600 via-purple-600 to-indigo-600
+      bg-gradient-to-r from-blue-600 via-indigo-600 to-sky-600
       text-white
-      shadow-[0_0_18px_rgba(168,85,247,0.6)]
-      hover:shadow-[0_0_45px_rgba(168,85,247,1)]
+      shadow-[0_0_18px_rgba(59,130,246,0.6)]
+      hover:shadow-[0_0_45px_rgba(59,130,246,1)]
       hover:scale-105
       active:scale-95
     `,
