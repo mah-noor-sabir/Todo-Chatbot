@@ -71,7 +71,7 @@ export default function LandingPage() {
   const visibleCount =
     typeof window !== 'undefined' && window.innerWidth < 768 ? 1 : 3;
 
-  const moveSlider = (direction) => {
+  const moveSlider = (direction: number) => {
   setSliderIndex((prev) => {
     const maxIndex = testimonials.length - visibleCount;
 
