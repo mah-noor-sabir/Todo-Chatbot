@@ -17,32 +17,38 @@ export default function ChatWidget() {
 
   // Ensure CSS variables are available globally
   useEffect(() => {
-    const rootStyles = {
-      '--bg-main': '#05060a',
-      '--bg-layer': '#0b1020',
-      '--bg-card': 'rgba(255, 255, 255, 0.05)',
-      '--blue-400': '#60a5fa',
-      '--blue-500': '#3b82f6',
-      '--blue-600': '#2563eb',
-      '--text-primary': '#ffffff',
-      '--text-muted': '#94a3b8',
-      '--glass-bg': 'rgba(15, 23, 42, 0.6)',
-      '--glass-border': 'rgba(59, 130, 246, 0.2)',
-    };
+    // Only run in browser environment
+    if (typeof window !== 'undefined') {
+      const rootStyles = {
+        '--bg-main': '#05060a',
+        '--bg-layer': '#0b1020',
+        '--bg-card': 'rgba(255, 255, 255, 0.05)',
+        '--blue-400': '#60a5fa',
+        '--blue-500': '#3b82f6',
+        '--blue-600': '#2563eb',
+        '--text-primary': '#ffffff',
+        '--text-muted': '#94a3b8',
+        '--glass-bg': 'rgba(15, 23, 42, 0.6)',
+        '--glass-border': 'rgba(59, 130, 246, 0.2)',
+      };
 
-    Object.entries(rootStyles).forEach(([property, value]) => {
-      document.documentElement.style.setProperty(property, value);
-    });
+      Object.entries(rootStyles).forEach(([property, value]) => {
+        document.documentElement.style.setProperty(property, value);
+      });
+    }
   }, []);
 
   // Debug logging for disappearing chatbot
   useEffect(() => {
-    console.log('[ChatWidget] State changed:', {
-      isLoading,
-      isAuthenticated,
-      isChatOpen,
-      timestamp: new Date().toISOString()
-    });
+    // Only log in development and browser environment
+    if (process.env.NODE_ENV === 'development' && typeof window !== 'undefined') {
+      console.log('[ChatWidget] State changed:', {
+        isLoading,
+        isAuthenticated,
+        isChatOpen,
+        timestamp: new Date().toISOString()
+      });
+    }
   }, [isLoading, isAuthenticated, isChatOpen]);
 
   const handleOpenChat = () => {
@@ -53,8 +59,8 @@ export default function ChatWidget() {
     setIsChatOpen(false);
   };
 
-  // Don't render anything while checking auth status
-  if (isLoading) {
+  // Don't render anything while checking auth status or if not in browser
+  if (isLoading || typeof window === 'undefined') {
     return null;
   }
 
@@ -72,7 +78,9 @@ export default function ChatWidget() {
         onToolCall={(toolName) => {
           // Trigger a global event to notify the Todo UI about changes
           // This ensures the Todo UI updates when chatbot modifies todos
-          window.dispatchEvent(new CustomEvent('chatbotTodoUpdate', { detail: { toolName } }));
+          if (typeof window !== 'undefined') {
+            window.dispatchEvent(new CustomEvent('chatbotTodoUpdate', { detail: { toolName } }));
+          }
         }}
       />
     </>

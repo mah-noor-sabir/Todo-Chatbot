@@ -30,6 +30,11 @@ export class ApiClientError extends Error {
  * Generic API request with JSON handling and error parsing
  */
 async function apiRequest<T>(endpoint: string, options: RequestInit = {}): Promise<T> {
+  // Prevent API calls during server-side rendering
+  if (typeof window === 'undefined') {
+    throw new ApiClientError('API requests are not available during server-side rendering', 0, 'SSR_ERROR');
+  }
+
   const url = `${API_BASE_URL}${endpoint}`;
 
   const config: RequestInit = {

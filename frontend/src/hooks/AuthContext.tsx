@@ -29,6 +29,9 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const isAuthenticated = !!user;
 
   const refreshSession = async () => {
+    // Only run in browser environment
+    if (typeof window === 'undefined') return;
+    
     hasCheckedSession.current = false; // Allow re-check
     setIsLoading(true);
 
@@ -57,6 +60,12 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   };
 
   useEffect(() => {
+    // Only run in browser environment to prevent SSR issues
+    if (typeof window === 'undefined') {
+      setIsLoading(false);
+      return;
+    }
+    
     if (hasCheckedSession.current) return;
     hasCheckedSession.current = true;
 

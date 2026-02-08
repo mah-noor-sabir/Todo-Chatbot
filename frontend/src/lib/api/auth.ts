@@ -17,6 +17,11 @@ export const authApi = {
     try {
       return await apiClient.post<UserResponse>('/auth/signup', data);
     } catch (err) {
+      // Handle SSR error specifically
+      if (err instanceof ApiClientError && err.errorCode === 'SSR_ERROR') {
+        // During SSR, return a default response
+        throw err;
+      }
       if (err instanceof ApiClientError) throw err;
       throw new ApiClientError('Failed to signup', 0, 'SIGNUP_ERROR');
     }
@@ -32,6 +37,10 @@ export const authApi = {
     try {
       return await apiClient.post<UserResponse>('/auth/signin', data);
     } catch (err) {
+      // Handle SSR error specifically
+      if (err instanceof ApiClientError && err.errorCode === 'SSR_ERROR') {
+        throw err;
+      }
       if (err instanceof ApiClientError) throw err;
       throw new ApiClientError('Failed to signin', 0, 'SIGNIN_ERROR');
     }
@@ -45,6 +54,10 @@ export const authApi = {
     try {
       await apiClient.post<void>('/auth/signout');
     } catch (err) {
+      // Handle SSR error specifically
+      if (err instanceof ApiClientError && err.errorCode === 'SSR_ERROR') {
+        throw err;
+      }
       if (err instanceof ApiClientError) throw err;
       throw new ApiClientError('Failed to signout', 0, 'SIGNOUT_ERROR');
     }
@@ -59,6 +72,10 @@ export const authApi = {
     try {
       return await apiClient.get<UserResponse>('/auth/session');
     } catch (err) {
+      // Handle SSR error specifically
+      if (err instanceof ApiClientError && err.errorCode === 'SSR_ERROR') {
+        throw err;
+      }
       if (err instanceof ApiClientError) throw err;
       throw new ApiClientError('Failed to get session', 0, 'SESSION_ERROR');
     }
