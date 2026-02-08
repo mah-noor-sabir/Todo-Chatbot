@@ -49,6 +49,10 @@ export function useTodos(): UseTodosReturn {
       else setError('Failed to load todos. Please refresh the page.');
     } finally {
       setLoading(false);
+      // Dispatch refresh event to notify chat system
+      window.dispatchEvent(new CustomEvent('manualTodoUpdate', {
+        detail: { action: 'refresh', count: todos.length }
+      }));
     }
   }, []);
 
@@ -110,6 +114,11 @@ export function useTodos(): UseTodosReturn {
       if (err instanceof ApiClientError) setError(err.message);
       else setError('Failed to create todo. Please try again.');
       throw err;
+    } finally {
+      // Dispatch manual update event to notify chat system
+      window.dispatchEvent(new CustomEvent('manualTodoUpdate', {
+        detail: { action: 'add_task', todo: optimisticTodo, id: tempId }
+      }));
     }
   };
 
@@ -179,6 +188,11 @@ export function useTodos(): UseTodosReturn {
         setError('Failed to update todo. Please try again.');
       }
       throw err;
+    } finally {
+      // Dispatch manual update event to notify chat system
+      window.dispatchEvent(new CustomEvent('manualTodoUpdate', {
+        detail: { action: 'update_task', id, data }
+      }));
     }
   };
 
@@ -235,6 +249,11 @@ export function useTodos(): UseTodosReturn {
       if (err instanceof ApiClientError) setError(err.message);
       else setError('Failed to update todo.');
       throw err;
+    } finally {
+      // Dispatch manual update event to notify chat system
+      window.dispatchEvent(new CustomEvent('manualTodoUpdate', {
+        detail: { action: is_completed ? 'complete_task' : 'uncomplete_task', id, is_completed }
+      }));
     }
   };
 
@@ -288,6 +307,11 @@ export function useTodos(): UseTodosReturn {
         setError('Failed to delete todo. Please try again.');
       }
       throw err;
+    } finally {
+      // Dispatch manual update event to notify chat system
+      window.dispatchEvent(new CustomEvent('manualTodoUpdate', {
+        detail: { action: 'delete_task', id }
+      }));
     }
   };
 
