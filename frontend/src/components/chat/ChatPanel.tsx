@@ -1,9 +1,7 @@
 /**
  * ChatPanel Component
  * ------------------
- * Primary conversational interface for the Todo Assistant.
- * Manages message flow, user input, scrolling behavior,
- * and overall chat lifecycle.
+ * Compact Todo Assistant chat panel with simplified history and new chat layout.
  */
 
 'use client';
@@ -39,30 +37,21 @@ export default function ChatPanel({ isOpen, onClose, onToolCall }: ChatPanelProp
   } = useMultiChat(user?.id, user?.first_name || user?.email?.split('@')[0], onToolCall);
 
   const [inputValue, setInputValue] = useState('');
-  const [showHistory, setShowHistory] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
 
-  /* Auto-scroll to newest message */
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages, isTyping]);
 
-  /* Auto-focus input when panel opens */
   useEffect(() => {
-    if (isOpen) {
-      inputRef.current?.focus();
-    }
+    if (isOpen) inputRef.current?.focus();
   }, [isOpen]);
 
-  /* Initialize with a new chat if none exist */
   useEffect(() => {
-    if (chats.length === 0 && isOpen && user) {
-      createNewChat();
-    }
+    if (chats.length === 0 && isOpen && user) createNewChat();
   }, [chats.length, isOpen, user, createNewChat]);
 
-  /* Send message */
   const handleSend = async () => {
     const content = inputValue.trim();
     if (!content || loading) return;
@@ -75,7 +64,6 @@ export default function ChatPanel({ isOpen, onClose, onToolCall }: ChatPanelProp
     }
   };
 
-  /* Enter to send (Shift+Enter for newline) */
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
@@ -83,194 +71,93 @@ export default function ChatPanel({ isOpen, onClose, onToolCall }: ChatPanelProp
     }
   };
 
-  /* Close when clicking outside panel */
   const handleOverlayClick = (e: React.MouseEvent) => {
-    if (e.target === e.currentTarget) {
-      onClose();
-    }
+    if (e.target === e.currentTarget) onClose();
   };
 
   if (!isOpen) return null;
 
   return (
-    <div className="chat-overlay" onClick={handleOverlayClick}>
-      <div
-        className="chat-panel glass-effect"
-        onClick={(e) => e.stopPropagation()}
-        role="dialog"
-        aria-modal="true"
-        aria-label="Todo Assistant Chat"
-      >
-        {/* ===============================
-            Header with Floating History Panel
-           =============================== */}
+    <div 
+      className="chat-overlay" 
+      onClick={handleOverlayClick}
+      style={{
+        '--bg-main': '#05060a',
+        '--bg-layer': '#0b1020',
+        '--bg-card': 'rgba(255, 255, 255, 0.05)',
+        '--blue-400': '#60a5fa',
+        '--blue-500': '#3b82f6',
+        '--blue-600': '#2563eb',
+        '--text-primary': '#ffffff',
+        '--text-muted': '#94a3b8',
+        '--glass-bg': 'rgba(15, 23, 42, 0.6)',
+        '--glass-border': 'rgba(59, 130, 246, 0.2)',
+        '--radius-lg': '1rem',
+        '--radius-md': '0.75rem',
+        '--shadow-soft': '0 20px 40px rgba(0, 0, 0, 0.35)',
+      } as React.CSSProperties}
+    >
+      <div className="chat-panel glass-effect" onClick={(e) => e.stopPropagation()} role="dialog" aria-modal="true">
+        {/* Header */}
         <div className="chat-header">
-          <div className="chat-header-content">
-            {/* Main Chat Header */}
-            <div className="chat-current-info">
-              <div className="chat-bot-avatar" aria-hidden="true">
-                <img
-                  src="/download (2).jpg"
-                  alt="Tasklyn Bot"
-                  width="22"
-                  height="22"
+          <div className="chat-bot-avatar">
+            <span
+              className="chat-logo-span"
+              title="Taskify Assistant"
+            >
+              ✔
+            </span>
+          </div>
+          <div className="chat-header-text">
+            <h3>Tasklyn</h3>
+            <p>Your helpful todo assistant</p>
+          </div>
+          <div className="chat-header-actions">
+            <button
+              type="button"
+              className="chat-close-btn"
+              onClick={onClose}
+              aria-label="Close chat"
+            >
+              <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M6 18L18 6M6 6l12 12"
                 />
-              </div>
-
-              <div className="chat-header-text">
-                <h3 className="chat-title">Tasklyn</h3>
-                <div className="chat-status">
-                  <span className="chat-status-indicator"></span>
-                  <span className="chat-status-text">Online</span>
-                </div>
-              </div>
-            </div>
-
-            <div className="chat-header-actions">
-              <button
-                type="button"
-                className="chat-history-toggle-btn"
-                onClick={() => setShowHistory(!showHistory)}
-                title="Show history"
-                aria-label="Show history"
-              >
-                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
-                  />
-                </svg>
-              </button>
-
-              <button
-                type="button"
-                className="chat-close-btn"
-                onClick={onClose}
-                aria-label="Close chat"
-              >
-                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M6 18L18 6M6 6l12 12"
-                  />
-                </svg>
-              </button>
-            </div>
+              </svg>
+            </button>
           </div>
         </div>
 
-        {/* Sidebar History Panel */}
-        <div className={`chat-sidebar-panel ${showHistory ? 'visible' : ''}`}>
-          <div className="chat-sidebar-panel-content">
-            <div className="chat-sidebar-panel-header">
-              <div className="chat-sidebar-panel-title">
-                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" className="chat-history-icon">
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
-                  />
-                </svg>
-                <h4 className="chat-history-title">History</h4>
-              </div>
-              <button
-                type="button"
-                className="chat-history-close-btn"
-                onClick={() => setShowHistory(false)}
-                aria-label="Close history"
-              >
-                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M6 18L18 6M6 6l12 12"
-                  />
-                </svg>
-              </button>
-            </div>
-
-            <div className="chat-history-list">
-              {chats.map((chat) => (
-                <div key={chat.id} className="chat-history-item-wrapper">
-                  <button
-                    type="button"
-                    className={`chat-history-item ${activeChatId === chat.id ? 'active' : ''}`}
-                    onClick={() => {
-                      switchChat(chat.id);
-                      setShowHistory(false); // Close panel after selecting chat
-                    }}
-                    title={chat.title}
-                  >
-                    <div className="chat-history-item-content">
-                      <span className="chat-history-title-text">
-                        {chat.title}
-                      </span>
-                      <time className="chat-history-date">
-                        {new Date(chat.createdAt).toLocaleDateString('en-US', {
-                          month: 'numeric',
-                          day: 'numeric',
-                          year: 'numeric'
-                        })}
-                      </time>
-                    </div>
-                  </button>
-                  <button
-                    type="button"
-                    className="chat-history-delete-btn"
-                    onClick={(e) => {
-                      e.stopPropagation(); // Prevent triggering the chat selection
-                      deleteChat(chat.id);
-                    }}
-                    title="Delete chat"
-                    aria-label="Delete chat"
-                  >
-                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
-                      />
-                    </svg>
-                  </button>
-                </div>
-              ))}
-            </div>
-
-            <div className="chat-sidebar-panel-footer">
-              <button
-                type="button"
-                className="chat-new-btn"
-                onClick={createNewChat}
-                title="Start new chat"
-                aria-label="Start new chat"
-              >
-                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M12 4v16m8-8H4"
-                  />
-                </svg>
-                New Chat
-              </button>
-            </div>
-          </div>
-        </div>
-
-        {/* ===============================
-            Messages
-           =============================== */}
+        {/* Messages */}
         <div className="chat-messages">
           {messages.map((message) => (
-            <ChatMessage key={message.id} message={message} />
+            <div key={message.id} className="message-container">
+              <ChatMessage message={message} />
+              {message.role === 'assistant' && (
+                <button
+                  type="button"
+                  className="message-delete-btn"
+                  onClick={() => {
+                    // Add functionality to delete this message
+                    // For now, we'll just log the action
+                    console.log(`Deleting message: ${message.id}`);
+                  }}
+                  aria-label="Delete message"
+                >
+                  <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" width="16" height="16">
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+                    />
+                  </svg>
+                </button>
+              )}
+            </div>
           ))}
 
           {isTyping && <TypingIndicator />}

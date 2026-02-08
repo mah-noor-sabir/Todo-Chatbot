@@ -212,7 +212,7 @@ export function useMultiChat(
           conversation_id: currentChat?.conversationId || null,
         };
 
-        const response = await chatApi.sendMessage(userId, payload);
+        const response = await chatApi.sendMessage(payload);
 
         // Initialize conversation on first message if needed
         if (!currentChat?.conversationId) {
@@ -302,8 +302,8 @@ export function useMultiChat(
     if (activeChatIdRef.current && activeChat && activeChat.messages.length === 0 && userId) {
       // Use the user's name in the welcome message
       const welcomeMessage = userName
-        ? `Hi ${userName}, I'm Tasklyn — here to help you manage your tasks efficiently.`
-        : "Hi, I'm Tasklyn — here to help you manage your tasks efficiently.";
+        ? `Hi ${userName} I am Tasklyn your helpful todo assistant.`
+        : "Hi I am Tasklyn your helpful todo assistant.";
 
       setTimeout(() => {
         addSystemMessage(welcomeMessage);

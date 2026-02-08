@@ -1,7 +1,8 @@
 /**
  * Authentication Context Provider
- * Manages global auth state and checks session once on mount
- * Treats 401 as normal "not authenticated" state (no retries or errors)
+ * Manages global auth state and checks session once on mount.
+ * Treats 401 as normal "not authenticated" state.
+ * Handles network failures gracefully (backend offline, connection refused, etc.)
  */
 
 'use client';
@@ -35,10 +36,18 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       const data = await authApi.getSession();
       setUser(data);
     } catch (error) {
-      if (error instanceof ApiClientError && error.statusCode === 401) {
-        setUser(null);
+      if (error instanceof ApiClientError) {
+        if (error.statusCode === 401) {
+          setUser(null);
+        } else if (error.message.includes('Unable to connect')) {
+          console.warn('⚠️ AuthProvider: Backend unreachable. Make sure API server is running.');
+          setUser(null);
+        } else {
+          console.warn('⚠️ AuthProvider: Session refresh failed:', error);
+          setUser(null);
+        }
       } else {
-        console.warn('Session refresh failed:', error);
+        console.error('Unexpected error during session refresh:', error);
         setUser(null);
       }
     } finally {
@@ -59,19 +68,23 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         console.log('✅ AuthProvider: Session found:', data.email);
         setUser(data);
       } catch (error) {
-        // 401 is expected when not logged in - treat as normal state
-        if (error instanceof ApiClientError && error.statusCode === 401) {
-          console.log('ℹ️ AuthProvider: Not authenticated (401) - this is normal');
+        if (error instanceof ApiClientError) {
+          if (error.statusCode === 401) {
+            console.log('ℹ️ AuthProvider: Not authenticated (401) - this is normal');
+          } else if (error.message.includes('Unable to connect')) {
+            console.warn('⚠️ AuthProvider: Backend unreachable. Make sure API server is running.');
+          } else {
+            console.warn('⚠️ AuthProvider: Session check failed:', error);
+          }
         } else {
-          // Only log unexpected errors
-          console.warn('⚠️ AuthProvider: Session check failed:', error);
+          console.error('Unexpected error during session check:', error);
         }
         setUser(null);
       } finally {
         setIsLoading(false);
       }
     })();
-  }, []); // Empty deps = run once on mount
+  }, []);
 
   return (
     <AuthContext.Provider value={{ user, setUser, isAuthenticated, isLoading, refreshSession }}>

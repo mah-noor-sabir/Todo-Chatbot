@@ -2,7 +2,7 @@
    Floating Chat Button (AI Assistant)
    =============================== */
 
-.chat-float-btn {
+body .chat-float-btn {
   position: fixed !important;
   bottom: 24px !important;
   right: 24px !important;
@@ -57,6 +57,13 @@
 .chat-icon {
   width: 28px;
   height: 28px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--blue-500, #3b82f6), var(--blue-600, #2563eb));
+  font-size: 16px;
+  font-weight: bold;
+  color: white;
   transition: transform 0.25s ease, opacity 0.25s ease;
 }
 

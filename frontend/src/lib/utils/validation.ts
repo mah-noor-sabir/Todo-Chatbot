@@ -69,13 +69,11 @@ export function validateFirstName(firstName: string): string | null {
  * @returns error message or null if valid
  */
 export function validateLastName(lastName: string): string | null {
-  // Make last name optional - only validate if provided
-  if (lastName?.trim()) {
-    if (lastName.trim().length < 2) return 'Last name must be at least 2 characters';
-    if (lastName.trim().length > 50) return 'Last name too long (max 50 characters)';
-    if (!/^[a-zA-Z\s'-]+$/.test(lastName.trim())) {
-      return 'Last name can only contain letters, spaces, hyphens, and apostrophes';
-    }
+  if (!lastName?.trim()) return 'Last name is required';
+  if (lastName.trim().length < 2) return 'Last name must be at least 2 characters';
+  if (lastName.trim().length > 50) return 'Last name too long (max 50 characters)';
+  if (!/^[a-zA-Z\s'-]+$/.test(lastName.trim())) {
+    return 'Last name can only contain letters, spaces, hyphens, and apostrophes';
   }
   return null;
 }

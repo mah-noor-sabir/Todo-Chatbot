@@ -7,7 +7,7 @@ from fastapi import APIRouter, Depends, status
 from sqlalchemy.ext.asyncio import AsyncSession
 from typing import List
 
-from src.core.database import get_session as get_db_session
+from src.api.middleware.db_session import get_db_session_from_state as get_db_session
 from src.models.user import User
 from src.models.todo import TodoCreate, TodoUpdate, TodoToggle, TodoResponse
 from src.services.todo_service import TodoService

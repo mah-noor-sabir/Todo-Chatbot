@@ -1,13 +1,9 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import Modal from '../ui/Modal';
-import Input from '../ui/Input';
-import Button from '../ui/Button';
-import DateTimePicker from './DateTimePicker';
+import React, { useState, useEffect } from 'react';
 import { validateTitle, validateDescription } from '../../lib/utils/validation';
 import type { Todo, TodoUpdateRequest, Priority, RecurrencePattern } from '../../lib/types/todo';
-import './EditTodoForm.css';
+import './ModalsShared.css';
 
 interface EditTodoFormProps {
   isOpen: boolean;
@@ -41,6 +37,14 @@ export default function EditTodoForm({ isOpen, onClose, todo, onSubmit }: EditTo
       setDescriptionError('');
     }
   }, [todo]);
+
+  useEffect(() => {
+    if (!isOpen) return;
+    document.body.style.overflow = 'hidden';
+    return () => {
+      document.body.style.overflow = 'unset';
+    };
+  }, [isOpen]);
 
   // Add new tag on Enter
   const handleAddTag = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -99,129 +103,173 @@ export default function EditTodoForm({ isOpen, onClose, todo, onSubmit }: EditTo
   // Predefined suggestions
   const tagSuggestions = ['Personal', 'Business', 'Family', 'Event', 'Working'];
 
+  const handleOverlayClick = (e: React.MouseEvent) => {
+    if (e.target === e.currentTarget) onClose();
+  };
+
+  if (!isOpen) return null;
+
   return (
-    <Modal isOpen={isOpen} onClose={handleCancel} title="Edit Todo">
-      <form className="edit-todo-form space-y-4" onSubmit={handleSubmit}>
-        <Input
-          label="Title"
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
-          error={titleError}
-          placeholder="What needs to be done?"
-          maxLength={200}
-        />
-
-        <div className="edit-textarea-group">
-          <label htmlFor="edit-description" className="edit-label">
-            Description (optional)
-          </label>
-          <textarea
-            id="edit-description"
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
-            className={`edit-textarea ${descriptionError ? 'error' : ''}`}
-            rows={3}
-            maxLength={1000}
-            placeholder="Add more details..."
-          />
-          {descriptionError && <p className="edit-error-text">{descriptionError}</p>}
-        </div>
-
-        {/* Priority Selection */}
-        <div>
-          <label className="block text-sm font-semibold italic text-gray-300 mb-2">
-            Priority: <span style={{ color: '#93c5fd', fontWeight: 'bold' }}>{priority.toUpperCase()}</span>
-          </label>
-          <div className="edit-priority-group">
-            {(['high', 'medium', 'low'] as Priority[]).map((p) => (
-              <button
-                key={p}
-                type="button"
-                onClick={(e) => { e.preventDefault(); setPriority(p); }}
-                className={`edit-priority-btn ${p} ${priority === p ? 'active' : ''}`}
-              >
-                <span className="priority-icon">
-                  {p === 'high' && '🔴'}
-                  {p === 'medium' && '🟡'}
-                  {p === 'low' && '🟢'}
-                </span>
-                <span className="priority-label">{p.charAt(0).toUpperCase() + p.slice(1)}</span>
-              </button>
-            ))}
-          </div>
-        </div>
-
-        {/* Tags Input with Suggestions */}
-        <div className="edit-tags-wrapper" style={{ position: 'relative' }}>
-          <label htmlFor="edit-tags" className="block text-sm font-semibold italic text-gray-300 mb-1">
-            Tags (Enter to add)
-          </label>
-          <input
-            id="edit-tags"
-            type="text"
-            value={tagInput}
-            onChange={(e) => setTagInput(e.target.value)}
-            onKeyDown={handleAddTag}
-            className="edit-tag-input"
-            placeholder="e.g., work, personal, urgent"
-            autoComplete="off"
-          />
-
-          {/* Dropdown Suggestions */}
-          {tagInput && (
-            <div className="tags-suggestions">
-              {tagSuggestions
-                .filter(s => s.toLowerCase().includes(tagInput.toLowerCase()) && !tags.includes(s.toLowerCase()))
-                .map(suggestion => (
-                  <div
-                    key={suggestion}
-                    className="tags-suggestion-item"
-                    onClick={() => { setTags([...tags, suggestion.toLowerCase()]); setTagInput(''); }}
-                  >
-                    {suggestion}
-                  </div>
-                ))
-              }
-            </div>
-          )}
-        </div>
-
-        {/* Display Tags */}
-        {tags.length > 0 && (
-          <div className="flex flex-wrap gap-2 mt-2">
-            {tags.map(tag => (
-              <span key={tag} className="edit-tag">
-                #{tag}
-                <button type="button" onClick={() => handleRemoveTag(tag)}>×</button>
-              </span>
-            ))}
-          </div>
-        )}
-
-        {/* Due Date */}
-        <DateTimePicker value={dueDate} onChange={setDueDate} />
-
-        {/* Recurrence */}
-        <div>
-          <label className="block text-sm font-semibold italic text-gray-300 mb-2">Recurring Task</label>
-          <select
-            value={recurrence || ''}
-            onChange={(e) => setRecurrence((e.target.value as RecurrencePattern) || null)}
-            className="edit-select"
+    <div className="modal-overlay" onClick={handleOverlayClick}>
+      <div className="modal-container">
+        <div
+          className="modal-box"
+          style={{
+            maxWidth: '460px',
+            padding: '1.5rem',
+            background: '#0B1220',
+          }}
+          onClick={(e) => e.stopPropagation()}
+        >
+          {/* Header */}
+          <h2
+            className="modal-title"
+            style={{
+              textAlign: 'center',
+              fontWeight: 700,
+              letterSpacing: '0.04em',
+              marginBottom: '1rem',
+            }}
           >
-            <option value="">None</option>
-            <option value="daily">Daily</option>
-            <option value="weekly">Weekly</option>
-            <option value="monthly">Monthly</option>
-            <option value="yearly">Yearly</option>
-          </select>
-        </div>
+            EDIT TASK
+          </h2>
 
-        <div className="edit-actions">
-          <Button type="button" variant="secondary" onClick={handleCancel}>Cancel</Button>
-          <Button type="submit" variant="primary" loading={loading}>Save</Button>
+          {/* Form */}
+          <form onSubmit={handleSubmit} className="modal-form" style={{ gap: '0.6rem', maxHeight: 'none' }}>
+            <input
+              type="text"
+              className={`modal-input ${titleError ? 'error' : ''}`}
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+              placeholder="Task title"
+              required
+            />
+
+            <textarea
+              className={`modal-textarea ${descriptionError ? 'error' : ''}`}
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+              rows={2}
+              placeholder="Details (optional)"
+            />
+
+            {/* Meta Row */}
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.6rem' }}>
+              {/* Calendar */}
+              <input
+                type="date"
+                className="modal-input"
+                value={dueDate || ''}
+                onChange={(e) => setDueDate(e.target.value || null)}
+              />
+
+              {/* Priority */}
+              <div className="modal-priority-group compact" style={{ display: 'flex', flexDirection: 'row', gap: '0.3rem' }}>
+                {(['high', 'medium', 'low'] as Priority[]).map((p) => (
+                  <button
+                    key={p}
+                    type="button"
+                    onClick={() => setPriority(p)}
+                    className={`modal-priority-btn ${p} ${priority === p ? 'active' : ''}`}
+                    style={{ flex: 1, fontSize: '0.7rem', padding: '0.3rem 0.4rem' }}
+                  >
+                    {p.charAt(0).toUpperCase()}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Tags input with suggestions */}
+            <div className="modal-tags-wrapper" style={{ position: 'relative' }}>
+              <input
+                type="text"
+                className="modal-input"
+                value={tagInput}
+                onChange={(e) => setTagInput(e.target.value)}
+                onKeyDown={handleAddTag}
+                placeholder="Tags (Enter)"
+                autoComplete="off"
+              />
+
+              {/* Dropdown Suggestions */}
+              {tagInput && (
+                <div
+                  className="tags-suggestions"
+                  style={{
+                    position: 'absolute',
+                    top: '110%',
+                    left: 0,
+                    right: 0,
+                    background: 'rgba(3, 8, 23, 0.95)',
+                    border: '1px solid rgba(255, 255, 255, 0.15)',
+                    borderRadius: '8px',
+                    zIndex: 10,
+                    maxHeight: '120px',
+                    overflowY: 'auto',
+                  }}
+                >
+                  {tagSuggestions.filter(
+                    tag =>
+                      tag.toLowerCase().includes(tagInput.toLowerCase()) &&
+                      !tags.includes(tag.toLowerCase())
+                  ).map((suggestion) => (
+                    <div
+                      key={suggestion}
+                      className="tags-suggestion-item"
+                      style={{
+                        padding: '0.5rem',
+                        cursor: 'pointer',
+                        color: '#fff',
+                      }}
+                      onClick={() => {
+                        setTags([...tags, suggestion.toLowerCase()]);
+                        setTagInput('');
+                      }}
+                    >
+                      {suggestion}
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            {/* Selected Tags */}
+            {tags.length > 0 && (
+              <div className="modal-tags-container">
+                {tags.map(tag => (
+                  <span key={tag} className="modal-tag">
+                    #{tag}
+                    <button type="button" onClick={() => handleRemoveTag(tag)}>×</button>
+                  </span>
+                ))}
+              </div>
+            )}
+
+            {/* Recurrence */}
+            <select
+              className="modal-select"
+              value={recurrence || ''}
+              onChange={(e) => setRecurrence((e.target.value as RecurrencePattern) || null)}
+            >
+              <option value="">No recurrence</option>
+              <option value="daily">Daily</option>
+              <option value="weekly">Weekly</option>
+              <option value="monthly">Monthly</option>
+              <option value="yearly">Yearly</option>
+            </select>
+
+            {/* Actions */}
+            <div className="modal-actions" style={{ marginTop: '0.8rem' }}>
+              <button type="button" className="modal-btn modal-btn-secondary" onClick={handleCancel}>
+                Cancel
+              </button>
+              <button type="submit" className="modal-btn modal-btn-primary" disabled={loading}>
+                Save
+              </button>
+            </div>
+          </form>
         </div>
-      </form>
-    </Modal>
+      </div>
+    </div>
   );
 }

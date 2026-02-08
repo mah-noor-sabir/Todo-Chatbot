@@ -47,7 +47,7 @@ class AuthService:
         try:
             user = await self.user_repo.create_user(
                 first_name=user_data.first_name.strip(),
-                last_name=user_data.last_name.strip() if user_data.last_name else None,
+                last_name=user_data.last_name.strip(),  # Last name is now required
                 email=user_data.email.strip().lower(),  # Normalize email
                 password_hash=password_hash,
             )

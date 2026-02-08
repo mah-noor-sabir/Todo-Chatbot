@@ -19,7 +19,7 @@ class UserRepository:
     async def create_user(
         self,
         first_name: str,
-        last_name: Optional[str],  # Accept optional last name
+        last_name: str,  # Last name is now required
         email: str,
         password_hash: str
     ) -> User:

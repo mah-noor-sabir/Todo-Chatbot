@@ -123,7 +123,7 @@ export default function AddTodoForm({ isOpen, onClose, onSubmit }: AddTodoFormPr
           </h2>
 
           {/* Form */}
-          <form onSubmit={handleSubmit} className="modal-form" style={{ gap: '0.6rem' }}>
+          <form onSubmit={handleSubmit} className="modal-form" style={{ gap: '0.6rem', maxHeight: 'none' }}>
             <input
               type="text"
               className={`modal-input ${titleError ? 'error' : ''}`}
@@ -152,15 +152,16 @@ export default function AddTodoForm({ isOpen, onClose, onSubmit }: AddTodoFormPr
               />
 
               {/* Priority */}
-              <div className="modal-priority-group compact">
+              <div className="modal-priority-group compact" style={{ display: 'flex', flexDirection: 'row', gap: '0.3rem' }}>
                 {(['high', 'medium', 'low'] as Priority[]).map((p) => (
                   <button
                     key={p}
                     type="button"
                     onClick={() => setPriority(p)}
-                    className={`modal-priority-btn glow-${p} ${priority === p ? 'active' : ''}`}
+                    className={`modal-priority-btn ${p} ${priority === p ? 'active' : ''}`}
+                    style={{ flex: 1, fontSize: '0.7rem', padding: '0.3rem 0.4rem' }}
                   >
-                    {p}
+                    {p.charAt(0).toUpperCase()}
                   </button>
                 ))}
               </div>

@@ -6,7 +6,7 @@ Validates session tokens and injects current user into request context.
 from fastapi import Request, Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from src.core.database import get_session
+from src.api.middleware.db_session import get_db_session_from_state as get_session
 from src.core.exceptions import AuthenticationError
 from src.models.user import User
 from src.services.auth_service import AuthService
@@ -59,4 +59,6 @@ async def get_current_user(
     auth_service = AuthService(session)
     user = await auth_service.get_user_by_id(user_id)
 
+    # Return the user object - the session will remain open until the response is serialized
+    # The UserResponse model should handle the conversion properly
     return user

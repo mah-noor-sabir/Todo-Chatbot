@@ -3,7 +3,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from pydantic import BaseModel, Field
 from typing import Optional, List, Dict, Any
 
-from src.core.database import get_session as get_db_session
+from src.api.middleware.db_session import get_db_session_from_state
 from src.models.user import User
 from src.api.middleware.auth import get_current_user
 from src.services.conversation_service import ConversationService
@@ -38,14 +38,14 @@ class ChatResponse(BaseModel):
 async def chat(
     chat_request: ChatRequest,
     current_user: User = Depends(get_current_user),
-    session: AsyncSession = Depends(get_db_session)
+    session: AsyncSession = Depends(get_db_session_from_state)
 ):
-    # Resolve user_id from authentication context
-    user_id = current_user.id
     """
     Process a chat message from a user.
     Includes authentication, authorization, and agent execution.
     """
+    # Resolve user_id from authentication context
+    user_id = current_user.id
     # 1. Authentication is handled by get_current_user middleware (returns 401 if not authenticated)
 
     # 2. Authorization is implicit: user_id comes from authenticated user context

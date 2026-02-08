@@ -39,16 +39,16 @@ export default function PriorityBadge({ priority, size = 'md' }: PriorityBadgePr
 
   const { icon, bgClass, textClass } = badgeMap[normalizedPriority];
 
-  // Size mapping
+  // Size mapping - using custom CSS classes
   const sizeClasses: Record<'sm' | 'md' | 'lg', string> = {
-    sm: 'px-2 py-1 text-xs',
-    md: 'px-3 py-1.5 text-sm',
-    lg: 'px-4 py-2 text-base',
+    sm: 'priority-badge-sm',
+    md: 'priority-badge-md',
+    lg: 'priority-badge-lg',
   };
 
   return (
     <span
-      className={`inline-flex items-center gap-2 rounded-full font-bold ${bgClass} ${textClass} ${sizeClasses[size]} shadow-lg border border-white/10 backdrop-blur-sm transition-all duration-300 hover:scale-105 hover:shadow-xl`}
+      className={`priority-badge ${normalizedPriority} ${sizeClasses[size]} inline-flex items-center gap-2 rounded-full font-bold shadow-lg border border-white/10 backdrop-blur-sm transition-all duration-300 hover:scale-105 hover:shadow-xl`}
     >
       <span className="text-xs">{icon}</span>
       <span className="capitalize font-semibold tracking-wide">{normalizedPriority}</span>

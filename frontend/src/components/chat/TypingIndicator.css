@@ -2,27 +2,24 @@
    Typing Indicator Animation
    =============================== */
 
-.typing-indicator {
+body .typing-indicator {
   display: flex;
   align-items: center;
   gap: 6px;
   padding: 14px 18px;
-  background: var(--card-bg); /* Use dashboard theme */
-  border: 1px solid var(--border); /* Use dashboard theme */
+  background: var(--bg-card, rgba(255, 255, 255, 0.05)); /* Dashboard theme */
+  border: 1px solid var(--glass-border, rgba(59, 130, 246, 0.2)); /* Dashboard theme */
   border-radius: 18px;
   border-bottom-left-radius: 4px;
   backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
 }
 
 .typing-dot {
   width: 8px;
   height: 8px;
   border-radius: 50%;
-<<<<<<< HEAD
-  background: linear-gradient(135deg, #3b82f6, #1d4ed8);
-=======
-  background: linear-gradient(135deg, #3B82F6, #2563EB);
->>>>>>> 5fe7471cbcc12e648f73a32c1344ed9f3fa1212c
+  background: linear-gradient(135deg, var(--blue-500, #3b82f6), var(--blue-600, #2563eb)); /* Dashboard theme */
   animation: typingBounce 1.4s infinite ease-in-out;
 }
 
@@ -39,9 +36,7 @@
 }
 
 @keyframes typingBounce {
-  0%,
-  60%,
-  100% {
+  0%, 60%, 100% {
     transform: translateY(0);
     opacity: 0.7;
   }

@@ -45,33 +45,23 @@ export default function FilterPanel({
     });
   };
 
-  /** ---------- Styling ---------- */
-  const base =
-    'px-5 py-2 rounded-full text-sm font-medium transition-all duration-200';
-
-  const inactive =
-    'bg-blue-600/20 text-white/70 hover:bg-blue-600/35 hover:text-white';
-
-  const active =
-    'bg-blue-500/50 text-white shadow-[0_0_16px_rgba(59,130,246,0.45)]';
-
   return (
     <div className="flex flex-col gap-6">
 
       {/* STATUS */}
       <div className="space-y-2">
-        <span className="text-xs font-medium uppercase tracking-wide text-white/40">
+        <span className="filter-section-title">
           Status
         </span>
-        <div className="flex flex-wrap gap-3">
+        <div className="filter-single-line">
           {(['all', 'incomplete', 'completed'] as TodoFilters['status'][]).map(
             (status) => (
               <button
                 key={status}
                 type="button"
                 onClick={() => handleStatusChange(status)}
-                className={`${base} ${
-                  filters.status === status ? active : inactive
+                className={`filter-btn ${
+                  filters.status === status ? 'active' : ''
                 }`}
               >
                 {status === 'all'
@@ -87,10 +77,10 @@ export default function FilterPanel({
 
       {/* PRIORITY */}
       <div className="space-y-2">
-        <span className="text-xs font-medium uppercase tracking-wide text-white/40">
+        <span className="filter-section-title">
           Priority
         </span>
-        <div className="flex flex-wrap gap-3">
+        <div className="filter-single-line">
           {(['all', 'high', 'medium', 'low'] as (Priority | 'all')[]).map((p) => {
             const isActive = filters.priority === p;
 
@@ -99,8 +89,10 @@ export default function FilterPanel({
                 key={p}
                 type="button"
                 onClick={() => handlePriorityChange(p)}
-                className={`${base} ${
-                  isActive ? active : inactive
+                className={`filter-btn ${
+                  p !== 'all' ? p : ''
+                } ${
+                  isActive ? 'active' : ''
                 }`}
               >
                 {p === 'all'
@@ -115,17 +107,17 @@ export default function FilterPanel({
       {/* TAGS */}
       {availableTags.length > 0 && (
         <div className="space-y-2">
-          <span className="text-xs font-medium uppercase tracking-wide text-white/40">
+          <span className="filter-section-title">
             Tags
           </span>
-          <div className="flex flex-wrap gap-3">
+          <div className="filter-single-line">
             {availableTags.map((tag) => (
               <button
                 key={tag}
                 type="button"
                 onClick={() => handleTagToggle(tag)}
-                className={`${base} ${
-                  tags.includes(tag) ? active : inactive
+                className={`filter-btn ${
+                  tags.includes(tag) ? 'active' : ''
                 }`}
               >
                 #{tag}
@@ -140,7 +132,7 @@ export default function FilterPanel({
         <button
           type="button"
           onClick={clearFilters}
-          className="self-start text-sm text-blue-300 hover:text-blue-200 transition"
+          className="clear-filter-btn self-start"
         >
           Clear filters
         </button>

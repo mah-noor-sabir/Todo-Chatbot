@@ -29,52 +29,32 @@ export default function ChatButton({
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
       aria-label="Open Todo Assistant"
+      style={{
+        '--bg-main': '#05060a',
+        '--bg-layer': '#0b1020',
+        '--bg-card': 'rgba(255, 255, 255, 0.05)',
+        '--blue-400': '#60a5fa',
+        '--blue-500': '#3b82f6',
+        '--blue-600': '#2563eb',
+        '--text-primary': '#ffffff',
+        '--text-muted': '#94a3b8',
+        '--glass-bg': 'rgba(15, 23, 42, 0.6)',
+        '--glass-border': 'rgba(59, 130, 246, 0.2)',
+        '--radius-lg': '1rem',
+        '--radius-md': '0.75rem',
+        '--shadow-soft': '0 20px 40px rgba(0, 0, 0, 0.35)',
+      } as React.CSSProperties}
     >
       {/* Unread indicator */}
       {hasUnread && <span className="chat-unread-badge" aria-hidden="true" />}
 
       {/* Bot / Message Icon */}
-      <svg
-        className="chat-icon"
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        aria-hidden="true"
-      >
-        {hovered ? (
-          /* Message icon (hover state) */
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth={2}
-            d="M8 12h.01M12 12h.01M16 12h.01
-               M21 12c0 4.418-4.03 8-9 8
-               a9.863 9.863 0 01-4.255-.949L3 20
-               l1.395-3.72C3.512 15.042 3 13.574 3 12
-               c0-4.418 4.03-8 9-8s9 3.582 9 8z"
-          />
-        ) : (
-          /* Bot icon (default state) */
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth={2}
-            d="M9.663 17h4.673
-               M12 3v1
-               m6.364 1.636-.707.707
-               M21 12h-1
-               M4 12H3
-               m3.343-5.657-.707-.707
-               m2.828 9.9a5 5 0 117.072 0
-               l-.548.547A3.374 3.374 0 0014 18.469V19
-               a2 2 0 11-4 0v-.531
-               c0-.895-.356-1.754-.988-2.386l-.548-.547z"
-          />
-        )}
-      </svg>
+      <span className="chat-icon">
+        ✔
+      </span>
 
       {/* Tooltip */}
-      <span className="chat-tooltip">Chat with Todo Assistant</span>
+      <span className="chat-tooltip">Chat with Taskify Assistant</span>
     </button>
   );
 }

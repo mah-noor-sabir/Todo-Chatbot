@@ -9,7 +9,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from datetime import datetime, timedelta
 from jose import jwt, JWTError
 
-from src.core.database import get_session as get_db_session
+from src.api.middleware.db_session import get_db_session_from_state as get_db_session
 from src.models.user import UserCreate, UserResponse, UserLogin
 from src.services.auth_service import AuthService
 from src.core.config import settings
@@ -187,10 +187,13 @@ async def get_session(
     auth_service = AuthService(session)
     user = await auth_service.get_user_by_id(user_id)
 
-    return UserResponse(
+    # Create response object immediately to avoid detached instance error
+    user_response = UserResponse(
         id=user.id,
         first_name=user.first_name,
         last_name=user.last_name,
         email=user.email,
         created_at=user.created_at
     )
+    
+    return user_response

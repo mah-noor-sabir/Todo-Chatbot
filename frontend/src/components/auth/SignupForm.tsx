@@ -46,21 +46,24 @@ export default function SignupForm({ className = '' }: SignupFormProps) {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    // Validate all fields (last name is optional)
+    // Validate all fields (last name is now required)
     const firstNameValidation = validateFirstName(firstName);
+    const lastNameValidation = validateLastName(lastName);
     const emailValidation = validateEmail(email);
     const passwordValidation = validatePassword(password);
     const confirmPasswordValidation = validateConfirmPassword(password, confirmPassword);
 
-    // Set all errors (skip last name validation)
+    // Set all errors
     setFirstNameError(firstNameValidation || '');
+    setLastNameError(lastNameValidation || '');
     setEmailError(emailValidation || '');
     setPasswordError(passwordValidation || '');
     setConfirmPasswordError(confirmPasswordValidation || '');
 
-    // If any validation fails (except last name), don't submit
+    // If any validation fails, don't submit
     if (
       firstNameValidation ||
+      lastNameValidation ||
       emailValidation ||
       passwordValidation ||
       confirmPasswordValidation
@@ -70,9 +73,8 @@ export default function SignupForm({ className = '' }: SignupFormProps) {
 
     try {
       setLoading(true);
-      // Pass undefined for last name if not provided
-      const lastNameValue = lastName.trim() || undefined;
-      await signUp(firstName.trim(), lastNameValue, email.trim().toLowerCase(), password);
+      // Last name is now required, so we pass the trimmed value
+      await signUp(firstName.trim(), lastName.trim(), email.trim().toLowerCase(), password);
       // Refresh AuthContext session so ChatWidget knows user is logged in
       await refreshSession();
       router.push('/todos');
@@ -90,8 +92,9 @@ export default function SignupForm({ className = '' }: SignupFormProps) {
 
   const handleLastNameChange = (value: string) => {
     setLastName(value);
-    // Clear error for last name since it's optional
-    if (lastNameError) setLastNameError('');
+    // Validate and update error state for last name
+    const validationError = validateLastName(value);
+    setLastNameError(validationError || '');
   };
 
   const handleEmailChange = (value: string) => {
@@ -201,8 +204,8 @@ export default function SignupForm({ className = '' }: SignupFormProps) {
 
                 {/* Last Name */}
                 <div className="auth-input-group">
-                  <label htmlFor="lastName" className="auth-label">
-                    Last Name (optional)
+                  <label htmlFor="lastName" className="auth-label required">
+                    Last Name
                   </label>
                   <input
                     id="lastName"

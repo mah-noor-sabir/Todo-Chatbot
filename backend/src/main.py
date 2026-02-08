@@ -11,6 +11,7 @@ from src.core.config import settings
 from src.core.database import create_db_and_tables, close_db_connection
 from src.api.routes import health, auth, todos, chat
 from src.api.middleware.error import register_exception_handlers
+from src.api.middleware.db_session import DBSessionMiddleware
 
 
 @asynccontextmanager
@@ -28,6 +29,9 @@ app = FastAPI(
     version="1.0.0",
     lifespan=lifespan,
 )
+
+# Add database session middleware first
+app.add_middleware(DBSessionMiddleware)
 
 # CORS middleware - CRITICAL for localhost React + FastAPI cookie-based auth
 app.add_middleware(

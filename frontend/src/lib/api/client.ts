@@ -53,15 +53,24 @@ async function apiRequest<T>(endpoint: string, options: RequestInit = {}): Promi
       data = await response.json();
     } catch {
       // Response body is empty or not JSON
+      // For non-JSON responses, create a generic error
+      if (!response.ok) {
+        throw new ApiClientError(
+          `HTTP Error: ${response.status}`,
+          response.status,
+          `HTTP_${response.status}`,
+          'network'
+        );
+      }
     }
 
     if (!response.ok) {
       const apiError = data as ApiError;
       throw new ApiClientError(
-        apiError.error?.message || 'API error',
+        apiError?.error?.message || `HTTP Error: ${response.status}`,
         response.status,
-        apiError.error?.code || 'UNKNOWN_ERROR',
-        apiError.error?.field
+        apiError?.error?.code || `HTTP_${response.status}`,
+        apiError?.error?.field
       );
     }
 

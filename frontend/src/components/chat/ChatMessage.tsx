@@ -39,13 +39,22 @@ export default function ChatMessage({ message }: ChatMessageProps) {
               />
             </svg>
           ) : (
-            <img
+            <span
               className="avatar-icon"
-              src="/download (2).jpg"
-              alt="Tasklyn Bot"
-              width="20"
-              height="20"
-            />
+              style={{
+                display: 'grid',
+                placeItems: 'center',
+                width: '20px',
+                height: '20px',
+                borderRadius: '50%',
+                background: 'linear-gradient(135deg, var(--blue-500, #3b82f6), var(--blue-600, #2563eb))',
+                fontSize: '10px',
+                fontWeight: 'bold',
+                color: 'white'
+              }}
+            >
+              ✔
+            </span>
           )}
         </div>
       )}

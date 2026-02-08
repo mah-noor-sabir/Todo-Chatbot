@@ -275,19 +275,7 @@
 /* ========================
    Priority Selector
    ======================== */
-.modal-priority-btn:hover {
-  background: rgba(59, 130, 246, 0.25);
-  border-color: rgba(59, 130, 246, 0.5);
-}
-
-.modal-priority-btn.active {
-  border-color: #3b82f6;
-  background: rgba(59, 130, 246, 0.35);
-  color: #ffffff;
-  box-shadow:
-    0 0 20px rgba(59, 130, 246, 0.4),
-    inset 0 1px 0 rgba(255, 255, 255, 0.1);
-}
+/* These styles are overridden by global styles in globals.css */
 
 /* ========================
    Tags
