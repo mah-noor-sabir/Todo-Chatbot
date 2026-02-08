@@ -1,0 +1,15 @@
+runtime:
+  cpu: "2x"
+  memory: "16x"
+  accelerator: "cpu"
+
+secrets:
+  - DATABASE_URL
+  - SECRET_KEY
+  - OPENROUTER_API_KEY
+
+variables:
+  CORS_ORIGINS: "https://your-frontend-url.vercel.app,https://localhost:3000"
+
+requirements:
+  - python>=3.10
