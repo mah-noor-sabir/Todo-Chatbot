@@ -67,3 +67,5 @@ desktop.ini
 .gitignore
 "backend/taskify-bot/" 
 "backend/error_log.txt" 
+"backend/taskify-bot/"  
+"backend/error_log.txt"  
