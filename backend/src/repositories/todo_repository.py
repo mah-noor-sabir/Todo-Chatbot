@@ -124,7 +124,7 @@ class TodoRepository:
         todo.tags = json.dumps(tags) if tags else "[]"
         todo.due_date = due_date
         todo.recurrence = recurrence
-        todo.updated_at = datetime.now()  # Update timestamp
+        todo.updated_at = datetime.utcnow()  # Update timestamp - consistent with update_todo_priority
         self.session.add(todo)
         await self.session.commit()
         await self.session.refresh(todo)
@@ -160,7 +160,7 @@ class TodoRepository:
             Updated Todo entity
         """
         todo.is_completed = is_completed
-        todo.updated_at = datetime.now()  # Update timestamp
+        todo.updated_at = datetime.utcnow()  # Update timestamp - consistent with update_todo_priority
         self.session.add(todo)
         await self.session.commit()
         await self.session.refresh(todo)
@@ -175,7 +175,3 @@ class TodoRepository:
         """
         await self.session.delete(todo)
         await self.session.commit()
-
-
-# Import datetime for update_at
-from datetime import datetime

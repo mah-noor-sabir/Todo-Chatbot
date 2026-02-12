@@ -7,9 +7,9 @@ body .chat-float-btn {
   bottom: 24px !important;
   right: 24px !important;
 
-  width: 60px;
-  height: 60px;
-  border-radius: 9999px;
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
 
   background: linear-gradient(135deg, #3b82f6, #1d4ed8);
   border: none;
@@ -24,30 +24,36 @@ body .chat-float-btn {
 
   /* Outer rounded AI boundary */
   box-shadow:
-    0 0 0 2px rgba(59, 130, 246, 0.35),
-    0 0 32px rgba(59, 130, 246, 0.45),
-    0 10px 28px rgba(0, 0, 0, 0.45);
+    0 0 0 2px rgba(59, 130, 246, 0.4),
+    0 0 40px rgba(59, 130, 246, 0.5),
+    0 12px 32px rgba(0, 0, 0, 0.5);
 
   transition:
-    transform 0.25s ease,
-    box-shadow 0.25s ease,
-    filter 0.25s ease;
+    transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+    box-shadow 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+    filter 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 
-  animation: fadeInScale 0.35s ease-out;
+  animation: fadeInScale 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
 }
 
 /* Hover = assistant “attention”, not button bounce */
 .chat-float-btn:hover {
-  transform: translateY(-3px);
-  filter: brightness(1.08);
+  transform: translateY(-4px) scale(1.05);
+  filter: brightness(1.12);
   box-shadow:
-    0 0 0 2px rgba(30, 64, 175, 0.55),
-    0 0 44px rgba(59, 130, 246, 0.65),
-    0 14px 36px rgba(0, 0, 0, 0.55);
+    0 0 0 2px rgba(59, 130, 246, 0.6),
+    0 0 50px rgba(59, 130, 246, 0.7),
+    0 16px 40px rgba(0, 0, 0, 0.6);
 }
 
 .chat-float-btn:active {
-  transform: translateY(-1px);
+  transform: translateY(-2px) scale(0.98);
+  box-shadow:
+    0 0 0 2px rgba(59, 130, 246, 0.4),
+    0 0 30px rgba(59, 130, 246, 0.4),
+    0 8px 24px rgba(0, 0, 0, 0.4);
 }
 
 /* ===============================
@@ -55,8 +61,8 @@ body .chat-float-btn {
    =============================== */
 
 .chat-icon {
-  width: 28px;
-  height: 28px;
+  width: 30px;
+  height: 30px;
   display: grid;
   place-items: center;
   border-radius: 50%;
@@ -64,11 +70,12 @@ body .chat-float-btn {
   font-size: 16px;
   font-weight: bold;
   color: white;
-  transition: transform 0.25s ease, opacity 0.25s ease;
+  transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94), opacity 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
 .chat-float-btn:hover .chat-icon {
-  transform: scale(1.12);
+  transform: scale(1.15);
 }
 
 /* ===============================
@@ -77,16 +84,17 @@ body .chat-float-btn {
 
 .chat-unread-badge {
   position: absolute;
-  top: 7px;
-  right: 7px;
-  width: 12px;
-  height: 12px;
+  top: 6px;
+  right: 6px;
+  width: 14px;
+  height: 14px;
 
-  background: #f43f5e;
+  background: linear-gradient(135deg, #f43f5e, #e11d48);
   border-radius: 50%;
-  border: 2px solid rgba(17, 24, 39, 0.9);
+  border: 2px solid rgba(15, 23, 42, 0.9);
 
   animation: pulse 1.8s ease-in-out infinite;
+  box-shadow: 0 0 8px rgba(244, 63, 94, 0.6);
 }
 
 @keyframes pulse {
@@ -96,8 +104,8 @@ body .chat-float-btn {
     opacity: 1;
   }
   50% {
-    transform: scale(1.15);
-    opacity: 0.7;
+    transform: scale(1.2);
+    opacity: 0.8;
   }
 }
 
@@ -107,15 +115,17 @@ body .chat-float-btn {
 
 .chat-tooltip {
   position: absolute;
-  right: 72px;
+  right: 76px;
   top: 50%;
-  transform: translateY(-50%) translateX(10px);
+  transform: translateY(-50%) translateX(12px);
 
-  background: rgba(17, 24, 39, 0.95);
+  background: 
+    linear-gradient(135deg, rgba(15, 23, 42, 0.95), rgba(10, 15, 30, 0.98)),
+    rgba(17, 24, 39, 0.95);
   color: #f9fafb;
 
-  padding: 8px 14px;
-  border-radius: 10px;
+  padding: 10px 16px;
+  border-radius: 12px;
 
   font-size: 0.85rem;
   font-weight: 500;
@@ -125,12 +135,15 @@ body .chat-float-btn {
   visibility: hidden;
   pointer-events: none;
 
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  backdrop-filter: blur(12px);
+  border: 1px solid rgba(59, 130, 246, 0.3);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
 
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+  box-shadow: 
+    0 10px 30px rgba(0, 0, 0, 0.5),
+    inset 0 0 10px rgba(59, 130, 246, 0.1);
 
-  transition: all 0.25s ease;
+  transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
   z-index: 10002;
 }
 
@@ -144,13 +157,13 @@ body .chat-float-btn {
 .chat-tooltip::after {
   content: '';
   position: absolute;
-  right: -6px;
+  right: -7px;
   top: 50%;
   transform: translateY(-50%);
 
-  border-left: 6px solid rgba(17, 24, 39, 0.95);
-  border-top: 6px solid transparent;
-  border-bottom: 6px solid transparent;
+  border-left: 7px solid rgba(15, 23, 42, 0.95);
+  border-top: 7px solid transparent;
+  border-bottom: 7px solid transparent;
 }
 
 /* ===============================
@@ -158,13 +171,13 @@ body .chat-float-btn {
    =============================== */
 
 @keyframes fadeInScale {
-  from {
+  0% {
     opacity: 0;
-    transform: scale(0.85);
+    transform: scale(0.8) translateY(20px);
   }
-  to {
+  100% {
     opacity: 1;
-    transform: scale(1);
+    transform: scale(1) translateY(0);
   }
 }
 
@@ -176,13 +189,13 @@ body .chat-float-btn {
   .chat-float-btn {
     bottom: 20px;
     right: 20px;
-    width: 56px;
-    height: 56px;
+    width: 60px;
+    height: 60px;
   }
 
   .chat-icon {
-    width: 26px;
-    height: 26px;
+    width: 28px;
+    height: 28px;
   }
 
   .chat-tooltip {
@@ -190,9 +203,9 @@ body .chat-float-btn {
   }
 
   .chat-unread-badge {
-    width: 10px;
-    height: 10px;
-    top: 6px;
-    right: 6px;
+    width: 12px;
+    height: 12px;
+    top: 5px;
+    right: 5px;
   }
 }

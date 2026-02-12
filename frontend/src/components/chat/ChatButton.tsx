@@ -28,7 +28,7 @@ export default function ChatButton({
       onClick={onClick}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
-      aria-label="Open Todo Assistant"
+      aria-label="Open Taskify Assistant"
       style={{
         '--bg-main': '#05060a',
         '--bg-layer': '#0b1020',

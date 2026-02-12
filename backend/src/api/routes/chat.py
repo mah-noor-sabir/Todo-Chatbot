@@ -111,8 +111,22 @@ async def chat(
     except Exception as e:
         await session.rollback()
         # Log unexpected errors to console/log
-        print(f"Chat API Error: {str(e)}")
-        raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail=f"Failed to process chat request: {str(e)}"
-        )
+        error_msg = str(e)
+        print(f"Chat API Error: {error_msg}")
+
+        # Provide more specific error messages for common issues
+        if "OpenRouter API key not configured" in error_msg:
+            raise HTTPException(
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                detail="Chat service is not properly configured. Please contact the administrator to set up the OpenRouter API key."
+            )
+        elif "401" in error_msg or "authentication" in error_msg.lower():
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail="Authentication failed. Please log in again."
+            )
+        else:
+            raise HTTPException(
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                detail=f"Failed to process chat request: {error_msg}"
+            )

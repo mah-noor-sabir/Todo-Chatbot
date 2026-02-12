@@ -188,12 +188,19 @@ async def get_session(
     user = await auth_service.get_user_by_id(user_id)
 
     # Create response object immediately to avoid detached instance error
+    # Access all attributes to ensure they're loaded before session closes
+    user_id_val = user.id
+    first_name_val = user.first_name
+    last_name_val = user.last_name
+    email_val = user.email
+    created_at_val = user.created_at
+
     user_response = UserResponse(
-        id=user.id,
-        first_name=user.first_name,
-        last_name=user.last_name,
-        email=user.email,
-        created_at=user.created_at
+        id=user_id_val,
+        first_name=first_name_val,
+        last_name=last_name_val,
+        email=email_val,
+        created_at=created_at_val
     )
-    
+
     return user_response

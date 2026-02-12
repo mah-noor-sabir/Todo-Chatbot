@@ -6,19 +6,34 @@
 
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useAuthContext } from '../../hooks/AuthContext';
 import ChatButton from './ChatButton';
 import ChatPanel from './ChatPanel';
 
+// Extend Window interface to include our custom property
+declare global {
+  interface Window {
+    lastChatbotUpdate: number;
+  }
+}
+
 export default function ChatWidget() {
   const { isAuthenticated, isLoading } = useAuthContext();
   const [isChatOpen, setIsChatOpen] = useState(false);
+  
+  // Counter to prevent race conditions with multiple simultaneous updates
+  const [updateCounter, setUpdateCounter] = useState(0);
 
-  // Ensure CSS variables are available globally
+  // Ensure CSS variables are available globally and initialize window properties
   useEffect(() => {
     // Only run in browser environment
     if (typeof window !== 'undefined') {
+      // Initialize the lastChatbotUpdate property if it doesn't exist
+      if (!window.hasOwnProperty('lastChatbotUpdate')) {
+        window.lastChatbotUpdate = 0;
+      }
+
       const rootStyles = {
         '--bg-main': '#05060a',
         '--bg-layer': '#0b1020',
@@ -38,6 +53,9 @@ export default function ChatWidget() {
     }
   }, []);
 
+  // Track the last processed update ID to prevent redundant updates
+  const lastProcessedUpdateId = useRef<number | null>(null);
+
   // Debug logging for disappearing chatbot
   useEffect(() => {
     // Only log in development and browser environment
@@ -50,6 +68,48 @@ export default function ChatWidget() {
       });
     }
   }, [isLoading, isAuthenticated, isChatOpen]);
+
+  // Prevent multiple rapid updates by tracking the last processed update
+  useEffect(() => {
+    const handleTodoUpdate = (event: Event) => {
+      const customEvent = event as CustomEvent;
+      const { updateId, timestamp } = customEvent.detail || {};
+
+      // Skip if this update was already processed
+      if (updateId !== undefined && lastProcessedUpdateId.current === updateId) {
+        return;
+      }
+
+      // Update the last processed ID
+      lastProcessedUpdateId.current = updateId;
+
+      // Additional debounce: ignore events that are too close together
+      if (typeof window !== 'undefined') {
+        const now = Date.now();
+        if (now - (window.lastChatbotUpdate || 0) < 300) { // 300ms debounce
+          return;
+        }
+        window.lastChatbotUpdate = now;
+      }
+
+      // Refresh todos after a small delay to allow for batch operations
+      setTimeout(() => {
+        if (typeof window !== 'undefined') {
+          window.dispatchEvent(new CustomEvent('chatbotTodoUpdateProcessed', { detail: { updateId, timestamp } }));
+        }
+      }, 100);
+    };
+
+    if (typeof window !== 'undefined') {
+      window.addEventListener('chatbotTodoUpdate', handleTodoUpdate);
+    }
+
+    return () => {
+      if (typeof window !== 'undefined') {
+        window.removeEventListener('chatbotTodoUpdate', handleTodoUpdate);
+      }
+    };
+  }, []);
 
   const handleOpenChat = () => {
     setIsChatOpen(true);
@@ -79,7 +139,15 @@ export default function ChatWidget() {
           // Trigger a global event to notify the Todo UI about changes
           // This ensures the Todo UI updates when chatbot modifies todos
           if (typeof window !== 'undefined') {
-            window.dispatchEvent(new CustomEvent('chatbotTodoUpdate', { detail: { toolName } }));
+            // Include a unique counter to differentiate between update requests
+            window.dispatchEvent(new CustomEvent('chatbotTodoUpdate', { 
+              detail: { 
+                toolName,
+                timestamp: Date.now(),
+                updateId: updateCounter
+              } 
+            }));
+            setUpdateCounter(prev => prev + 1); // Increment for next event
           }
         }}
       />

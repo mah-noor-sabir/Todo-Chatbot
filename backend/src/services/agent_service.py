@@ -50,6 +50,28 @@ class AgentService:
                             "description": {
                                 "type": "string",
                                 "description": "Optional task description with additional details"
+                            },
+                            "priority": {
+                                "type": "string",
+                                "enum": ["high", "medium", "low"],
+                                "description": "Task priority level (default: medium)"
+                            },
+                            "tags": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string"
+                                },
+                                "description": "List of tags for categorizing the task"
+                            },
+                            "due_date": {
+                                "type": "string",
+                                "format": "date-time",
+                                "description": "Due date for the task in ISO format (YYYY-MM-DDTHH:MM:SS.sssZ)"
+                            },
+                            "recurrence": {
+                                "type": "string",
+                                "enum": ["daily", "weekly", "monthly", "yearly"],
+                                "description": "Recurrence pattern for the task"
                             }
                         },
                         "required": ["title"]
@@ -111,7 +133,7 @@ class AgentService:
                 "type": "function",
                 "function": {
                     "name": "update_task",
-                    "description": "Update task title and/or description",
+                    "description": "Update task with any combination of fields",
                     "parameters": {
                         "type": "object",
                         "properties": {
@@ -121,11 +143,33 @@ class AgentService:
                             },
                             "title": {
                                 "type": "string",
-                                "description": "New task title (optional, at least one of title or description required)"
+                                "description": "New task title (optional)"
                             },
                             "description": {
                                 "type": "string",
-                                "description": "New task description (optional, at least one of title or description required)"
+                                "description": "New task description (optional)"
+                            },
+                            "priority": {
+                                "type": "string",
+                                "enum": ["high", "medium", "low"],
+                                "description": "New task priority level (optional)"
+                            },
+                            "tags": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string"
+                                },
+                                "description": "New list of tags for categorizing the task (optional)"
+                            },
+                            "due_date": {
+                                "type": "string",
+                                "format": "date-time",
+                                "description": "New due date for the task in ISO format (optional)"
+                            },
+                            "recurrence": {
+                                "type": "string",
+                                "enum": ["daily", "weekly", "monthly", "yearly"],
+                                "description": "New recurrence pattern for the task (optional)"
                             }
                         },
                         "required": ["task_id"]
@@ -133,6 +177,25 @@ class AgentService:
                 }
             }
         ]
+
+        # Add delete by name tool
+        tools.append({
+            "type": "function",
+            "function": {
+                "name": "delete_task_by_name",
+                "description": "Permanently remove a task by its title/name",
+                "parameters": {
+                    "type": "object",
+                    "properties": {
+                        "title": {
+                            "type": "string",
+                            "description": "Title or partial title of the task to delete"
+                        }
+                    },
+                    "required": ["title"]
+                }
+            }
+        })
 
         # Add bulk delete tool
         tools.append({
@@ -154,6 +217,15 @@ class AgentService:
         })
 
         try:
+            # Check if API key is properly configured
+            if not settings.OPENROUTER_API_KEY or settings.OPENROUTER_API_KEY.startswith("sk-or-v1-placeholder"):
+                # Return a mock response when API key is not configured
+                print("OpenRouter API key not configured, returning mock response")
+                return {
+                    "response": "Hello! I'm the Tasklyn Chatbot. To enable full AI functionality, please configure your OpenRouter API key in the environment variables.",
+                    "tool_calls": []
+                }
+            
             # Call OpenRouter LLM
             # OpenRouter requires HTTP-Referer and X-Title for full functionality
             response = await self.client.chat.completions.create(
@@ -163,7 +235,7 @@ class AgentService:
                 tool_choice="auto",
                 extra_headers={
                     "HTTP-Referer": "http://localhost:3000",
-                    "X-Title": "Evolution of Todo App"
+                    "X-Title": "Taskify App"
                 }
             )
         except Exception as e:

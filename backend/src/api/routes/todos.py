@@ -65,7 +65,24 @@ async def get_todos(
     """
     todo_service = TodoService(session)
     todos = await todo_service.get_user_todos(current_user.id)
-    return [TodoResponse.from_orm(todo) for todo in todos]
+    # Convert to response models while session is still active
+    response_models = []
+    for todo in todos:
+        response_model = TodoResponse.from_orm(todo)
+        # Access all attributes to ensure they're loaded before session closes
+        _ = response_model.id
+        _ = response_model.user_id
+        _ = response_model.title
+        _ = response_model.description
+        _ = response_model.is_completed
+        _ = response_model.priority
+        _ = response_model.tags
+        _ = response_model.due_date
+        _ = response_model.recurrence
+        _ = response_model.created_at
+        _ = response_model.updated_at
+        response_models.append(response_model)
+    return response_models
 
 
 @router.get("/todos/{id}", response_model=TodoResponse)

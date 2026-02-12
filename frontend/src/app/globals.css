@@ -332,6 +332,7 @@ p {
   display: grid;
   grid-template-columns: 300px 1fr;
   gap: 1.5rem;
+  min-width: 0; /* Prevent grid items from overflowing */
 }
 
 .sidebar {
@@ -347,6 +348,7 @@ p {
 
 .sidebar-section {
   margin-bottom: 1.5rem;
+  min-width: 0; /* Prevent overflow */
 }
 
 .sidebar-section:last-child {
@@ -354,7 +356,28 @@ p {
 }
 
 .section-title {
-  font-size: 0.75rem;
+  font-size: 0.75rem !important;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--blue-400);
+  margin-bottom: 0.75rem;
+  font-weight: 600;
+  word-break: break-word; /* Prevent long text from causing overflow */
+}
+
+/* More specific selector to override any potential Tailwind conflicts */
+.sidebar .section-title {
+  font-size: 0.75rem !important;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--blue-400);
+  margin-bottom: 0.75rem;
+  font-weight: 600;
+}
+
+/* Even more specific for h3 elements in sidebar to prevent any conflicts */
+.sidebar h3.section-title {
+  font-size: 0.75rem !important;
   text-transform: uppercase;
   letter-spacing: 0.05em;
   color: var(--blue-400);
@@ -394,11 +417,14 @@ p {
 .main-content {
   background: var(--glass-bg);
   backdrop-filter: blur(18px);
-  -webkit-backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(16px);
   border: 1px solid var(--glass-border);
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-soft);
   padding: 1.5rem;
+  min-width: 0; /* Prevent overflow */
+  overflow-x: auto; /* Handle any horizontal overflow */
+  overflow-y: visible; /* Allow content to expand vertically */
 }
 
 .tasks-header {
@@ -406,6 +432,13 @@ p {
   justify-content: space-between;
   align-items: center;
   margin-bottom: 1.5rem;
+  min-width: 0; /* Prevent overflow */
+  overflow-x: auto; /* Handle any horizontal overflow */
+}
+
+/* Ensure todo list container doesn't interfere with grid layout */
+.main-content .todo-list {
+  width: 100%;
 }
 
 .tasks-title {
@@ -747,6 +780,7 @@ p {
   color: var(--blue-400);
   margin-bottom: 0.5rem;
   font-weight: 600;
+  word-break: break-word; /* Prevent long text from causing overflow */
 }
 
 /* BUTTON COMPONENT STYLES - MATCHING SIGNOUT BUTTON STYLE */

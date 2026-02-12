@@ -5,22 +5,43 @@
 body .typing-indicator {
   display: flex;
   align-items: center;
-  gap: 6px;
-  padding: 14px 18px;
-  background: var(--bg-card, rgba(255, 255, 255, 0.05)); /* Dashboard theme */
-  border: 1px solid var(--glass-border, rgba(59, 130, 246, 0.2)); /* Dashboard theme */
-  border-radius: 18px;
-  border-bottom-left-radius: 4px;
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
+  gap: 8px;
+  padding: 16px 20px;
+  background: 
+    linear-gradient(135deg, rgba(30, 41, 59, 0.8), rgba(15, 23, 42, 0.9)),
+    var(--bg-card, rgba(255, 255, 255, 0.05));
+  border: 1px solid rgba(59, 130, 246, 0.3);
+  border-radius: 18px 18px 6px 18px;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  box-shadow:
+    0 8px 24px rgba(0, 0, 0, 0.4),
+    0 0 16px rgba(59, 130, 246, 0.15);
+  align-self: flex-start;
+}
+
+/* Avatar icon styling for tick logo */
+body .avatar-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  font-size: 16px;
+  font-weight: bold;
+  color: white;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--blue-500, #3b82f6), var(--blue-600, #2563eb));
+  border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
 .typing-dot {
-  width: 8px;
-  height: 8px;
+  width: 10px;
+  height: 10px;
   border-radius: 50%;
-  background: linear-gradient(135deg, var(--blue-500, #3b82f6), var(--blue-600, #2563eb)); /* Dashboard theme */
-  animation: typingBounce 1.4s infinite ease-in-out;
+  background: linear-gradient(135deg, var(--blue-500, #3b82f6), var(--blue-600, #2563eb));
+  animation: typingBounce 1.6s infinite ease-in-out;
+  box-shadow: 0 0 8px rgba(59, 130, 246, 0.6);
 }
 
 .typing-dot:nth-child(1) {
@@ -28,20 +49,20 @@ body .typing-indicator {
 }
 
 .typing-dot:nth-child(2) {
-  animation-delay: 0.2s;
+  animation-delay: 0.25s;
 }
 
 .typing-dot:nth-child(3) {
-  animation-delay: 0.4s;
+  animation-delay: 0.5s;
 }
 
 @keyframes typingBounce {
   0%, 60%, 100% {
-    transform: translateY(0);
+    transform: translateY(0) scale(0.9);
     opacity: 0.7;
   }
   30% {
-    transform: translateY(-10px);
+    transform: translateY(-8px) scale(1.1);
     opacity: 1;
   }
 }

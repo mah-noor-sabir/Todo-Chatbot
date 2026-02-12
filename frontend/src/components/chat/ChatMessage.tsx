@@ -14,9 +14,22 @@ interface ChatMessageProps {
   message: Message;
 }
 
+import { useState } from 'react';
+
 export default function ChatMessage({ message }: ChatMessageProps) {
   const isUser = message.role === 'user';
   const isSystem = message.role === 'system';
+  const [copied, setCopied] = useState(false);
+
+  const handleCopy = async () => {
+    try {
+      await navigator.clipboard.writeText(message.content);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000); // Reset after 2 seconds
+    } catch (err) {
+      console.error('Failed to copy text: ', err);
+    }
+  };
 
   return (
     <div
@@ -40,18 +53,8 @@ export default function ChatMessage({ message }: ChatMessageProps) {
             </svg>
           ) : (
             <span
-              className="avatar-icon"
-              style={{
-                display: 'grid',
-                placeItems: 'center',
-                width: '20px',
-                height: '20px',
-                borderRadius: '50%',
-                background: 'linear-gradient(135deg, var(--blue-500, #3b82f6), var(--blue-600, #2563eb))',
-                fontSize: '10px',
-                fontWeight: 'bold',
-                color: 'white'
-              }}
+              className="avatar-icon tick-logo"
+              title="Tasklyn Bot"
             >
               ✔
             </span>
@@ -72,6 +75,26 @@ export default function ChatMessage({ message }: ChatMessageProps) {
               minute: '2-digit',
             })}
           </div>
+        )}
+        
+        {/* Copy button for assistant messages */}
+        {!isUser && !isSystem && (
+          <button
+            className="message-copy-btn"
+            onClick={handleCopy}
+            title={copied ? "Copied!" : "Copy message"}
+            aria-label={copied ? "Copied!" : "Copy message"}
+          >
+            {copied ? (
+              <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" width="14" height="14">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+              </svg>
+            ) : (
+              <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" width="14" height="14">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+              </svg>
+            )}
+          </button>
         )}
       </div>
     </div>

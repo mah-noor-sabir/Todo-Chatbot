@@ -1,8 +1,0 @@
-spec:
-  python: "3.11"
-  requirements: "requirements.txt"
-  app_port: 8000
-  hardware:
-    cpu: "medium"
-    memory: "16gb"
-    accelerator: "cpu"

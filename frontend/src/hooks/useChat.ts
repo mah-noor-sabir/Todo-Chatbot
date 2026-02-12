@@ -73,11 +73,7 @@ export function useChat(
           conversation_id: conversationId,
         };
 
-<<<<<<< HEAD
-        const response = await chatApi.sendMessage(request);
-=======
-        const response = await chatApi.sendMessage(userId, payload);
->>>>>>> 5fe7471cbcc12e648f73a32c1344ed9f3fa1212c
+        const response = await chatApi.sendMessage(payload);
 
         // Initialize conversation on first message
         if (!conversationId) {
@@ -97,17 +93,6 @@ export function useChat(
           assistantMessage,
         ]);
 
-<<<<<<< HEAD
-        // Check if any tool calls were made that affect todos
-        // Trigger refresh for task-related operations to sync with dashboard
-        if (response.tool_calls && Array.isArray(response.tool_calls)) {
-          for (const toolCall of response.tool_calls) {
-            if (toolCall.tool === 'add_task' || toolCall.tool === 'update_task' || toolCall.tool === 'complete_task' || toolCall.tool === 'delete_task') {
-              onToolCall?.(toolCall.tool);
-
-              // Trigger a global event to notify todos page to refresh
-              window.dispatchEvent(new CustomEvent('chatbotTodoUpdate'));
-=======
         // Notify consumers if chat tools mutated todos
         if (Array.isArray(response.tool_calls)) {
           response.tool_calls.forEach((call) => {
@@ -122,7 +107,6 @@ export function useChat(
               onToolCall?.(call.tool);
               // Refresh todos to sync with backend changes
               onRefreshTodos?.();
->>>>>>> 5fe7471cbcc12e648f73a32c1344ed9f3fa1212c
             }
           });
         }

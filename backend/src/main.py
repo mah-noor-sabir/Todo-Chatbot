@@ -24,7 +24,7 @@ async def lifespan(app: FastAPI):
 
 # Initialize FastAPI app
 app = FastAPI(
-    title="Evolution of Todo API",
+    title="Taskify API",
     description="Phase II - Full-Stack Web Application with Authentication",
     version="1.0.0",
     lifespan=lifespan,
@@ -58,7 +58,7 @@ app.include_router(chat.router, prefix="/api", tags=["Chat"])
 async def root():
     """Root endpoint - API information."""
     return {
-        "name": "Evolution of Todo API",
+        "name": "Taskify API",
         "version": "1.0.0",
         "phase": "II",
         "status": "operational",

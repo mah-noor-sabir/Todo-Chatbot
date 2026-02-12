@@ -8,6 +8,7 @@ from typing import Callable, Awaitable
 from fastapi import Request, Response
 from starlette.middleware.base import BaseHTTPMiddleware
 from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.exc import InvalidRequestError, PendingRollbackError
 
 from src.core.database import AsyncSessionLocal
 
@@ -18,24 +19,40 @@ class DBSessionMiddleware(BaseHTTPMiddleware):
     Prevents DetachedInstanceError by keeping the session open until
     the response is fully processed.
     """
-    
+
     async def dispatch(self, request: Request, call_next: Callable[[Request], Awaitable[Response]]) -> Response:
         # Create a new database session for this request
         async with AsyncSessionLocal() as session:
             # Attach the session to the request state
             request.state.db = session
-            
+
             try:
                 # Process the request
                 response = await call_next(request)
+
+                # Commit the session if it's in a valid state
+                try:
+                    if session.in_transaction():
+                        await session.commit()
+                except PendingRollbackError:
+                    # If there's a pending rollback, explicitly rollback first
+                    await session.rollback()
+                    # Then try to commit again if needed
+                    if session.in_transaction():
+                        await session.commit()
+                except InvalidRequestError:
+                    # Session is already in a bad state, likely due to a previous error
+                    # The error has already been handled, so we just continue
+                    pass
             except Exception:
                 # Rollback on exception
-                await session.rollback()
+                try:
+                    await session.rollback()
+                except:
+                    # If rollback fails, we continue to raise the original exception
+                    pass
                 raise
-            else:
-                # Commit on success
-                await session.commit()
-            
+
             return response
 
 

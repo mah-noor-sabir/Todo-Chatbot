@@ -1,9 +1,3 @@
-/**
- * ChatPanel Component
- * ------------------
- * Compact Todo Assistant chat panel with simplified history and new chat layout.
- */
-
 'use client';
 
 import { useState, useRef, useEffect } from 'react';
@@ -30,24 +24,30 @@ export default function ChatPanel({ isOpen, onClose, onToolCall }: ChatPanelProp
     error,
     sendMessage,
     createNewChat,
-    switchChat,
     deleteChat,
     isTyping,
-    addSystemMessage,
-  } = useMultiChat(user?.id, user?.first_name || user?.email?.split('@')[0], onToolCall);
+  } = useMultiChat(
+    user?.id,
+    user?.first_name || user?.email?.split('@')[0],
+    onToolCall,
+    () => window.dispatchEvent(new CustomEvent('chatbotTodoUpdate'))
+  );
 
   const [inputValue, setInputValue] = useState('');
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
 
+  // Auto-scroll messages
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages, isTyping]);
 
+  // Focus input when panel opens
   useEffect(() => {
     if (isOpen) inputRef.current?.focus();
   }, [isOpen]);
 
+  // Initialize new chat if none exist
   useEffect(() => {
     if (chats.length === 0 && isOpen && user) createNewChat();
   }, [chats.length, isOpen, user, createNewChat]);
@@ -78,54 +78,22 @@ export default function ChatPanel({ isOpen, onClose, onToolCall }: ChatPanelProp
   if (!isOpen) return null;
 
   return (
-    <div 
-      className="chat-overlay" 
-      onClick={handleOverlayClick}
-      style={{
-        '--bg-main': '#05060a',
-        '--bg-layer': '#0b1020',
-        '--bg-card': 'rgba(255, 255, 255, 0.05)',
-        '--blue-400': '#60a5fa',
-        '--blue-500': '#3b82f6',
-        '--blue-600': '#2563eb',
-        '--text-primary': '#ffffff',
-        '--text-muted': '#94a3b8',
-        '--glass-bg': 'rgba(15, 23, 42, 0.6)',
-        '--glass-border': 'rgba(59, 130, 246, 0.2)',
-        '--radius-lg': '1rem',
-        '--radius-md': '0.75rem',
-        '--shadow-soft': '0 20px 40px rgba(0, 0, 0, 0.35)',
-      } as React.CSSProperties}
-    >
+    <div className="chat-overlay" onClick={handleOverlayClick}>
       <div className="chat-panel glass-effect" onClick={(e) => e.stopPropagation()} role="dialog" aria-modal="true">
         {/* Header */}
         <div className="chat-header">
-          <div className="chat-bot-avatar">
-            <span
-              className="chat-logo-span"
-              title="Taskify Assistant"
-            >
-              ✔
-            </span>
-          </div>
-          <div className="chat-header-text">
-            <h3>Tasklyn</h3>
-            <p>Your helpful todo assistant</p>
-          </div>
+          <h1 className="chat-title">
+            <span title="Verified">✔</span> Tasklyn
+          </h1>
           <div className="chat-header-actions">
-            <button
-              type="button"
-              className="chat-close-btn"
-              onClick={onClose}
-              aria-label="Close chat"
-            >
+            <button className="chat-delete-btn" onClick={() => activeChatId && deleteChat(activeChatId)} aria-label="Delete chat">
               <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M6 18L18 6M6 6l12 12"
-                />
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+              </svg>
+            </button>
+            <button className="chat-close-btn" onClick={onClose} aria-label="Close chat">
+              <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
               </svg>
             </button>
           </div>
@@ -133,50 +101,17 @@ export default function ChatPanel({ isOpen, onClose, onToolCall }: ChatPanelProp
 
         {/* Messages */}
         <div className="chat-messages">
-          {messages.map((message) => (
-            <div key={message.id} className="message-container">
-              <ChatMessage message={message} />
-              {message.role === 'assistant' && (
-                <button
-                  type="button"
-                  className="message-delete-btn"
-                  onClick={() => {
-                    // Add functionality to delete this message
-                    // For now, we'll just log the action
-                    console.log(`Deleting message: ${message.id}`);
-                  }}
-                  aria-label="Delete message"
-                >
-                  <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" width="16" height="16">
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
-                    />
-                  </svg>
-                </button>
-              )}
-            </div>
+          {messages.map((msg) => (
+            <ChatMessage key={msg.id} message={msg} />
           ))}
-
           {isTyping && <TypingIndicator />}
-
           <div ref={messagesEndRef} />
         </div>
 
-        {/* ===============================
-            Error
-           =============================== */}
-        {error && (
-          <div className="chat-error">
-            <ErrorMessage message={error} />
-          </div>
-        )}
+        {/* Error */}
+        {error && <ErrorMessage message={error} />}
 
-        {/* ===============================
-            Input
-           =============================== */}
+        {/* Input */}
         <div className="chat-input-container">
           <textarea
             ref={inputRef}
@@ -189,9 +124,7 @@ export default function ChatPanel({ isOpen, onClose, onToolCall }: ChatPanelProp
             maxLength={2000}
             disabled={loading}
           />
-
           <button
-            type="button"
             className="chat-send-btn"
             onClick={handleSend}
             disabled={!inputValue.trim() || loading}
@@ -200,13 +133,8 @@ export default function ChatPanel({ isOpen, onClose, onToolCall }: ChatPanelProp
             {loading ? (
               <div className="send-spinner" />
             ) : (
-              <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M13 5l7 7-7 7M5 5l7 7-7 7"
-                />
+              <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" width={18} height={18}>
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
               </svg>
             )}
           </button>

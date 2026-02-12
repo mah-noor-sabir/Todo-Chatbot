@@ -11,13 +11,9 @@ export default function TypingIndicator() {
   return (
     <div className="chat-message assistant">
       <div className="message-avatar">
-        <img
-          className="avatar-icon"
-          src="/download (2).jpg"
-          alt="Tasklyn Bot"
-          width="20"
-          height="20"
-        />
+        <span className="avatar-icon" title="Tasklyn Bot">
+          ✔
+        </span>
       </div>
       <div className="message-bubble">
         <div className="typing-indicator">

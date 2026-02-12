@@ -64,8 +64,35 @@ desktop.ini
 *.tmp
 *.bak
 *.swp
-.gitignore
-"backend/taskify-bot/" 
-"backend/error_log.txt" 
-"backend/taskify-bot/"  
-"backend/error_log.txt"  
+
+# Backend specific ignores
+backend/error_log.txt
+backend/logs/
+backend/.env
+backend/venv/
+
+# Frontend specific ignores
+frontend/.next/
+frontend/out/
+frontend/node_modules/
+frontend/public/
+frontend/.env.local
+frontend/.env.production
+frontend/.env.development
+frontend/yarn-error.log
+frontend/npm-debug.log
+
+# Additional ignores
+.history/
+*.log
+logs/
+.env
+.env.local
+.env.production
+.env.development
+node_modules/
+__pycache__/
+*.pyc
+.DS_Store
+Thumbs.db
+.vscode/settings.json  

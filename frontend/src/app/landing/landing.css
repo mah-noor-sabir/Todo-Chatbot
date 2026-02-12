@@ -220,8 +220,8 @@
 /* MOCK CARDS */
 .mock-cards {
   position: relative;
-  width: 360px;
-  height: 240px;
+  width: 480px; /* Increased width to accommodate both cards */
+  height: 360px; /* Increased height to accommodate both cards */
   display: flex;
   align-items: center;
   justify-content: center;
@@ -233,9 +233,9 @@
   -webkit-backdrop-filter: blur(18px);
   border: 1px solid var(--glass-border, rgba(59, 130, 246, 0.2));
   border-radius: var(--radius-lg, 1rem);
-  padding: 16px;
-  width: 250px;
-  min-height: 100px;
+  padding: 18px;
+  width: 270px; /* Standardized width */
+  height: 140px; /* Fixed height for both cards */
   box-shadow: var(--shadow-soft, 0 20px 40px rgba(0, 0, 0, 0.35));
   position: absolute;
   transition: all 0.3s ease;
@@ -250,62 +250,76 @@
 }
 
 .high-card:hover {
-  box-shadow: 
+  box-shadow:
     var(--shadow-soft, 0 20px 40px rgba(0, 0, 0, 0.35)),
     0 0 20px rgba(239, 68, 68, 0.5),
     0 0 40px rgba(239, 68, 68, 0.3);
 }
 
 .pending-card:hover {
-  box-shadow: 
+  box-shadow:
     var(--shadow-soft, 0 20px 40px rgba(0, 0, 0, 0.35)),
     0 0 20px rgba(245, 158, 11, 0.5),
     0 0 40px rgba(245, 158, 11, 0.3);
 }
 
 .high-card {
-  top: 10px;
-  left: 0;
+  top: 20px; /* Position high card at top */
+  right: 20px; /* Position on right */
+  transform: rotate(8deg); /* Match the rotation from the JSX */
+  z-index: 2; /* Higher z-index for the high card */
 }
 
 .pending-card {
-  top: 110px;
-  right: 0;
+  bottom: 20px; /* Position lower */
+  left: 20px; /* Position on left */
+  transform: rotate(-10deg); /* Match the rotation from the JSX */
+  z-index: 1; /* Lower z-index for the pending card */
 }
 
 .pill {
-  font-size: 0.65rem;
-  font-weight: 600;
-  letter-spacing: 0.04em;
+  font-size: 0.85rem; /* Further increased for better visibility */
+  font-weight: 700;
+  letter-spacing: 0.05em;
   text-transform: uppercase;
-  padding: 0.35rem 0.65rem;
-  border-radius: 4px;
+  padding: 0.5rem 0.85rem; /* Further increased padding */
+  border-radius: 8px;
   display: inline-block;
   margin-bottom: 0.75rem;
   width: fit-content;
   font-family: inherit;
+  z-index: 10;
+  position: relative;
+  min-width: 100px; /* Further increased minimum width */
+  text-align: center;
+  backdrop-filter: blur(8px); /* Increased blur for better glass effect */
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3); /* Increased shadow for better visibility */
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5); /* Added text shadow for better readability */
 }
 
 .pill.high {
-  color: #fecaca;
-  background: rgba(239, 68, 68, 0.2);
-  box-shadow: 0 0 8px rgba(239, 68, 68, 0.5);
-  border: 1px solid rgba(239, 68, 68, 0.3);
+  color: #ffffff; /* Bright white text for maximum contrast */
+  background: linear-gradient(135deg, rgba(239, 68, 68, 0.6), rgba(239, 68, 68, 0.8)); /* Stronger gradient */
+  border: 1px solid rgba(239, 68, 68, 0.9);
+  box-shadow: 0 0 18px rgba(239, 68, 68, 0.7), 0 6px 16px rgba(0, 0, 0, 0.3);
 }
 
 .pill.pending {
-  color: #fef3c7;
-  background: rgba(245, 158, 11, 0.2);
-  box-shadow: 0 0 8px rgba(245, 158, 11, 0.5);
-  border: 1px solid rgba(245, 158, 11, 0.3);
+  color: #ffffff; /* Bright white text for maximum contrast */
+  background: linear-gradient(135deg, rgba(245, 158, 11, 0.6), rgba(245, 158, 11, 0.8)); /* Stronger gradient */
+  border: 1px solid rgba(245, 158, 11, 0.9);
+  box-shadow: 0 0 18px rgba(245, 158, 11, 0.7), 0 6px 16px rgba(0, 0, 0, 0.3);
 }
 
+/* Ensure card content is properly spaced */
 .mock-title {
   margin: 0.25rem 0 0.75rem 0;
   font-weight: 600;
   color: var(--text-primary, #ffffff);
   font-size: 1.1rem;
   line-height: 1.4;
+  z-index: 5;
+  position: relative;
 }
 
 .mock-time {
@@ -313,29 +327,86 @@
   color: var(--text-muted, #94a3b8);
   margin: 0.25rem 0 0;
   line-height: 1.5;
+  z-index: 5;
+  position: relative;
 }
 
 .progress-track {
-  background: rgba(255,255,255,0.1);
-  height: 0.4rem;
+  background: rgba(255, 255, 255, 0.2); /* Increased opacity for better visibility */
+  height: 0.6rem; /* Increased height for better visibility */
   border-radius: 999px;
   margin-top: 1rem;
   width: 100%;
   overflow: hidden;
   position: relative;
+  z-index: 5;
+  border: 1px solid rgba(255, 255, 255, 0.3); /* Added border for better visibility */
 }
 
 .progress-fill {
   height: 100%;
-  background: linear-gradient(90deg, var(--blue-500, #3b82f6), var(--blue-600, #2563eb));
+  background: linear-gradient(135deg, var(--blue-400, #60a5fa), var(--blue-500, #3b82f6)); /* Brighter gradient for better visibility */
   border-radius: 999px;
   min-width: 0;
+  width: 100%; /* Default full width */
+  box-shadow: 0 0 6px rgba(59, 130, 246, 0.6); /* Added glow for better visibility */
+  display: block; /* Ensure it displays properly */
 }
 
-/* Red progress fill for high priority card */
-.high-card .progress-fill {
-  background: linear-gradient(90deg, #ef4444, #dc2626);
-  box-shadow: 0 0 8px rgba(239, 68, 68, 0.5);
+/* Blue progress fill for high priority card (Complete Project) - half filled */
+.mock-card.high-card .progress-fill {
+  background: linear-gradient(135deg, var(--blue-400, #60a5fa), var(--blue-500, #3b82f6)); /* Brighter gradient for better visibility */
+  box-shadow: 0 0 8px rgba(59, 130, 246, 0.6); /* Increased glow for better visibility */
+  width: 50% !important; /* Half filled - important to override inline styles */
+}
+
+/* Ensure card content is properly spaced */
+.mock-title {
+  margin: 0.25rem 0 0.75rem 0;
+  font-weight: 600;
+  color: var(--text-primary, #ffffff);
+  font-size: 1.1rem;
+  line-height: 1.4;
+  z-index: 5;
+  position: relative;
+}
+
+.mock-time {
+  font-size: 0.85rem;
+  color: var(--text-muted, #94a3b8);
+  margin: 0.25rem 0 0;
+  line-height: 1.5;
+  z-index: 5;
+  position: relative;
+}
+
+.progress-track {
+  background: rgba(255, 255, 255, 0.2); /* Increased opacity for better visibility */
+  height: 0.6rem; /* Increased height for better visibility */
+  border-radius: 999px;
+  margin-top: 1rem;
+  width: 100%;
+  overflow: hidden;
+  position: relative;
+  z-index: 5;
+  border: 1px solid rgba(255, 255, 255, 0.3); /* Added border for better visibility */
+}
+
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(135deg, var(--blue-400, #60a5fa), var(--blue-500, #3b82f6)); /* Brighter gradient for better visibility */
+  border-radius: 999px;
+  min-width: 0;
+  width: 100%; /* Default full width */
+  box-shadow: 0 0 6px rgba(59, 130, 246, 0.6); /* Added glow for better visibility */
+  display: block; /* Ensure it displays properly */
+}
+
+/* Blue progress fill for high priority card (Complete Project) - half filled */
+.mock-card.high-card .progress-fill {
+  background: linear-gradient(135deg, var(--blue-400, #60a5fa), var(--blue-500, #3b82f6)); /* Brighter gradient for better visibility */
+  box-shadow: 0 0 8px rgba(59, 130, 246, 0.6); /* Increased glow for better visibility */
+  width: 50% !important; /* Half filled - important to override inline styles */
 }
 
 /* TESTIMONIALS */
